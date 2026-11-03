@@ -1,0 +1,121 @@
+ADDITIONAL CASE STUDIES
+This section presents extra case studies, which are evaluated
+using hardware-in-the-loop simulation, to demonstrate how
+TimeTrap can cause temporal displacements and how they
+instigate control deviation.
+Case Study IV on Autoware.Auto. Autoware.Auto [66] is
+an open-source autonomous driving project, which is widely
+used for research and development. It contains the full-stack
+software packages required for self-driving cars, including
+detection, localization, planning, control, etc, and supports
+different application scenarios. Our experiments were con-
+ducted on Autoware.Auto 1.0.0 version. We run the entire
+software system on AMD Ryzen 7 1700X with 32 GB RAM
+in compliance with the ofﬁcial recommended platform (8
+cores and 32GB). The simulated vehicle model is Lexus 2016
+RX Hybrid and the scenario used is the ofﬁcially released
+Autonomous V alet Parking [53]. For simulation, we run LG-
+SVL [84] on another PC with a GPU of Geforce RTX 2070S.
+The communication between the platform being tested and the
+simulator is via Ethernet.
+Attack Result. Figure 11 (b) shows the traveled path of the
+vehicle under test (VUT) on the map. TimeTrap was launched
+at the point marked by a star and it was periodically contending
+for shared resources to cause temporal displacements. On the
+remaining traveled path, as shown in Figure 11 (d), there exist
+two segments that incurred obvious temporal displacements by
+TimeTrap tinted in red. From the ﬁrst segment, the VUT was
+driving straight with no obvious control deviation. However,
+as shown in the second segment, the VUT completely lost
+control and hit the adjacent building.
+Cause Analysis. The reason behind this is the malfunction of
+the localization module, causing the vehicle to falsely estimate
+its position. In Autoware.Auto, localization uses the Normal
+Distributions Transform [85] (NDT) matching algorithm to
+estimate the pose of the vehicle. Since the optimization
+problem in NDT is modeled as a maximum a posteriori (MAP)
+problem in the software, an initial guess value is required to
+accelerate the solver. We use two code snippets in Figure 11(a)
+to demonstrate the vulnerability. As shown in Figure 11(a),
+the estimation of pose (deﬁned as pose_out) relies on
+the initial value, which is deﬁned as initial_guess. As
+to initial_guess, its value is inferred upon looking up
+(line 65) or extrapolating (line 71) the transformation tree
+in the system (in Code 11(a)). This inference is based on
+the assumption that the transformation graph tf_graph is
+in sync with target_frame. As the inference is time-
+related, a delay on the update of tf_graph cause result in a
+temporal displacement on target_frame, producing erro-
+neous results in the critical variable initial_guess. Fur-
+thermore, the incorrect initial_guess causes the solver
+register_measurement() to fall into a local minimum,
+resulting in erroneous localization result pose_out.
+By comparing the errors of pose_out in two segments
+that have large temporal displacements, in Figure11(d), it can
+be observed that although initial_guess had errors to the
+same extent in these two periods, the control was less affected
+in the ﬁrst segment. This is because the VUT was driving
+straight during the ﬁrst period and more common features
+persist in two adjacent frames of the point cloud, allowing the
+NDT to still converge albeit incorrectly initial_guess.
+In Figure 11(c), it can be observed that the localization result
+never deviated from the reference path in the ﬁrst segment.
+On the contrary, the localization results are erroneous in the
+second segment, where the results were jumping arbitrarily.
+This indicates that the attack outcome depends on the physical
+state of the victim. If the vehicle was in a non-vulnerable state,
+attackers need more CPU budget or higher priority to cause
+substantial impacts on control performance.
+Different Simulation Worlds. We also conducted experiments
+on different scenarios and the experimental results are reported
+in Table IV.
+TABLE IV: TimeTrap Attack on Different Scenarios
+Map Scene
+Charac.
+Sensing
+Overhead (%)
+Temporal
+Disp. (s)
+Control
+Dev. (m)
+Success-
+rate(%)
+Parking
+Lot
+S 0.17% 2.0 3.6 72%
+D 0.21% 2.3 3.9 56%
+Borregas
+Ave.
+S 0.18% 2.2 1.8 77%
+D 0.36% 2.3 1.7 61%
+GoMent. S 0.17% 2.3 2.4 65%
+D 0.25% 1.9 2.2 52%
+San
+Fran.
+S 0.19% 2.7 4.8 74%
+D 0.34% 2.3 5.4 58%
+Shalun S 0.17% 2.4 2.1 64%
+D 0.23% 2.9 2.6 51%
+S: Static Scenario; D: Dynamic Scenario.
+From the results, we can observe that the sensing had larger
+errors in dynamic scenarios. This is because the randomly
+generated trafﬁc participants can cause uncertain events such
+as slowdowns or stops. Those events make the sensing more
+challenging for TimeTrap. Moreover, to handle the unexpected
+events, our adversarial task took more time to ﬁlter the distur-
+bance. Overall, the sensing part of TimeTrap achieved effective
+performance. The maximum overhead in the experiments is
+0.36% CPU usage. As to the control deviation, the VUT
+running on Borregas Avenue was the less affected because
+its map of Borregas Avenue is relatively simpler. Even for the
+least control deviation 1 .7< , TimeTrap was still able to lead
+the vehicle to hit the curb.
+Case Study V on Humanoid ROBOTIS OP3. ROBOTIS
+OP3 [64] is a miniature humanoid robot, which consists of
+20 movable joints each equipped with a sensor module and
+a control module. The sensor module perceives the states
+of the robot (such as the velocity at any joint). The control
+module is designed based on a PID controller to generate the
+torque at each joint. Under the cooperation of the two modules,
+ROBOTIS OP3 can ﬁnish some complicated interactive tasks
+such as shaking hands, squatting down, standing up walking,

@@ -1,0 +1,14 @@
+[
+  {
+    "t_s": 0.0,
+    "chosen": "proceed",
+    "safe_candidates": [
+      "proceed",
+      "stop_wait"
+    ],
+    "predicted_finishes_s": {
+      "proceed": 29.339999999999463,
+      "stop_wait": 30.619999999999436
+    }
+  }
+]

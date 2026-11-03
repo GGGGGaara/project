@@ -1,0 +1,98 @@
+An Empirical Study of Performance Interference:
+Timing Violation Patterns and Impacts
+Ao Li, Jinwen Wang, Sanjoy Baruah, Bruno Sinopoli, Ning Zhang
+Washington University in St. Louis
+{ao, jinwen.wang, baruah, bsinopoli, zhang.ning }@wustl.edu
+Abstract—Multi-core platforms are becoming increasingly
+prevalent in cyber-physical systems such as automobiles and
+robots. However, contention for shared resources makes it chal-
+lenging to guarantee timing predictability. Existing studies have
+primarily focused on characterizing the extent to which such
+interference can induce delays (usually from an adversarial
+perspective). Unfortunately, less is understood on the physical
+impacts of these timing delays in different cyber-physical plat-
+forms. In this paper, we ﬁll this gap by providing an empirical
+examination of the end-to-end effects of performance interference
+on real-world applications. We analyze the root causes of harmful
+interference and summarize potential implementation pitfalls.
+To automate this process, we introduce TimeTrap, a tool
+that analyzes performance interference in autonomous systems
+through the lens of control outcome. To understand the extent
+to which timing interference may cause control deviations,
+TimeTrap has to strategically leverage different magnitudes of
+resource contention to trigger targeted deadline miss patterns.
+Through this exercise, we found that a na ¨ıve approach that
+maximizes task latency via performance interference may fail
+to trigger worst-case outcomes (i.e. physical damages) due to
+built-in fail-safe mechanisms. As a result, delays have to be
+induced in a stealthy manner to avoid triggering fail-safes. To
+achieve this, TimeTrap ﬁrst employs a system that actively
+injects ﬁne-grained delays into the target software, adjusting
+the duration based on measured feedback. Second, TimeTrap
+leverages predictability in CPS execution patterns and resource
+usage to automatically tune its aggressor workloads, matching
+these patterns to achieve targeted interference and execution
+delays in a victim. We evaluate TimeTrap on two physical-world
+platforms and six platforms in a hardware-in-the-loop simulation
+environment, including robotic arms, UGVs, UA Vs, self-driving
+cars, and humanoid robots. These studies demonstrate that an
+interference-based attack surface exists in different stages of the
+CPS pipeline, from perception to planning and control.
+I. INTRODUCTION
+Multi-core architectures are highly effective at providing
+increased computational resources under constraints on size,
+weight, and power (SWaP) in embedded platforms. However,
+when deployed in real-time cyber-physical systems (CPS)
+where timing predictability is essential, performance interfer-
+ence from contention for shared resources among concurrent
+tasks is increasingly a concern. Such interference may lead
+to delays in data propagation along the processing pipeline in
+modern CPS platforms, consequently degrading performance.
+Existing Literature. Understanding the impacts of perfor-
+mance interference in CPS requires a comprehensive analysis
+of both the sources and characteristics of interference, as well
+as its resulting impact on control outcomes. This demand is
+also highlighted by a recent industrial challenge presented
+by Arm [1]. Existing studies follow three distinct lines of
+research: (i) The ﬁrst exclusively examines the extent of worst-
+case performance interference [2]–[12] without considering
+the subsequent implications on system and software behavior.
+(ii) The second primarily focuses on analyzing the propagation
+of delays throughout the execution pipeline [13]–[19]. Such
+works approach the problem from the scheduling perspective,
+yet often do not consider the impact on control outcomes. (iii)
+The third abstractly models the control degradation resulting
+from various deadline miss patterns in an individual task [20]–
+[23]. However, these models do not consider the broader view
+of cascading effects among multiple tasks in the system. To
+analyze the impact of performance interference through a
+holistic view that interconnects software properties, real-time
+properties, and control properties [24], our work empirically
+studies the manifestation of performance interference in differ-
+ent CPS platforms to illuminate the implications for physical
+safety risks in the real world.
+Systematizing Timing Issues in Real-World CPS Software.
+To develop an appropriate abstraction over timing issues,
+we analyzed 241 real-world timing-related bugs from eight
+prominent CPS applications. We discovered that these bugs
+often arise from the inadequate speciﬁcation or enforcement
+of timing semantics. We also found that not all timing bugs
+result in adverse control outcomes in the physical world. In
+this paper, we use timing issues to refer to the timing bugs
+that produce adverse physical outcomes. Dissecting these real-
+world timing issues has provided us with new insights to
+formulate the problem of performance interference impact
+as temporal displacements in key state variables of the CPS
+process (more details about the bug systematization can be
+found in Section II).
+TimeTrap — Technical Challenges and Solutions. Informed
+by our observations, we introduce TimeTrap, a tool that aims
+to characterize the worst-case end-to-end impacts of per-
+formance interference by adversarially inducing interference
+with the goal of maximizing control deviation (i.e. difference
+in physical outcome). However, na ¨ıvely exhausting system
+resources is often ineffective due to built-in safety checks,
+as we discuss in Section II. Consequently, it is imperative
+to discern which task(s) should be delayed in order to effect
+signiﬁcant control deviation. Determining how much delay
+the attacker should cause is also challenging, since too little

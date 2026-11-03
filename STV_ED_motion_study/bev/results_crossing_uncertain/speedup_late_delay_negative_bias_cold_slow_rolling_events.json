@@ -1,0 +1,569 @@
+[
+  {
+    "t_s": 0.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 0.0,
+      "measured_t": 0.0,
+      "x": 20.0,
+      "y": -17.1,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 0.0,
+      "x": 20.0,
+      "y": -17.1,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.880449453373837
+  },
+  {
+    "t_s": 0.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 0.5,
+      "measured_t": 0.1,
+      "x": 20.0,
+      "y": -17.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 0.5,
+      "x": 20.0,
+      "y": -16.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.874458674924076
+  },
+  {
+    "t_s": 1.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 1.0,
+      "measured_t": 0.6,
+      "x": 20.0,
+      "y": -16.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 1.0,
+      "x": 20.0,
+      "y": -16.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.810888095928898
+  },
+  {
+    "t_s": 1.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 1.5,
+      "measured_t": 1.1,
+      "x": 20.0,
+      "y": -16.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 1.5,
+      "x": 20.0,
+      "y": -15.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.7622893083570483
+  },
+  {
+    "t_s": 2.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 2.0,
+      "measured_t": 1.6,
+      "x": 20.0,
+      "y": -15.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 2.0,
+      "x": 20.0,
+      "y": -15.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.6951597043152384
+  },
+  {
+    "t_s": 2.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 2.5,
+      "measured_t": 2.1,
+      "x": 20.0,
+      "y": -15.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 2.5,
+      "x": 20.0,
+      "y": -14.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.6506939060357073
+  },
+  {
+    "t_s": 3.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 3.0,
+      "measured_t": 2.6,
+      "x": 20.0,
+      "y": -14.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 3.0,
+      "x": 20.0,
+      "y": -14.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.579796699265159
+  },
+  {
+    "t_s": 3.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 3.5,
+      "measured_t": 3.1,
+      "x": 20.0,
+      "y": -14.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 3.5,
+      "x": 20.0,
+      "y": -13.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.5383670550269195
+  },
+  {
+    "t_s": 4.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 4.0,
+      "measured_t": 3.6,
+      "x": 20.0,
+      "y": -13.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 4.0,
+      "x": 20.0,
+      "y": -13.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.464848385939391
+  },
+  {
+    "t_s": 4.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 4.5,
+      "measured_t": 4.1,
+      "x": 20.0,
+      "y": -13.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 4.5,
+      "x": 20.0,
+      "y": -12.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.4204361932483236
+  },
+  {
+    "t_s": 5.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 5.0,
+      "measured_t": 4.6,
+      "x": 20.0,
+      "y": -12.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 5.0,
+      "x": 20.0,
+      "y": -12.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.350370544410446
+  },
+  {
+    "t_s": 5.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 5.5,
+      "measured_t": 5.1,
+      "x": 20.0,
+      "y": -12.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 5.5,
+      "x": 20.0,
+      "y": -11.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.3027041986710017
+  },
+  {
+    "t_s": 6.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 6.0,
+      "measured_t": 5.6,
+      "x": 20.0,
+      "y": -11.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 6.0,
+      "x": 20.0,
+      "y": -11.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.236409258209187
+  },
+  {
+    "t_s": 6.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 6.5,
+      "measured_t": 6.1,
+      "x": 20.0,
+      "y": -11.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 6.5,
+      "x": 20.0,
+      "y": -10.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.185165546000456
+  },
+  {
+    "t_s": 7.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 7.0,
+      "measured_t": 6.6,
+      "x": 20.0,
+      "y": -10.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 7.0,
+      "x": 20.0,
+      "y": -10.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.1229890729427905
+  },
+  {
+    "t_s": 7.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 7.5,
+      "measured_t": 7.1,
+      "x": 20.0,
+      "y": -10.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 7.5,
+      "x": 20.0,
+      "y": -9.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.0677861557346477
+  },
+  {
+    "t_s": 8.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 8.0,
+      "measured_t": 7.6,
+      "x": 20.0,
+      "y": -9.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 8.0,
+      "x": 20.0,
+      "y": -9.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 2.010126516975373
+  },
+  {
+    "t_s": 8.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 8.5,
+      "measured_t": 8.1,
+      "x": 20.0,
+      "y": -9.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 8.5,
+      "x": 20.0,
+      "y": -8.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 1.950536231991763
+  },
+  {
+    "t_s": 9.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 9.0,
+      "measured_t": 8.6,
+      "x": 20.0,
+      "y": -8.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 9.0,
+      "x": 20.0,
+      "y": -8.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 1.8978875523828223
+  },
+  {
+    "t_s": 9.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 9.5,
+      "measured_t": 9.1,
+      "x": 20.0,
+      "y": -8.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 9.5,
+      "x": 20.0,
+      "y": -7.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 1.8334627583304182
+  },
+  {
+    "t_s": 10.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 10.0,
+      "measured_t": 9.6,
+      "x": 20.0,
+      "y": -7.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 10.0,
+      "x": 20.0,
+      "y": -7.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 1.786457293881177
+  },
+  {
+    "t_s": 10.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 10.5,
+      "measured_t": 10.1,
+      "x": 20.0,
+      "y": -7.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 10.5,
+      "x": 20.0,
+      "y": -6.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 1.7167414726805916
+  },
+  {
+    "t_s": 11.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 11.0,
+      "measured_t": 10.6,
+      "x": 20.0,
+      "y": -6.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 11.0,
+      "x": 20.0,
+      "y": -6.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 1.6761473231097284
+  },
+  {
+    "t_s": 11.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 11.5,
+      "measured_t": 11.1,
+      "x": 20.0,
+      "y": -6.0,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 11.5,
+      "x": 20.0,
+      "y": -5.648,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 1.6006495140225327
+  },
+  {
+    "t_s": 12.0,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 12.0,
+      "measured_t": 11.6,
+      "x": 20.0,
+      "y": -5.5,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 12.0,
+      "x": 20.0,
+      "y": -5.148,
+      "vy": 0.88,
+      "radius": 0.3
+    },
+    "action": "keep",
+    "predicted_min_gap_m": 1.5672918825586104
+  },
+  {
+    "t_s": 12.5,
+    "mode_before": "proceed",
+    "observation": {
+      "received_t": 12.5,
+      "measured_t": 12.1,
+      "x": 20.0,
+      "y": -4.800000000000001,
+      "vy": 2.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 12.5,
+      "x": 20.0,
+      "y": -3.6479999999999997,
+      "vy": 2.88,
+      "radius": 0.3
+    },
+    "action": "emergency_unverified",
+    "predicted_min_gap_m": -0.3,
+    "reason": "reference_not_found"
+  },
+  {
+    "t_s": 13.0,
+    "mode_before": "emergency",
+    "observation": {
+      "received_t": 13.0,
+      "measured_t": 12.6,
+      "x": 20.0,
+      "y": -3.300000000000001,
+      "vy": 2.88,
+      "radius": 0.3
+    },
+    "forecast_used": {
+      "epoch": 13.0,
+      "x": 20.0,
+      "y": -2.148,
+      "vy": 2.88,
+      "radius": 0.3
+    },
+    "action": "keep"
+  }
+]

@@ -1,0 +1,46 @@
+{
+  "python": "3.14.7 (tags/v3.14.7:823f032, Aug  5 2026, 10:51:32) [MSC v.1944 64 bit (AMD64)]",
+  "parameters": {
+    "mass_kg": 1900.0,
+    "equivalent_mass_kg": 1976.0,
+    "wheel_radius_m": 0.31,
+    "ratio": 9.0,
+    "motor_max_nm": 320.0,
+    "motor_max_w": 150000.0,
+    "regen_max_nm": 120.0,
+    "charge_max_w": 50000.0,
+    "discharge_max_w": 170000.0,
+    "battery_j": 216000000.0,
+    "drive_efficiency": 0.9,
+    "regen_efficiency": 0.75,
+    "aux_w": 500.0,
+    "rolling_coefficient": 0.012,
+    "drag_area_m2": 0.65,
+    "motor_tau_s": 0.04,
+    "motor_slew_nm_s": 2000.0,
+    "friction_tau_s": 0.18,
+    "regen_zero_m_s": 0.3,
+    "regen_full_m_s": 1.5,
+    "mu": 0.85
+  },
+  "brake_regularization_m_s": 0.03,
+  "reference": {
+    "first_target_m": 10.0,
+    "final_target_m": 40.0,
+    "max_abs_acceleration_m_s2": 1.1,
+    "max_abs_jerk_m_s3": 1.5,
+    "check_samples": 301
+  },
+  "hold_entry": {
+    "speed_m_s": 0.002,
+    "position_error_m": 0.05,
+    "actual_acceleration_m_s2": 0.05
+  },
+  "code_sha256": {
+    "bev_probe.py": "3ad5c9602096955774121967ad737b2b75ce9575682496898d718eecaff04613",
+    "stopping_v2.py": "b0cc1db08b814a889f8311719204249aff75d64c84d355f4273a1da9950d805e",
+    "verify_stopping_v2.py": "08598d69203c77f1269b1ea2ae8dd957adf047a3457032b6c255627d31bcad81",
+    "plot_stopping_v2.py": "ce76efe4b09cf3adcd2c2ff39a6ad99da0080fb9bcd60354385ce99a9d24794d"
+  },
+  "claim_boundary": "Assumed model and baseline controller, not vehicle-calibrated or a new research contribution."
+}

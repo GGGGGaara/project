@@ -1,0 +1,52 @@
+{
+  "scope": "Static geometry and one OD connection only; no dynamic closed-loop test.",
+  "case_count": 36,
+  "unique_geometries": 12,
+  "coarse_to_medium_changes": [
+    {
+      "throat_width_m": 3.2,
+      "pose": "inside_offset",
+      "changed_fields": [
+        "nominal_connection"
+      ]
+    },
+    {
+      "throat_width_m": 3.6,
+      "pose": "inside_offset",
+      "changed_fields": [
+        "conservative_envelope_connection"
+      ]
+    },
+    {
+      "throat_width_m": 4.2,
+      "pose": "inside_center",
+      "changed_fields": [
+        "conservative_envelope_connection"
+      ]
+    }
+  ],
+  "medium_to_fine_changes": [
+    {
+      "throat_width_m": 3.6,
+      "pose": "inside_center",
+      "changed_fields": [
+        "nominal_connection"
+      ]
+    }
+  ],
+  "interpretation": "A false grid-connectivity result is lack of certification, not proof of continuous-space infeasibility. The envelope is a sufficient conservative common-path test, not an exact robust test.",
+  "vehicle_length_m": 4.5,
+  "vehicle_width_m": 1.8,
+  "pedestrian_effective_radius_m": 0.4,
+  "pose_position_bound_m": 0.15,
+  "pose_yaw_bound_deg": 3,
+  "conservative_envelope_padding_m": 0.27687046270716387,
+  "straight_braking_example": {
+    "initial_center_x_m": 2.5,
+    "initial_speed_mps": 1.5,
+    "constant_deceleration_to_upstream_x6_mps2": 0.32142857142857145,
+    "constant_deceleration_to_inside_x12_5_mps2": 0.1125,
+    "limits": "Only a straight static road; no moving actors or steering uncertainty in the braking check."
+  },
+  "elapsed_seconds": 15.500125700000353
+}

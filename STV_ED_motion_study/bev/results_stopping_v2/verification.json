@@ -1,0 +1,71 @@
+{
+  "unit_tests_passed": 4,
+  "dt_refinement": [
+    {
+      "initial_v": 0.0,
+      "temp": 25.0,
+      "tau": 0.18,
+      "max_stop_error_difference_m": 0.000982406488493126,
+      "jerk_dt002": 0.9274103187306704,
+      "jerk_dt001": 0.9255691757958928,
+      "max_zero_crossing_pre_speed_m_s": 0.0
+    },
+    {
+      "initial_v": 0.0,
+      "temp": -5.0,
+      "tau": 0.35,
+      "max_stop_error_difference_m": 0.002109656309084329,
+      "jerk_dt002": 0.9274103187306704,
+      "jerk_dt001": 0.946045173661203,
+      "max_zero_crossing_pre_speed_m_s": 0.0
+    },
+    {
+      "initial_v": 3.0,
+      "temp": -5.0,
+      "tau": 0.35,
+      "max_stop_error_difference_m": 0.002769360210312044,
+      "jerk_dt002": 0.914928801566578,
+      "jerk_dt001": 0.8938653727477708,
+      "max_zero_crossing_pre_speed_m_s": 0.0
+    }
+  ],
+  "extended_preview_example": {
+    "case": "v4_preview15m",
+    "initial_v_m_s": 4.0,
+    "initial_soc": 0.55,
+    "temperature_c": -5.0,
+    "actual_friction_tau_s": 0.35,
+    "reference_available": true,
+    "reason": "",
+    "controller_friction_tau_s": 0.18,
+    "dt_s": 0.02,
+    "completed": true,
+    "first_stop_error_m": -0.0011848653512078755,
+    "final_stop_error_m": 0.003829766503493204,
+    "max_raw_jerk_m_s3": 0.6869130694902109,
+    "hold_drift_m": 0.0005726122112310605,
+    "duration_s": 33.04,
+    "stop_events": []
+  },
+  "regularization_sensitivity": [
+    {
+      "regularization_m_s": 0.02,
+      "first_stop_error_m": -0.0011937424033430233,
+      "final_stop_error_m": 0.001573611498450589,
+      "max_raw_jerk_m_s3": 0.9274103187306704
+    },
+    {
+      "regularization_m_s": 0.03,
+      "first_stop_error_m": 0.0013553431397053117,
+      "final_stop_error_m": 0.0038321137534609306,
+      "max_raw_jerk_m_s3": 0.9274103187306704
+    },
+    {
+      "regularization_m_s": 0.05,
+      "first_stop_error_m": 0.0077052372021082505,
+      "final_stop_error_m": 0.0076835967399233596,
+      "max_raw_jerk_m_s3": 0.9888925282208388
+    }
+  ],
+  "interpretation": "15m example changes available stopping distance; not a matched 10m comparison or proof of safe emergency fallback."
+}

@@ -1,0 +1,665 @@
+[PDF PAGE 1]
+        Time-aware Motion Planning in Dynamic Environments with
+                                              Conformal Prediction
+
+Kaier Liang1                                                                                                                                        KAL221@LEHIGH.EDU
+Licheng Luo2                                                                                                                                         LICHENGL@UCR.EDU
+Yixuan Wang2                                                                                                                                  YWANG1457@UCR.EDU
+Mingyu Cai2                                                                                                                                      MINGYU.CAI@UCR.EDU
+Cristian Ioan Vasile1                                                                                                                      CVASILE@LEHIGH.EDU
+1Mechanical Engineering and Mechanics Department, Lehigh University, PA, USA
+2Department of Mechanical Engineering, University of California Riverside, CA, USA
+
+
+
+                                                            Abstract
+      Safe navigation in dynamic environments remains challenging due to uncertain obstacle behav-
+      iors and the lack of formal prediction guarantees.  We propose two motion planning frameworks
+      that leverage conformal prediction (CP): a global planner that integrates Safe Interval Path Plan-
+      ning (SIPP) for uncertainty-aware trajectory generation, and a local planner that performs online
+      reactive planning.  The global planner offers distribution-free safety guarantees for long-horizon
+      navigation,whilethelocalplannermitigatesinaccuraciesinobstacletrajectorypredictionsthrough
+      adaptive CP, enabling robust and responsive motion in dynamic environments. To further enhance
+      trajectory feasibility, we introduce an adaptive quantile mechanism in the CP-based uncertainty
+      quantification. Instead of using a fixed confidence level, the quantile is automatically tuned to the
+      optimal value that preserves trajectory feasibility, allowing the planner to adaptively tighten safety
+      margins in regions with higher uncertainty. We validate the proposed framework through numeri-
+      calexperimentsconductedindynamicandclutteredenvironments. Theprojectpageisavailableat
+      https://time-aware-planning.github.io
+      Keywords:Conformal Prediction, Motion Planning, Trajectory Prediction, Uncertainty Quantifi-
+      cation, Machine Learning
+
+1.  Introduction
+RobustnavigationindynamicenvironmentsremainsacentralchallengeforautonomousagentsMavro-
+giannisetal.(2023);Rudenkoetal.(2020). Applicationssuchasmobilerobotsnavigatingcrowded
+areas ordrones operating in sharedairspace require plannersthat can efficientlycompute collision-
+freetrajectoriesdespitetheuncertaintyinpredictingthemotionofsurroundingobstacles. Classical
+approachestomotionplanning,suchasdynamicwindowsearchorsampling-basedplannersAoude
+et al.(2013), either neglect prediction uncertainty or rely on strong parametric assumptions about
+obstacledynamics,resultinginoverlyconservativebehaviororunsafeplansPhillipsandLikhachev
+(2011). To handle such uncertainty, a variety of robust planning techniques have been developed.
+Chance-constrained motion planningBlackmore et al.(2011);Du Toit and Burdick(2011) incor-
+porates stochastic bounds on obstacle trajectories, ensuring constraint satisfaction with high proba-
+bility. Distributionally robust formulations extend this idea by optimizing against worst-case distri-
+butions within ambiguity sets—recent robotics examples include Wasserstein-robust risk maps and
+motion/control schemesHakobyan and Yang(2021). Tube-based MPC contains deviations within
+tightened constraint sets and provides robust feasibility under bounded disturbancesZhang et al.
+(2022);Mayne et al.(2011). Reference governor-based methods (Garone et al.,2017;Liang et al.,
+
+
+© K. Liang1, L. Luo2, Y. Wang2, M. Cai2 & C.I. Vasile1.
+
+[PDF PAGE 2]
+                                     LIANG   1 LUO   2 WANG    2 CAI   2 VASILE   1
+
+
+
+2024) address constraint satisfaction in complex systems by computing safety margins and navi-
+gation fields that guide the system toward feasible operating regions.  Risk-sensitive /Conditional
+Value at Risk (CVaR)-based planners explicitly trade expected cost against tail risk (Chow et al.,
+2015). Thesemethodsprovidetheoreticalsafetyguaranteebuttypicallyrequirestrongassumptions
+ontheunderlyingnoisemodel(e.g.,Gaussianerrors,convexuncertaintysets)andoftenscalepoorly
+in high-dimensional or long-horizon planning tasks.  Modern online control approaches leverage
+Control Barrier Functions (CBFs) (Ames et al.,2019;Lopez et al.,2020) to ensure safety under
+uncertainty,incorporatingrobustandadaptivetechniquestocompensatefornoisyobservationsand
+disturbance.
+    Recent advances in trajectory prediction using deep learning models provide high-quality fore-
+casts of dynamic agents, but they lack calibrated measures of uncertainty. As a result, plans based
+directly on such predictions risk unsafe outcomes when the predictions deviate from reality. Con-
+formalprediction(CP)hasemergedasapowerfulframeworkforprovidingdistribution-freeuncer-
+taintyquantificationwithfinite-sampleguarantees(Vovketal.,2005;Sunetal.,2023;Strawnetal.,
+2023;Chee et al.,2024;Liang et al.,2025). By producing valid prediction regions around obstacle
+trajectoriesatauser-specifiedconfidencelevel,CPenablesprincipledreasoningaboutprobabilistic
+guarantee. Ithasbeenappliedtoprobabilisticverificationtaskssuchaslargelanguagemodelvalida-
+tion(Wangetal.,2024;Cherianetal.,2024),temporallogicverification(Yuetal.,2026),semantic
+segmentation(Mossinaetal.,2024)andsoon. Lindemannetal. demonstratedhowCPcanbeinte-
+gratedintoamodelpredictivecontrol(MPC)frameworktoprovideprobabilisticsafetyguaranteein
+continuous state spaces (Lindemann et al.,2023). While this represents an important step forward,
+MPC-based formulations can be computationally expensive for long horizons, and their continu-
+ous nature makes them less suited for discrete, graph-based planning domains such as navigation
+on road networks, grids, or task-specific graphs. While split conformal prediction guarantee finite
+sample coverage under exchangeability, real deployments rarely preserve exchangeability between
+historical calibration data amd the incoming stream.  Recent adaptive conformal prediction(ACP)
+methods address this gap by coupling an online exchangeability diagnostic with a feedback-driven
+update that steers realized miscoverage to a target level without assuming exchangeability. (Dixit
+et al.,2022;Gibbs and Cand              `es,2021;Gibbs and Cand             `es,2024)
+    Inthiswork,weintegrateconformalpredictionintoSafeIntervalPathPlanning(SIPP)(Phillips
+and Likhachev,2011) and extend it to a sampling-based framework for continuous domains. Our
+approach augments SIPP with confidence levels derived from conformal prediction, enabling the
+planner to reason about probabilistic safety alongside travel time.  To handle continuous environ-
+ments where online sensor feedback is available, we further develop a time-aware Adaptive Con-
+formal Prediction Rapidly-Exploring Random Tree (ACP-RRT) algorithm that leverages real-time
+observations at each step to adaptively calibrate safety bounds, enabling local reactive planning
+while maintaining distribution-free safety guarantee. Together, these frameworks demonstrate how
+conformal prediction can provide unified, uncertainty-aware motion planning across both discrete
+and continuous settings—with Conformal Prediction Safe Interval Path Planning (CP-SIPP) suited
+forglobal,long-horizonplanningandACP-RRTdesignedforlocal,reactivenavigationinresponse
+to incoming sensor data.
+    The main contributions of this paper are:  (i) We introduce a CP-SIPP framework that inte-
+gratesconformalpredictionforglobal,long-horizonnavigationwithformal,distribution-freesafety
+guarantee in discrete spatial-temporal domains. (ii) We propose optimization methods that balance
+trajectory feasibility, optimal cost, and CP confidence. (iii) We extend the conformal safety princi-
+ple to continuous domains through a time-aware ACP-RRT that performs local, reactive planning
+by adaptively calibrating uncertainty bounds using online sensor feedback at each step, enabling
+probabilistically safe motion planning under distribution shift.
+
+
+                                                          2
+
+[PDF PAGE 3]
+2.  Preliminaries and Problem Formulation
+
+2.1.  Confidence Prediction for Dynamic Obstacles
+Consider a controllable robot operating on a finite, undirected graphG=(V,E), whereV⊂Z                                        2
+represents discrete spatial locations andE⊆V×Vencodes valid transitions between them. The
+agent’strajectoryoveratimehorizonTisasequenceofverticesπ=(v                                   0,v1,...,vk),wherev            t∈V
+andk≤T.   The environment containsndynamic obstaclesO={τ                                                         1,τ2,...,τn}, where each
+obstacle follows a continuous trajectoryτ                i∶[0,T]→R             2 specifying its position over time. The true
+obstacletrajectoriesτ                   i(t)areunknownandmustbeestimatedfromsensordataandmotionmodels,
+yielding predicted trajectoriesˆτ                     i(t).
+     Since the predictionsˆτ        i(t)inevitably deviate from the true future positions, we employconfor-
+mal prediction(Lei et al.,2017), a statistical framework for constructing prediction regions with
+finite-sample, distribution-free guarantees. CP requires only the assumption ofexchangeabilitybe-
+tween calibration and test data, rather than any specific parametric form, making it particularly
+suitable for real-world settings with uncertain or nonstationary dynamics. The key mechanism of
+CP is thenonconformity score, which quantifies the discrepancy between model predictions and
+ground truth. We define the nonconformity score at timetas the maximum prediction error across
+all obstacles,R(t)=max                            i=1,...,n  ∥ˆτ    i(t)−τ        i(t)∥(Lindemann et al.,2023).
+     Given a calibration datasetD               cal of historical obstacle trajectories, the conformal framework
+assumes that calibration and deployment data are exchangeable.  When this assumption does not
+hold (e.g., under time-varying dynamics), aweighted conformal predictionapproach (Barber et al.,
+2023) can be applied.  The prediction thresholdC                         t is then chosen as the(1−α)-quantile of the
+empirical distribution of calibration nonconformity scores,C            t=Quantile  1−α  {R  j(t)∶j∈D            cal},
+whereα∈[0,1]is the user-specified miscoverage rate. This construction ensures thatP(R(t)≤
+Ct)≥1−α,providingafinite-samplecoverageguaranteethatholdsunderexchangeabilitywithout
+requiring any distributional assumptions on obstacle motion.
+     To integrate conformal prediction into discrete motion planning, we derive spatially indexed
+confidence values. For each grid locations∈Vand timet, we compute its distance to each pre-
+dicted obstacle position asd   i(s,t)=∥s−ˆτ                i(t)∥.  The confidence that locationsis safe at timet
+is then given byc(s,t)=         ∣{j∈D        cal∶R j(t)≤min        idi(s,t)}∣R          j(t)denotes the nonconformity score
+                                               ∣D cal∣            .Here,
+computed from thej-th calibration trajectory. Intuitively,c(s,t)represents the empirical fraction
+of calibration samples whose maximum prediction error does not exceed the minimum safety mar-
+ginmin     idi(s,t).  By the conformal prediction guarantee, ifc(s,t)≥1−α, then locationsis
+collision-freeattimetwithprobabilityatleast1−αunderexchangeability. Thisformulationyields
+distribution-free,finite-samplesafetyguaranteesthatholdregardlessoftheunderlyingobstaclemo-
+tiondistributionandallowstheplannertotradeoffsafetyandperformancebyselectingappropriate
+confidencethresholdsforeachwaypoint—higherconfidencelevelscorrespondtolargersafetymar-
+gins around predicted obstacle positions.
+
+
+2.2.  Problem Formulation
+In dynamic environments with uncertain obstacle motion, a valid plan must ensure not only spa-
+tiotemporal feasibility but also probabilistic safety. Classical shortest-path formulations minimize
+travel time while enforcing connectivity, yet they cannot explicitly account for uncertainty induced
+by prediction errors. To bridge this gap, we introduce two complementary formulations: a global
+planning problem that employs pre-calibrated conformal thresholds for long-horizon navigation,
+and a local reactive planning problem that adapts safety margins online using sensor feedback. For
+
+
+                                                               3
+
+[PDF PAGE 4]
+                                          LIANG   1 LUO   2 WANG    2 CAI   2 VASILE   1
+
+
+
+global planning in the absence of real-time observations, the objective is to compute a trajectory
+fromstarttogoalthatisbothtime-efficientandprovablysafewithrespecttopredictionuncertainty.
+Problem 1 (Global Time-aware Motion Planning)Given a start locationv                                        start, a goal location
+vgoal, a time horizonT, a minimum confidence thresholdc                            min∈[0,1], and predicted obstacle
+trajectories{ˆτ                     i(t)}  ni=1   withfixedcalibrationdataset,findanoptimaltrajectoryπofflinethatsolves:
+
+
+                                         k−1
+                               minπ      ∑
+                                         j=0  (γw(v       j,vj+1 )+(1−γ)c               j)                                                   (1a)
+                        subject tov   0=v  start,   vk=v  goal  (∃k≤T)                                              (1b)
+                                        (v j,vj+1 )∈E,   v   j∈S(c      j,tj), ∀j∈{0,...,k}                   (1c)
+
+whereγ∈[0,1]balances travel time and safety,w(v                     j,vj+1 )is the edge cost e.g., travel time, and
+S(c    j,tj)={s∈V∶c(s,t                 j)≥c    j}is the conformal safe set at timet         j.
+
+Problem 2 (Local Reactive Time-aware Motion Planning)Givencurrentstate(v                                   current,tcurrent),
+goal regionv         goal, sensor horizonH                local, predicted obstacle trajectories{ˆτ                     i(t)}  ni=1  , find a feasible
+trajectory onlineπ             local∶[t   current,tcurrent+H   local]→Xthat starts atv              current, maintain conformal
+safety confidenceC                  t(c(t))from obstacles, and makes progress towardv                goal.
+
+The key difference is that Problem1aims to compute an optimal long-horizon path offline using
+a fixed calibration dataset, whereas Problem2focuses on finding a feasible path online that is
+calibration dataset free and adapts to distribution shifts detected through real-time feedback.
+
+3.  Solution
+We present two planning frameworks that address uncertainty in dynamic environments through
+conformal prediction. The first framework (Section3.1) solves Problem1for global, long-horizon
+planning using pre-calibrated conformal dataset. We develop two algorithmic approaches: a space-
+time planning formulation with explicit confidence enumeration, and a computationally efficient
+Safe Interval Path Planning (SIPP) extension that compresses temporal information while main-
+taining probabilistic safety guarantees. The second framework (Section3.2) solves Problem2for
+localreactiveplanningwithonlineobservations,wherewedevelopasampling-basedapproachthat
+adaptively calibrates safety bounds in response to distribution shift.
+
+3.1.  Global Time-Aware Planning
+3.1.1.  Space-time Planning with Confidence:In traditional space-time planning, the dynamic
+environmentismodeledasagraphwherestatess=(v,t)explicitlycombinespatiallocationsv∈V
+withdiscretetimestepst∈{0,1,...,T}. ThisformulationproducesastatespaceofsizeO(∣V∣×T)
+by enumerating all spatial-temporal configurations. While this approach requires exploring a large
+state space, it guarantees finding the globally optimal solution to Problem1.
+     To integrate conformal prediction with space-time planning, we augment the space-time repre-
+sentation to include confidence levels:ˆs=(v,c,t), wherev∈Vis the spatial vertex,c∈Cis the
+discrete confidence level from our finite confidence setC={c           1,c2,...,cm}, andt∈{0,1,...,T}
+is the time step. We construct a confidence space-time graphG         st=(V    st,Est)where:
+•V st={(v,c,t)∶v∈V,t∈{0,...,T},c∈C,c(v,t)≥c                                           min}where for each state,crepresents the
+  discrete confidence level assigned based on the empirical confidencec(v,t).
+
+
+                                                                 4
+
+[PDF PAGE 5]
+•E st={((v,c,t),(v       ′,c′,t′))∶(v,v   ′)∈E,t ′=t+w(v,v     ′),c′is the confidence level at(v  ′,t′)}.
+    Giventheconfidencespace-timegraphG         ST,wefindoptimalpathsusingstandardgraphsearch
+algorithms such as A*. Edge weights combine travel time and safety:
+
+                           w((v,c,t),(v      ′,c′,t′))=(1−γ)⋅w(v,v           ′)−γ⋅log(c       ′)                            (2)
+
+whereγ∈[0,1]controls the trade-off as in (1a):γ=0yields purely time-optimal paths,γ=1
+maximizes confidence, and intermediate values balance both objectives. Whenγ=0and multiple
+paths achieve equal travel time, ties are broken by preferring higher-confidence states.
+    The key advantage of this approach is its completeness: the explicit enumeration of all spatial-
+temporal-confidence combinations guarantees finding the globally optimal solution. However, this
+comes at the cost of a state space that grows asO(∣V∣×T), which becomes prohibitive for long
+planning horizons.  This motivates our confidence-augmented SIPP approach in the next section,
+which achieves similar optimality guarantees with dramatically reduced computational complexity.
+    3.1.2.  CP-Augmented SIPP:While the space–time formulation can achieve globally opti-
+mal solutions by explicitly enumerating all spatiotemporal states, it becomes computationally pro-
+hibitive as planning horizons or environmental complexity increase. The number of discrete time
+steps grows rapidly, leading to an explosion in state–time combinations and making direct search
+intractable for large-scale problems.  Safe Interval Path Planning  (Phillips and Likhachev,2011)
+mitigatesthisissuebyrecognizingthat,althoughtimeiscontinuous,thenumberofcontiguoussafe
+intervalsat each location is typically much smaller than the total number of timesteps. Instead of
+maintainingonestatepertimestep,SIPPaggregatesallcollision-freetimesatavertexintomaximal
+intervals, thereby compressing temporal information without sacrificing optimality with respect to
+arrival time.  In the standard SIPP formulation, each spatial vertexv∈Vmaintains a timeline of
+alternating safe and unsafe intervals. A safe intervalI=[t         a,tb)denotes one maximal contiguous
+period during which vertexvis guaranteed to be collision-free.
+    Each state is represented ass=(v,I), indicating that the agent is at vertexvduring interval
+I. Thus, a single vertex may correspond to multiple non-overlapping safe intervals, each forming a
+distinct state. This representation dramatically reduces the number of states compared with the full
+space–time grid. During search, SIPP stores for each statesthe earliest feasible arrival timeg(s)∈
+[t a,tb],whichservesastheaccumulatedcost(i.e.,theg-valueinA*). Theheuristich(s)estimates
+theremainingtraveltimetothegoal(e.g.,Euclideandistancedividedbymaximumspeed),andthe
+evaluation function isf(s)=g(s)+h(s).
+    Whenexpandingastate,SIPPdeterminestheearliestdeparturetimewithinIthatallowscollision-
+free arrival at a successor state. This on-the-fly computation of feasible transitions based on arrival
+timeiswhatenablesSIPP’stemporalcompressionandefficiency. Toincorporateprobabilisticsafety
+guarantees, we extend SIPP by discrete confidence levelsC={c            1,c2,...,cm}in decreasing order,
+where eachc        i∈[0,1]represents a required confidence threshold.  A confidence-augmented state
+is defined asˆs=(v,c,I), wherev∈Vis a spatial vertex,c∈Cis the confidence level, and
+I=[t      a,tb)is the safe interval corresponding to that confidence. For each vertex–confidence pair
+(v,c), we compute the corresponding safe time intervals where vertexvremains collision-free at
+levelc:min      i∈{1,...,n}      ∥v−τ      i(t)∥>Q         c1−α  (t), ∀t∈[t              a,tb),whereQ             c1−α  (t)isthe(1−α)-quantileof
+thepredictionerrorfromtheconformalpredictionmodel. Inpractice,safeintervalsareobtainedby
+discretizing time and identifying the maximal contiguous segments satisfying the above condition.
+    Thesearchcostisdefinedintermsoftime,ˆg(ˆs)=t                        arrival,wheret            arrival denotesthearrivaltime
+at stateˆs. The heuristic function is given by        ˆh(ˆs)=h(v,v                  goal),representing the estimated remain-
+ing travel time from vertexvto the goal vertexv      goal. When multiple states share the samef-score,
+thealgorithmprioritizesthosewithhigherconfidencelevels,therebybiasingthesearchtowardsafer
+
+
+                                                              5
+
+[PDF PAGE 6]
+                                          LIANG   1 LUO   2 WANG    2 CAI   2 VASILE   1
+
+
+
+trajectories without sacrificing time optimality. If both thef-scores and confidence levels are iden-
+tical,tiesareresolvedarbitrarily. Eachstatetransition(v                  j,cj,Ij,tj)→(v       j+1  ,cj+1  ,Ij+1  ,tj+1 )must
+satisfy: (i). spatial connectivity:(v          j,vj+1 )∈E; (ii). temporal feasibility:t                          j+1  =t  j+w(v       j,vj+1 ),
+wherew(⋅)denotes the travel time; (iii). departure constraint:t                                     j≤t  Ijend; and (iv) arrival constraint:
+tIj+1start≤t  j+1  ≤t  Ij+1end. The confidence levelc  j+1    is selected from any admissible value at vertexv  j+1
+satisfyingc                 j+1 ≥c  min. Successor states below this threshold are pruned to improve efficiency.
+
+Theorem 1 (Trajectory-Level Safety under Marginal Conformal Guarantees)Letπbeanytra-
+jectory with collision-check gridT(π)={t                     0,...,tk}generated by a planner employing conformal
+prediction.  For eacht∈T(π), letE                  t denote the event that the robot’s configuration at timet
+lies within the conformal safety setS     ct constructed at confidence levelc    t∈[0,1]. Assume that the
+per-time coverage guarantees hold marginally, that is,Pr(E          t)≥c    t for allt∈T(π).
+     Then, the probability that the trajectory remains safe at all times satisfiesPr(     ⋂t∈T(π)       Et)≥
+1−∑t∈T(π)    (1−c      t),Equivalently,theprobabilityofacollisionorsafetyviolationalongthetrajectory
+satisfiesPr(     ⋃t∈T(π)       E∁t)≤∑t∈T(π)    (1−c      t),whereE     ∁t  denotesthecomplementofE   t. Inparticular,
+if the confidence level is uniform,c              t≡1−α, thenPr(       ⋃t∈T(π)       E∁t)≤kα.
+
+     ProofLetE           t be the per-time safety events with marginal coveragePr(E                t)≥c    t. By the com-
+plementidentity,Pr( ⋂t∈T(π)       Et)=1−Pr(    ⋃t∈T(π)       E∁t). Boole’sinequalitystatethatPr(∪            tAt)≤
+∑tPr(A      t)foranyevents{A           t}(GrimmettandStirzaker,2001). ApplyingitwithA                        t=E  ∁t andusing
+Pr(E      ∁t)=1−Pr(E               t)≤1−c         t yieldsPr(    ⋃t∈T(π)       E∁t)≤∑t∈T(π)    (1−c      t)hencePr(∩                t∈T(π)      Et)≥
+1−∑t∈T(π)    (1−c      t).  In the uniform casec         t≡1−α, this reduces toPr(∪                 t∈T(π)      E∁t)≤kαwith
+k=∣T(π)∣.
+
+3.2.  Local Reactive Planning with Adaptive Conformal Prediction
+Whiletheconfidence-augmentedSIPPformulationprovidesaprincipledandcompletesolutionfor
+time-aware motion planning on discretized state spaces, its reliance on a pre-defined graph and
+enumerated safe intervals limits scalability in high-dimensional or continuous domains. To address
+this, we extend the same conformal-safety framework to a sampling-based setting, where the plan-
+ner incrementally explores the continuous space–time manifold using random sampling rather than
+explicit graph expansion. In this regime, the safety of each candidate motion is evaluated through
+adaptiveconformalprediction(ACP),whichsuppliescalibrateduncertaintyboundsonobstacletra-
+jectories for a time-varying confidence schedule. This yields a time-aware conformal RRT (ACP-
+RRT) that preserves the probabilistic safety guarantees of the SIPP formulation while offering the
+flexibility and scalability of sampling-based planning.
+
+3.2.1.  CALIBRATION-FREEADAPTIVECONFORMALPREDICTION
+Exchangeability Diagnostics:Real deployments rarely preserve exchangeability between the his-
+torical calibration dataset and the incoming prediction-observation stream.  Before passing confi-
+dence to SIPP, we therefore insert an exchangeability gate.LetD            cal={R    j}nj=1    be the calibration
+scores defined in §2.1. As soon as feedback becomes availabel online, we collect a warm-up batch
+of new scoresD           new={R    t}t0+W  0−1t=t   0       .  We assess wether the marginal score distribution remains
+unchange across theD     cal andD      new. The equality condition isL(R∣cal)=L(R∣new).
+
+
+                                                                 6
+
+[PDF PAGE 7]
+    Deviation from this criterion is quantified by the two-sample Kolmogorov–Smirnov (KS) dis-
+tanceD=sup               x∈R  ∣ˆFcal(x)−    ˆFnew(x)  ∣, where ˆFcal and ˆFnew are the empirical CDFs ofD   cal and
+Dnew. To maintain the nominal level under short-range serial dependence, we approximate the null
+distribution ofDusing a time-robust permutation: poolZ=(D                       cal∥D  new), splitZinto contiguous
+blocks of lengthB, randomly permute the blocks to obtainZ            ∗, and resplitZ     ∗into(D    ∗cal,D∗new).
+The permuted statistic is
+                                            D∗=sup
+                                                    x∈R  ∣ˆF∗cal(x)−    ˆF∗new(x)  ∣                                               (3)
+
+    Repeating this procedureNtimes yields{D                ∗(b)  }Nb=1    and the unbiased permutation p-value
+
+
+                                             p=   1+∑Nb=1   1{D∗(b)  ≥D }N+1                                                                        (4)
+
+ifp<α       gate, the gate rejects and ACP is activated.
+    AdaptiveupdateruleWhentheexchangeabilitytestrejects,wediscontinuetheuseofcalibra-
+tion quantiles and switch to calibration-free ACP. LetR     t be the nonconformity score at timet. We
+introduce a positive scaleλ        t and a fixed monotone threshold mapC(λ).
+
+                     H(λ     t)=λ    tdmin(s t),       d  min(s t)=mini      infτ∈I(s        t)∥v(s    t)−ˆr      i(τ)  ∥                    (5)
+
+
+    wheres          t isthecurrentvertex-timestate,I(s             t)isitsSIPPsafeinterval,v(s          t)isthespatialloca-
+tion ats   t,andˆr         i(⋅)denotes the predicted trajectory of obstaclei. Define the miscoverage indicator
+
+                                            et=1{R       t>H  t(λ t)}∈{0,1}                                               (6)
+
+    During deployment the mapH(⋅)remains fixed; only the positive scaleλ                        t adapts online, we
+update
+                                     λt+1 =Π [λ min,λmax](λ texp{κ(e             t−α)})                                    (7)
+initialized atλ   0=1.  Under miscoverage (e      t=1) increasesλ                    t so that the next region is more
+conservative; under coverage (e t=0) it decreases.
+    RegularityWe assume that the miscoverage responsep(λ)=E[e                                                   t∣λt=λ,F      t−1 ]is strictly
+decreasing inλon a compact interval[λ           min,λmax]that brackets the target,p(λ            min)>αand
+p(λ    max)<α.  Feedback exhibits short-range dependence so that time averages stabilize.  Under
+thesestandardconditionsandasmallconstantstepsize,theone-dimensionalfeedbackonλ    t yields
+the time-average tracking guarantee state below.
+
+Theorem 2 (Time-average coverage control for calibration-free ACP)Under the regularity ab-
+ove and a constant step sizeκ>0, the closed loop remains in[λ                   min,λmax]and the realized mis-
+coverage frequency satisfies
+
+                                      ⌟⟨rro⟪⟪⟩r⟪T     ⌟⟨rro⟪⟪⟩r⟪
+                                      ⌟⟨rro⟪⟪⟩r⟪⌟⟨rro⟪⟪⟩r⟪
+                                      ⌟⟨rro⟪⟪⟩r⟪1     ⌟⟨rro⟪⟪⟩r⟪
+                                      ⌟⟨rro⟪⟪⟩r⟪⌟⟨rro⟪⟪⟩r⟪
+                                      ⌟⟨rro⟪⟪⟩r⟪⌟⟨rro⟪⟪⟩r⟪
+                                      ⌟⟨rro⟪⟪⟩r⟪∑     ⌟⟨rro⟪⟪⟩r⟪=O  P(κ)+O        P(T −1/2  )
+                                      ⌟⟨rro⟪⟪⟩r⟪⌟⟨rro⟪⟪⟩r⟪
+                                      ⌟⟨rro⟪⟪⟩r⟪T     ⌟⟨rro⟪⟪⟩r⟪
+                                      ⌟⟨rro⟪⟪⟩r⟪t=1  et−α⌟⟨rro⟪⟪⟩r⟪
+                                      ⌟⟨rro⟪⟪⟩r⟪⌟⟨rro⟪⟪⟩r⟪
+                                      ⌟⟨rro⟪⟪⟩r⟪⌟⟨rro⟪⟪⟩r⟪
+
+Thereforeasufficientlysmallκkeepsthetime-averagemiscoverageinanO                κbandaroundαwithout
+assuming exchangeability with the historical data.
+
+
+                                                              7
+
+[PDF PAGE 8]
+                                        LIANG   1 LUO   2 WANG    2 CAI   2 VASILE   1
+
+
+
+    Proof:Letz             t=logλ        t, so the multiplicative update becomes the projected additive recursion
+zt+1  =Π [logλ      min,logλ      max](zt+κ(e       t−α)   ).   Writee     t=p(λ      t)+ξ    t,{ξ   t}is bounded martingale
+difference under the same weak dependence used by the gate.  Letz  ⋆=logλ   ⋆withp(λ     ⋆)=α,
+and setV    t=(z    t−z ⋆)2. By strict monotonicity ofpin the compact interval[λ           min,λmax], for every
+ε>0there existsρ(ε)>0such that whenever∣z                                t−z ⋆∣≥εone has(z             t−z ⋆){p(λ        t)−α}≤
+−ρ(ε)(z           t−z ⋆)2.  Using projection nonexpansiveness,E[V               t+1 −V  t ∣Ft−1 ]≤−2κρ(ε)V                   t+κ  2.
+Summingyields 1T∑Tt=1  E[V    t]=O(κ). Averaginge                           t−α={p(λ              t)−α}+ξ            t gives∣  1T∑Tt=1 (e t−α)∣=
+O(κ)+O           P(T −1/2  )Since    1T∑ξt=O  P(T −1/2  ). With diminishing step sizes satisfying∑tκt=∞
+and∑tκ2t<∞, the bias vanishes and        1                    P/leftr⫯g⊸tl⫯ne→α.
+                                                T∑Tt=1   et
+
+
+3.2.2. TIME-AWARE CONFORMALRRT
+
+The time-aware conformal RRT extends space-time RRT approaches (Grothe et al.,2022;Sintov
+and Shapiro,2014), which represent nodes as(x,t)pairs, by augmenting each node with a confi-
+dence levelcto explicitly reason about prediction uncertainty through conformal prediction. When
+expandingthetree,thealgorithmsamplesarandomspatialstate,connectsittothenearestnode,and
+assigns an arrival time based on the travel distance and robot speed. Along each edge, the planner
+predicts the robot’s motion forward in time and checks for collisions against predicted obstacle tra-
+jectories. At each intermediate step, the confidence levelc(t)is obtained from a predefined decay
+schedule, and ACP provides the corresponding prediction radius for that horizon. The edge is ac-
+ceptedonlyifallsampledpointsalongitremainoutsidetheACP-inflatedobstacleregions,ensuring
+time-consistent conformal safety.
+    To avoid the problem being infeasible due to a long prediction horizon and to capture the in-
+creasinguncertaintyoflong-termforecasts,theplanneremploysatime-varyingconfidenceschedule
+c(t)that smoothly decays from an initial high confidencec                                start∈Cto a lower terminal confidence
+cend∈Cover the planning horizonH:
+
+
+                                       c(t)=c            end+(c     start−c   end)(1−   tH).                                            (8)
+
+Thisschedulereflectstheintuitionthatnear-termpredictionsaremorereliableandshouldbetreated
+conservatively, while distant predictions can tolerate greater uncertainty. As summarized in Algo-
+rithm1, the planner grows the conformal RRT in a receding-horizon manner:  at each planning
+cycle, it constructs a time-aware tree using the current ACP calibration based on prediction step
+andrequiringconfidence,executesonlythefirstmotionsegment(RRTnode),andthenincorporates
+new observations to update the ACP bounds. This closed-loop procedure continuously adapts both
+the uncertainty estimates and the effective confidence level over time.
+
+
+4.  Results
+
+Weevaluateourtwoplanningframeworksthroughsimulationexperiments. Section4.1presentsre-
+sults for CP-SIPP, demonstrating global planning performance on grid environments with dynamic
+obstacles. Section4.2evaluatesACP-RRTforlocalreactiveplanningincontinuousdomains,show-
+ing how adaptive conformal prediction maintains safety under distribution shift. We analyze path
+quality, and safety guarantees for both approaches.
+
+
+                                                              8
+
+[PDF PAGE 9]
+  Algorithm 1ACP-RRT
+  Input:Start node(x                      s,ts,cs), goal regionX            goal, ACP modelA
+  Output:Probabilistically safe path toX                       goal
+1T←{(x           s,ts,cs)}
+2whilegoal not reacheddo
+3      Samplex                  rand∈X(x        near,tnear,cnear)←Nearest(T,x                             rand)
+         xnew←Steer(x                  near,xrand)
+         tnew←t    near+∥x  new−x   near∥vmax
+         cnew←c(t         new)from (8);
+         if∣x    new−τ  i∣>ACP(t             new,cnew)for allithen
+4            Add(x             new,tnew,cnew)toTifx             new∈X  goal then
+5                  returnPath(T)
+6returnfailure
+  4.1.  CP-SIPP
+  Tofurtherillustratehowuncertaintyevolvesacrosspredictionhorizonsandconfidencelevels,wevi-
+  sualizethequantiletablegeneratedbytheSeq2SeqLSTM-basedmotionpredictionmodel(Sutskever
+  et al.,2014).  As shown in Fig.1, CP-SIPP demonstrates its ability to perform uncertainty-aware
+  navigation in complex environments with dynamic obstacles. By incorporating conformal predic-
+  tion into the SIPP framework, the planner adaptively adjusts its trajectory to avoid predicted obsta-
+  cle regions while maintaining computational efficiency. The green line indicates the executed path,
+  dark red dots represent predicted obstacle centers, and light red disks denote their 95% quantile
+  conformal prediction confidence regions rendered at the current timestep.
+
+
+
+
+
+
+
+
+
+
+
+
+  Figure 1:CP-SIPP: four frames showing uncertainty-aware CP-SIPP navigating through complex environ-
+  ments with dynamic obstacles
+
+
+
+  4.2.  ACP-RRT
+  Fig.3illustrates the performance of the pro-
+  posed ACP-RRT with a planning horizon of
+  H=50.  We introduce three dynamic obsta-                          Figure 2:Confidence Evolution Comparison:  left:
+  cles, and ACP is employed to generate confi-                      The ACP-RRT planner successfully maintains high
+  dence regions for their predicted trajectories at                 confidence.  right:  The baseline RRT (without ACP)
+  eachtimestep. Thefigurepresentssnapshotsof                        fails with a collision att=[9,12].
+  theplanningprocessatt=0,t=25,andt=45.
+  As the prediction horizon increases, the RRT accepts nodes with lower confidence levels, allowing
+  it to maintain feasibility while adapting to the growing trajectory prediction uncertainty.
+
+
+                                                                   9
+
+[PDF PAGE 10]
+                                     LIANG   1 LUO   2 WANG    2 CAI   2 VASILE   1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure3:ACP-RRT:threeframesshowingonlineACP-RRTadaptivegeneratingtreestonavigatingthrough
+obstacles with uncertainty
+    Fig.2(left) illustrates the evolution of the average node confidence during planning. As time
+progresses, the agent requires fewer steps to reach the target, resulting in shorter prediction hori-
+zons and consequently requiring fewer confidence regions. This leads to an overall increase in the
+average node confidence of the constructed RRT path over time. Meanwhile, due to the receding-
+horizon structure and the adaptive confidence update rule in (8), the confidence associated with the
+immediate next step consistently remains the highest throughout the planning process. In contrast,
+Fig.2(right) shows the baseline method implementing reactive RRT without ACP, where confi-
+dence is validated post-sampling rather than proactively incorporated during tree expansion. This
+approach fails with a collision att=[9,12], where the confidence level dropsto zero.
+
+5.  Conclusion
+Wepresentedtwomotionplanningframeworksthatintegrateconformalpredictiontoenableuncertainty-
+aware navigation in dynamic environments.  The first, CP-SIPP, extends the classical SIPP for-
+mulation by incorporating discrete confidence levels derived from conformal prediction, allowing
+theplannertocomputetime-optimaltrajectoriesunderformal,distribution-freeprobabilisticsafety
+guarantees. The second, ACP-RRT, generalizes these principles to continuous domains through a
+sampling-based approach that adaptively adjusts safety bounds online. Together, these frameworks
+demonstrate how conformal prediction can provide a unified foundation for efficient, and provably
+safe motion planning under uncertainty.
+
+References
+Aaron D Ames, Samuel Coogan, Magnus Egerstedt, Gennaro Notomista, Koushil Sreenath, and
+  Paulo Tabuada.   Control barrier functions:  Theory and applications.   In2019 18th European
+  control conference (ECC), pages 3420–3431. Ieee, 2019.
+
+GeorgesSAoude,BrandonDLuders,JoshuaMJoseph,NicholasRoy,andJonathanPHow. Prob-
+  abilistically safe motion planning to avoid dynamic obstacles with uncertain motion patterns.
+  Autonomous Robots, 35(1):51–76, 2013.
+
+Rina Foygel Barber, Emmanuel J Candes, Aaditya Ramdas, and Ryan J Tibshirani.  Conformal
+  prediction beyond exchangeability.The Annals of Statistics, 51(2):816–845, 2023.
+
+Lars Blackmore, Masahiro Ono, and Brian C Williams. Chance-constrained optimal path planning
+  with obstacles.IEEE Transactions on Robotics, 27(6):1080–1094, 2011.
+
+
+                                                         10
+
+[PDF PAGE 11]
+KongYaoChee,ThalesCSilva,MAniHsieh,andGeorgeJPappas. Uncertaintyquantificationand
+  robustification of model-based controllers using conformal prediction.  In6th Annual Learning
+  for Dynamics & Control Conference, pages 528–540. PMLR, 2024.
+
+John Cherian, Isaac Gibbs, and Emmanuel Candes.  Large language model validity via enhanced
+  conformalpredictionmethods.AdvancesinNeuralInformationProcessingSystems,37:114812–
+  114842, 2024.
+
+Yinlam Chow, Aviv Tamar, Shie Mannor, and Marco Pavone.  Risk-sensitive and robust decision-
+  making: a cvar optimization approach.Advances in neural information processing systems, 28,
+  2015.
+
+Anushri Dixit, Lars Lindemann, Skylar Wei, Matthew Cleaveland, George J. Pappas, and Joel W.
+  Burdick. Adaptive conformal prediction for motion planning among dynamic agents, 2022.
+
+Noel E Du Toit and Joel W Burdick. Robot motion planning in dynamic, uncertain environments.
+  IEEE Transactions on Robotics, 28(1):101–115, 2011.
+
+EmanueleGarone,StefanoDiCairano,andIlyaKolmanovsky. Referenceandcommandgovernors
+  for systems with constraints:  A survey on theory and applications.Automatica, 75:306–328,
+  2017.
+
+Isaac Gibbs and Emmanuel J. Cand`es.  Conformal inference for online prediction with arbitrary
+  distribution shifts.Journal of Machine Learning Research, 25(162):1–36, 2024.
+
+Isaac Gibbs and Emmanuel Cand`es. Adaptive conformal inference under distribution shift, 2021.
+
+GeoffreyRGrimmettandDavidRStirzaker.ProbabilityandRandomProcesses. OxfordUniversity
+  Press, 05 2001. ISBN 9780198572237. doi: 10.1093/oso/9780198572237.001.0001.
+
+Francesco  Grothe,  Valentin  N  Hartmann,  Andreas  Orthey,  and  Marc  Toussaint.      St-rrt*:
+  Asymptotically-optimalbidirectionalmotionplanningthroughspace-time. In2022International
+  Conference on Robotics and Automation (ICRA), pages 3314–3320. IEEE, 2022.
+
+AstghikHakobyanandInsoonYang. Wassersteindistributionallyrobustmotioncontrolforcollision
+  avoidanceusingconditionalvalue-at-risk.IEEETransactionsonRobotics,38(2):939–957,2021.
+
+JingLei,MaxG’Sell,AlessandroRinaldo,RyanJ.Tibshirani,andLarryWasserman. Distribution-
+  free predictive inference for regression, 2017.
+
+KaierLiang,MingyuCai,andCristian-IoanVasile. Controlbarrierfunctionforlinearizablesystems
+  with high relative degrees from signal temporal logics: A reference governor approach. In2024
+  American Control Conference (ACC), pages 1676–1681. IEEE, 2024.
+
+Kaier Liang, Guang Yang, Mingyu Cai, and Cristian-Ioan Vasile.   Safe navigation in dynamic
+  environments using data-driven koopman operators and conformal prediction.arXiv preprint
+  arXiv:2504.00352, 2025.
+
+Lars Lindemann, Matthew Cleaveland, Gihyun Shim, and George J Pappas.  Safe planning in dy-
+  namic environments using conformal prediction.IEEE Robotics and Automation Letters, 8(8):
+  5116–5123, 2023.
+
+
+                                                       11
+
+[PDF PAGE 12]
+                                    LIANG   1 LUO   2 WANG    2 CAI   2 VASILE   1
+
+
+
+Brett T Lopez, Jean-Jacques E Slotine, and Jonathan P How. Robust adaptive control barrier func-
+  tions:  An adaptive and data-driven approach to safety.  IEEE Control Systems Letters, 5(3):
+  1031–1036, 2020.
+Christoforos Mavrogiannis, Francesca Baldini, Allan Wang, Dapeng Zhao, Pete Trautman, Aaron
+  Steinfeld,andJeanOh. Corechallengesofsocialrobotnavigation: Asurvey.ACMTransactions
+  on Human-Robot Interaction, 12(3):1–39, 2023.
+
+David Q Mayne, Erric C Kerrigan, EJ Van Wyk, and Paola Falugi.  Tube-based robust nonlinear
+  model predictive control.International journal of robust and nonlinear control, 21(11):1341–
+  1353, 2011.
+
+Luca Mossina, Joseba Dalmau, and L´eo And´eol.  Conformal semantic image segmentation: Post-
+  hoc quantification of predictive uncertainty.   InProceedings of the IEEE/CVF Conference on
+  Computer Vision and Pattern Recognition, pages 3574–3584, 2024.
+
+Mike Phillips and Maxim Likhachev. Sipp: Safe interval path planning for dynamic environments.
+  In2011 IEEE international conference on robotics and automation, pages 5628–5635. IEEE,
+  2011.
+
+Andrey Rudenko, Luigi Palmieri, Michael Herman, Kris M Kitani, Dariu M Gavrila, and Kai O
+  Arras.  Human motion trajectory prediction: A survey. The International Journal of Robotics
+  Research, 39(8):895–935, 2020.
+AvishaiSintovandAmirShapiro.Time-basedrrtalgorithmforrendezvousplanningoftwodynamic
+  systems.  In2014 IEEE International Conference on Robotics and Automation (ICRA), pages
+  6745–6750. IEEE, 2014.
+
+Kegan J Strawn, Nora Ayanian, and Lars Lindemann.   Conformal predictive safety filter for rl
+  controllers in dynamic environments.IEEE Robotics and Automation Letters, 8(11):7833–7840,
+  2023.
+
+JiankaiSun,YiqiJiang,JianingQiu,ParthNobel,MykelJKochenderfer,andMacSchwager. Con-
+  formal prediction for uncertainty-aware planning with diffusion dynamics model.Advances in
+  Neural Information Processing Systems, 36:80324–80337, 2023.
+
+IlyaSutskever,OriolVinyals,andQuocV.Le. Sequencetosequencelearningwithneuralnetworks,
+  2014. URLhttps://arxiv.org/abs/1409.3215.
+Vladimir Vovk, Alexander Gammerman, and Glenn Shafer.  Algorithmic learning in a random
+  world. Springer, 2005.
+
+Jun Wang, Jiaming Tong, Kaiyuan Tan, Yevgeniy Vorobeychik, and Yiannis Kantaros. Conformal
+  temporal logic planning using large language models.ACM Transactions on Cyber-Physical
+  Systems, 2024.
+
+Xinyi Yu, Yiqi Zhao, Xiang Yin, and Lars Lindemann.  Signal temporal logic control synthesis
+  amonguncontrollabledynamicagentswithconformalprediction.Automatica,183:112616,2026.
+Xinglong Zhang, Wei Pan, Riccardo Scattolini, Shuyou Yu, and Xin Xu. Robust tube-based model
+  predictive control with koopman operators.Automatica, 137:110114, 2022.
+
+
+
+                                                       12

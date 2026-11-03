@@ -1,0 +1,20 @@
+{
+  "seed": 20261102,
+  "episodes_per_sigma": 1000,
+  "noise_std_s": [
+    0.4,
+    1.0,
+    1.6
+  ],
+  "padding_s": 1.25,
+  "step_s": 0.5,
+  "stage_duration_s": 6.0,
+  "crossing_window_offset_s": [
+    2.2,
+    3.8
+  ],
+  "refuge_margin_s": 0.2,
+  "max_entry_s": 50.0,
+  "max_wait_in_refuge_s": 30.0,
+  "remark": "Synthesized windows. Decision-level idealized constant-speed timing; no vehicle motion dynamics, geometry, calibrated sensor models, or collision simulation."
+}

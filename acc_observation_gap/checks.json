@@ -1,0 +1,33 @@
+{
+  "0.1": {
+    "robust_hard": {
+      "collisions": 0,
+      "worst_gap": 2.0000180032953523,
+      "cases": 36
+    },
+    "robust_comfort": {
+      "collisions": 0,
+      "worst_gap": 2.000000047248534,
+      "cases": 36
+    }
+  },
+  "0.05": {
+    "robust_hard": {
+      "collisions": 0,
+      "worst_gap": 2.0000034606250665,
+      "cases": 36
+    },
+    "robust_comfort": {
+      "collisions": 0,
+      "worst_gap": 2.000000037870791,
+      "cases": 36
+    }
+  },
+  "bound_violation_stress": {
+    "assumed_lead_deceleration": 6,
+    "actual_lead_deceleration": 10,
+    "cases": 8,
+    "collisions": 5,
+    "worst_gap": -6.761433618164375
+  }
+}

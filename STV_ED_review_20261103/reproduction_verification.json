@@ -1,0 +1,57 @@
+{
+  "environment": {
+    "python": "3.14.7 (tags/v3.14.7:823f032, Aug  5 2026, 10:51:32) [MSC v.1944 64 bit (AMD64)]",
+    "executable": "D:\\python\\python.exe",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "numpy": "2.5.4",
+      "pandas": "3.1.0",
+      "matplotlib": "3.11.2"
+    }
+  },
+  "csv_comparisons": [
+    {
+      "file": "episode_results.csv",
+      "original_rows": 15000,
+      "rerun_rows": 15000,
+      "differences": [],
+      "max_numeric_difference": 0.0,
+      "matches": true
+    },
+    {
+      "file": "summary.csv",
+      "original_rows": 15,
+      "rerun_rows": 15,
+      "differences": [],
+      "max_numeric_difference": 0.0,
+      "matches": true
+    },
+    {
+      "file": "paired_bootstrap.csv",
+      "original_rows": 9,
+      "rerun_rows": 9,
+      "differences": [],
+      "max_numeric_difference": 0.0,
+      "matches": true
+    },
+    {
+      "file": "padding_sensitivity.csv",
+      "original_rows": 6,
+      "rerun_rows": 6,
+      "differences": [],
+      "max_numeric_difference": 0.0,
+      "matches": true
+    }
+  ],
+  "json_comparisons": {
+    "config.json": true,
+    "example_episode.json": true
+  },
+  "original_file_count": 15,
+  "original_files_changed": [],
+  "copied_scripts_identical": {
+    "pilot_simulation.py": true,
+    "analysis_extra.py": true,
+    "test_pilot.py": true
+  }
+}

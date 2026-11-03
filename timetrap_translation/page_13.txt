@@ -1,0 +1,145 @@
+REFERENCES
+[1] M. Andreozzi, G. Gabrielli, B. V enu, and G. Travaglini, “Industrial
+challenge 2022: a high-performance real-time case study on arm,” in
+34th Euromicro Conference on Real-Time Systems (ECRTS 2022) , 2022.
+[2] K. Nagar and Y . Srikant, “Precise shared cache analysis using optimal
+interference placement,” in 2014 IEEE 19th Real-Time and Embedded
+Technology and Applications Symposium (RTAS) , pp. 125–134, IEEE,
+2014.
+[3] R. Pellizzoni, A. Schranzhofer, J.-J. Chen, M. Caccamo, and L. Thiele,
+“Worst case delay analysis for memory interference in multicore sys-
+tems,” in 2010 Design, Automation & Test in Europe Conference &
+Exhibition (DATE 2010) , pp. 741–746, IEEE, 2010.
+[4] M. Bechtel and H. Y un, “Denial-of-service attacks on shared cache
+in multicore: Analysis and prevention,” in 2019 IEEE Real-Time and
+Embedded Technology and Applications Symposium (RTAS) , pp. 357–
+367, IEEE, 2019.
+[5] J. Giesen, P . Benedicte, E. Mezzetti, J. Abella, and F. J. Cazorla, “Mod-
+eling contention interference in crossbar-based systems via sequence-
+aware pairing (seap),” in 2020 IEEE Real-Time and Embedded Technol-
+ogy and Applications Symposium (RTAS) , pp. 253–266, IEEE, 2020.
+[6] M. Hassan and R. Pellizzoni, “Bounding dram interference in cots
+heterogeneous mpsocs for mixed criticality systems,” IEEE Transactions
+on Computer-Aided Design of Integrated Circuits and Systems , vol. 37,
+no. 11, pp. 2323–2336, 2018.
+[7] D. Casini, A. Biondi, G. Nelissen, and G. Buttazzo, “A holistic mem-
+ory contention analysis for parallel real-time tasks under partitioned
+scheduling,” in 2020 IEEE Real-Time and Embedded Technology and
+Applications Symposium (RTAS) , pp. 239–252, IEEE, 2020.
+[8] D. Iorga, T. Sorensen, J. Wickerson, and A. F. Donaldson, “Slow and
+steady: Measuring and tuning multicore interference,” in 2020 IEEE
+Real-Time and Embedded Technology and Applications Symposium
+(RTAS), pp. 200–212, IEEE, 2020.
+[9] A. Li, M. Sudvarg, H. Liu, Z. Y u, C. Gill, and N. Zhang, “Polyrhythm:
+Adaptive tuning of a multi-channel attack template for timing interfer-
+ence,” in 2022 IEEE Real-Time Systems Symposium (RTSS) , pp. 225–
+239, IEEE, 2022.
+[10] T. Y androfski, J. Chen, N. Otterness, J. H. Anderson, and F. D. Smith,
+“Making powerful enemies on nvidia gpus,” in 2022 IEEE Real-Time
+Systems Symposium (RTSS) , pp. 383–395, IEEE, 2022.
+[11] N. Singh, K. Renganathan, C. Rebeiro, J. Jose, and R. Mader, “Kryp-
+tonite: Worst-case program interference estimation on multi-core em-
+bedded systems,” ACM Transactions on Embedded Computing Systems ,
+vol. 22, no. 5s, pp. 1–23, 2023.
+[12] M. Bechtel and H. Y un, “Cache bank-aware denial-of-service attacks on
+multicore arm processors,” in 2023 IEEE 29th Real-Time and Embedded
+Technology and Applications Symposium (RTAS) , pp. 198–208, IEEE,
+2023.
+[13] N. Feiertag, K. Richter, J. Nordlander, and J. Jonsson, “A compositional
+framework for end-to-end path delay calculation of automotive systems
+under different path semantics,” in IEEE Real-Time Systems Symposium:
+30/11/2009-03/12/2009, IEEE Communications Society, 2009.
+[14] P . Gohari, M. Nasri, and J. V oeten, “Data-age analysis for multi-
+rate task chains under timing uncertainty,” in Proceedings of the 30th
+International Conference on Real-Time Networks and Systems , pp. 24–
+35, 2022.
+[15] P . Pazzaglia and M. Maggio, “Characterizing the effect of deadline
+misses on time-triggered task chains,” IEEE Transactions on Computer-
+Aided Design of Integrated Circuits and Systems , vol. 41, no. 11,
+pp. 3957–3968, 2022.
+[16] A. Davare, Q. Zhu, M. Di Natale, C. Pinello, S. Kanajan, and
+A. Sangiovanni-Vincentelli, “Period optimization for hard real-time
+distributed automotive systems,” in Proceedings of the 44th annual
+Design Automation Conference , pp. 278–283, 2007.
+[17] Y . Zhao, V . Gala, and H. Zeng, “A uniﬁed framework for period
+and priority optimization in distributed hard real-time systems,” IEEE
+Transactions on Computer-Aided Design of Integrated Circuits and
+Systems, vol. 37, no. 11, pp. 2188–2199, 2018.
+[18] T. Klaus, M. Becker, W. Schr ¨oder-Preikschat, and P . Ulbrich, “Con-
+strained data-age with job-level dependencies: How to reconcile tight
+bounds and overheads,” in 2021 IEEE 27th Real-Time and Embedded
+Technology and Applications Symposium (RTAS) , pp. 66–79, IEEE,
+2021.
+[19] M. G ¨unzel, K.-H. Chen, N. Ueter, G. von der Br ¨uggen, M. D ¨urr, and
+J.-J. Chen, “Timing analysis of asynchronized distributed cause-effect
+chains,” in 2021 IEEE 27th Real-Time and Embedded Technology and
+Applications Symposium (RTAS) , pp. 40–52, IEEE, 2021.
+[20] N. Vreman, A. Cervin, and M. Maggio, “Stability and performance
+analysis of control systems subject to bursts of deadline misses,” in 33rd
+Euromicro Conference on Real-Time Systems (ECRTS 2021) , Schloss
+Dagstuhl-Leibniz-Zentrum f ¨ur Informatik, 2021.
+[21] A. Gujarati, M. Nasri, and B. B. Brandenburg, “Quantifying the re-
+siliency of fail-operational real-time networked control systems,” in 30th
+Euromicro Conference on Real-Time Systems (ECRTS 2018) , Schloss
+Dagstuhl-Leibniz-Zentrum fuer Informatik, 2018.
+[22] M. Maggio, A. Hamann, E. Mayer-John, and D. Ziegenbein, “Control-
+system stability under consecutive deadline misses constraints,” in 32nd
+euromicro conference on real-time systems (ECRTS 2020) , Schloss
+Dagstuhl-Leibniz-Zentrum f ¨ur Informatik, 2020.
+[23] N. Vreman and M. Maggio, “Stochastic analysis of control systems
+subject to communication and computation faults,” ACM Transactions
+on Embedded Computing Systems , vol. 22, no. 5s, pp. 1–25, 2023.
+[24] S. Baruah, P . Ekberg, M. Hosseinzadeh, A. Li, B. Ward, and N. Zhang,
+“Who’s afraid of butterﬂies? a close examination of the butterﬂy attack,”
+in 2023 IEEE Real-Time Systems Symposium (RTSS) , pp. 53–63, IEEE,
+2023.
+[25] J. M. V oas and G. McGraw, Software fault injection: inoculating
+programs against errors . John Wiley & Sons, Inc., 1997.
+[26] D. H. Woo and H. Lee, “Analyzing performance vulnerability due to
+resource denial of service attack on chip multiprocessors,” in Workshop
+on Chip Multiprocessor Memory Systems and Interconnects , 2007.
+[27] T. M. O. Mutlu, “Memory performance attacks: Denial of memory
+service in multi-core systems,” in USENIX security , 2007.
+[28] H. S. Bedi and S. Shiva, “Securing cloud infrastructure against co-
+resident dos attacks using game theoretic defense mechanisms,” in
+ICACCI, 2012.
+[29] Z. Y ang, H. Fang, Y . Wu, C. Li, B. Zhao, and H. H. Huang, “Under-
+standing the effects of hypervisor i/o scheduling for virtual machine
+performance interference,” in 4th IEEE International Conference on
+Cloud Computing Technology and Science Proceedings , pp. 34–41,
+IEEE, 2012.
+[30] M. S. Inci, T. Eisenbarth, and B. Sunar, “Hit by the bus: Qos degradation
+attack on android,” in Proceedings of the 2017 ACM on Asia Conference
+on Computer and Communications Security , pp. 716–727, 2017.
+[31] T. Zhang, Y . Zhang, and R. B. Lee, “Dos attacks on your memory
+in cloud,” in Proceedings of the 2017 ACM on Asia Conference on
+Computer and Communications Security , pp. 253–265, 2017.
+[32] V . V aradarajan, T. Kooburat, B. Farley, T. Ristenpart, and M. M. Swift,
+“Resource-freeing attacks: improve your cloud performance (at your
+neighbor’s expense),” in Proceedings of the 2012 ACM conference on
+Computer and communications security , pp. 281–292, 2012.
+[33] ROBOTIS, “Openmanipulator x.” https://emanual.robotis.com/docs/en/
+platform/openmanipulator x/overview/. Accessed: 2022-9-07.
+[34] “Turtlebot3.” https://emanual.robotis.com/docs/en/platform/turtlebot3/
+overview/. Accessed: 2022-01-10.
+[35] R. Mur-Artal, J. M. M. Montiel, and J. D. Tardos, “Orb-slam: a versatile
+and accurate monocular slam system,” IEEE transactions on robotics ,
+vol. 31, no. 5, pp. 1147–1163, 2015.
+[36] C. Campos, R. Elvira, J. J. G. Rodr ´ıguez, J. M. Montiel, and J. D.
+Tard´os, “Orb-slam3: An accurate open-source library for visual, visual–
+inertial, and multimap slam,” IEEE Transactions on Robotics , vol. 37,
+no. 6, pp. 1874–1890, 2021.
+[37] A. Geiger, P . Lenz, and R. Urtasun, “Are we ready for autonomous
+driving? the kitti vision benchmark suite,” in 2012 IEEE conference on
+computer vision and pattern recognition , pp. 3354–3361, IEEE, 2012.
+[38] “Autoware auto gitlab.” https://gitlab.com/autowarefoundation/autoware.
+auto. Accessed: 2022-12-12.
+[39] “Moveit.” https://moveit.ros.org/. Accessed: 2022-10-23.
+[40] Google, “Google cartographer.” https://google-cartographer.readthedocs.
+io. Accessed: 2022-03-29.
+[41] “Baidu apollo open-source self-driving project.” https://apollo.auto/
+platform/hardware.html. Accessed: 2023-08-15.
+[42] “Orb-slam2 github.” https://github.com/raulmur/ORB SLAM2. Ac-
+cessed: 2022-01-07.
+[43] “Orb-slam3 github.” https://github.com/UZ-SLAMLab/ORB SLAM3.
+Accessed: 2022-01-07.

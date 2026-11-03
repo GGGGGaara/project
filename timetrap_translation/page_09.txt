@@ -1,0 +1,103 @@
+identiﬁed victim task emerges as the thread responsible for
+creating the map essential for motion planning.
+Attack Result. As the Turtlebot navigates the room, it contin-
+ually maps its surroundings, as the sensed map illustrated in
+Figure 6(a). For each control loop, the Turtlebot obtains a point
+cloud, matching these points with a previously established
+map database to deduce its current position. This point cloud
+also aids in the creation of a costmap, ﬁlled with obstacle
+information for the path planning module. TimeTrap can cause
+the path planning module to produce a wrong path based on a
+temporally mismatched costmap, thereby crashing the robot.
+Root Cause Analysis — Inappropriate Timestamp V alidation
+Checks. The Turtlebot’s planning module consists of two
+planners: a global planner for mission trajectories and a local
+planner for real-time paths. The local planner’s input includes
+the pose and a costmap detailing both static and dynamic ob-
+stacles in the current environment. For a viable path, both the
+pose and costmap must temporally align to correctly position
+obstacles. Y et, since these inputs update in separate threads,
+they are vulnerable to temporal displacement. TimeTrap causes
+Turtlebot to plan a path using a stale costmap that coincides
+with obstacles. Although mechanisms are in place to check
+the freshness of the costmap during the update of the global
+planner, as shown in the code snippet in Figure 6(b), there
+is no check for the temporal alignment between the costmap
+and the current pose when the software is using them together.
+With TimeTrap active, the Turtlebot generates its route based
+on the outdated costmap, shown in red in Figure 6(a). While
+the robot perceives its path as clear, it collides with an actual
+wall depicted in the blue costmap in the ﬁgure.
+1 2 3
+Take oﬀFall downCrashed
+Trajectories Cause Analysis
+…
+SensortasksControl tasks
+PriorityDeadlineT emporalDisplacement
+Interference
+Fig. 7: Case study on Ardupilot drone.
+Case Study III on Drone. We evaluated TimeTrap on a self-
+built quadcopter powered by a Raspberry Pi 3 Model B and
+Navio2 board. We deployed the widely-used Ardupilot [62]
+Copter-4.0 software. We sent Mavlink messages from another
+host PC to assign missions to the drone. As shown in the
+top-left of Figure 7, TimeTrap caused the drone to crash. To
+collect more detailed data, we also test the drone in simulation.
+Ardupilot supports only software-in-the-loop (SiTL) simula-
+tion, where physics simulation and control tasks are executed
+within the same cyclic task loop. In this setting, delays do
+not affect control performance, as they are translated into the
+SiTL’s end-to-end delays. For proof-of-concept, we modiﬁed
+the sensor data emulation to run as a separate task, aligning
+with Ardupilot’s normal ﬂight mode, where sensors are fetched
+by distinct tasks.
+Attack Method and Result. Tasks in Ardupilot fall into two
+categories: input/output (I/O) and control. I/O tasks handle
+sensor drivers, control outputs, and remote messages, each
+having its own high-priority thread with a priority of 80. In
+contrast, control tasks, which process sensor data and compute
+control outputs, are grouped into a single low-priority thread
+with a priority of 60. A built-in user-level scheduler manages
+their execution. The adversarial task thread has the lowest
+priority, set at 20. We designated 11 waypoints for the drone’s
+mission. At one speciﬁc waypoint, where the drone was set
+to make a sharp turn, we activated TimeTrap. Until that point,
+the drone maintained a steady speed. However, once TimeTrap
+was launched, the drone became unstable and crashed. its
+deviations from reference velocity are shown in Figure 7.
+Root Cause Analysis — User-level Scheduler . The underlying
+issue stems from Ardupilot’s reliance on user-level schedul-
+ing. In this setup, all control-related tasks are bundled into
+one thread, while sensor operations run on separate threads.
+Although user-level scheduling is efﬁcient and versatile, it fails
+to provide solid guarantees of timing constraints. In essence,
+the kernel-level scheduling remains oblivious to priorities set
+at the user level. Furthermore, when there is a switch in the
+active thread at the kernel level, the user-level scheduling does
+not register this change. Consequently, the control loop task
+becomes unsynchronized with the sensor data loops, severely
+impairing the control’s efﬁcacy. As depicted in Figure 7,
+TimeTrap-induced data desynchronization caused the drone’s
+velocity to exhibit substantial oscillations. It is crucial to
+understand that TimeTrap is not a rudimentary DoS attack
+that indiscriminately stalls all threads. If that were the case,
+the impact on control would be minimal, as the software is
+designed to withstand frequency reductions.
+B. Effectiveness of TimeTrap
+The experiments in this section aim to (i) showcase the
+effectiveness of the attack strategy and attack synthesis pro-
+cess in TimeTrap, and (ii) explore the factors that inﬂuence
+TimeTrap, including the resource channels, real-time execution
+priorities, and budgets of the attacking process.
+Direct DoS is not Effective. To underscore the necessity
+of the attack strategy in TimeTrap, we demonstrate that a
+direct DoS attack, which exhausts cache resources [4], does
+not signiﬁcantly impact the end-to-end control performance of
+either the Turtlebot or the robotic arm. We place a TurtleBot
+into the WashU Mini-City, a 3000 sq. ft. 1:8 scale city replica
+with realistic streets, buildings, cars, and pedestrians. In this
+scenario (shown in Figure 9), the adversarial task, allocated
+80% CPU bandwidth and assigned a highest priority of 40,
+markedly delayed other tasks. However, rather than crashing
+into the building, the controller detected the excessive delay
+in input sensor data and activated fail-safe measures, halting

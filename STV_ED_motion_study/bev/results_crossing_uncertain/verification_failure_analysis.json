@@ -1,0 +1,66 @@
+{
+  "episodes_checked": 72,
+  "observation_truth_and_forecast_isolation": "passed",
+  "collision_and_failure_classification": "passed",
+  "selected_dt_refinement": [
+    {
+      "case": "constant17_ideal_normal_rolling",
+      "status_dt002": "completed",
+      "status_dt001": "completed",
+      "end_time_difference_s": 0.010000000000001563,
+      "min_clearance_difference_m": 0.000470664134884613
+    },
+    {
+      "case": "speedup_early_ideal_cold_slow_rolling",
+      "status_dt002": "completed",
+      "status_dt001": "completed",
+      "end_time_difference_s": 0.01999999999999602,
+      "min_clearance_difference_m": 0.0046896511767204885
+    },
+    {
+      "case": "pause_in_road_ideal_normal_refresh_hold",
+      "status_dt002": "collision",
+      "status_dt001": "collision",
+      "end_time_difference_s": 0.00999999999999801,
+      "min_clearance_difference_m": 0.005538216203493818
+    },
+    {
+      "case": "speedup_late_delay_negative_bias_normal_rolling",
+      "status_dt002": "collision",
+      "status_dt001": "collision",
+      "end_time_difference_s": 0.009999999999999787,
+      "min_clearance_difference_m": 0.028750461344494438
+    }
+  ],
+  "rolling_failures": [
+    {
+      "case": "speedup_late_delay_negative_bias_normal_rolling",
+      "contact_time_s": 13.42,
+      "first_emergency_t_s": 12.5,
+      "emergency_reason": "reference_not_found",
+      "speed_at_trigger_m_s": 2.817487298247596,
+      "front_x_at_trigger_m": 17.368605463431148,
+      "actual_acceleration_at_trigger_m_s2": 0.17029529605816496,
+      "motor_torque_at_trigger_nm": 19.403391812160592,
+      "friction_capacity_at_trigger_n": 8.146017882765924e-14,
+      "longitudinal_gap_to_ped_strip_m": 2.331394536568851,
+      "ideal_constant_2_5m_s2_stop_distance_m": 1.5876469351573073,
+      "interpretation": "Diagnostic geometry and ideal constant-deceleration estimate; not a proof that collision was physically inevitable."
+    },
+    {
+      "case": "speedup_late_delay_negative_bias_cold_slow_rolling",
+      "contact_time_s": 13.42,
+      "first_emergency_t_s": 12.5,
+      "emergency_reason": "reference_not_found",
+      "speed_at_trigger_m_s": 2.817487298247596,
+      "front_x_at_trigger_m": 17.368605463431148,
+      "actual_acceleration_at_trigger_m_s2": 0.17029529605816496,
+      "motor_torque_at_trigger_nm": 19.403391812160592,
+      "friction_capacity_at_trigger_n": 6.456628701120968e-14,
+      "longitudinal_gap_to_ped_strip_m": 2.331394536568851,
+      "ideal_constant_2_5m_s2_stop_distance_m": 1.5876469351573073,
+      "interpretation": "Diagnostic geometry and ideal constant-deceleration estimate; not a proof that collision was physically inevitable."
+    }
+  ],
+  "scope": "Specified replay and causality checks only; no safety guarantee."
+}

@@ -1,0 +1,26 @@
+{
+  "seed": 20261103,
+  "dt_s": 0.04,
+  "candidate_count": 9,
+  "calibration_parameter_draws": 40,
+  "heldout_parameter_draws": 120,
+  "candidate_simulations": 1449,
+  "global_empirical_padding_s": 1.1600000000000001,
+  "checks": {
+    "all_simulations_complete": true,
+    "all_sampled_footprints_inside_4m_road": true,
+    "actuator_limits_satisfied": true,
+    "selected_case_dt_refinement_max_endpoint_difference_s": 0.019999999999999574,
+    "straight_reference_preserves_zero_lateral_motion": true,
+    "saved_straight_trace_monotone_and_acceleration_valid": true
+  },
+  "model": "kinematic bicycle; rear axle reference; 4.5m x 1.8m full footprint; wheelbase 2.7m; straight 4m road; full-width conflict strips",
+  "limitations": [
+    "No interaction with pedestrians, no dynamic collision trial, no replanning, and no stopping/refuge maneuver implemented.",
+    "Forward simulations use feedback tracking, but candidate choice is not an online closed-loop planner.",
+    "Empirical extrema from 40 parameter draws are not certified bounds or calibrated confidence intervals.",
+    "Sampled footprint checks do not certify continuous-time collision avoidance.",
+    "Held-out tests share the specified parameter distribution; no real-world calibration.",
+    "This is a mechanism probe, not a novelty demonstration or a reproduction of FaSTrack/RTD."
+  ]
+}

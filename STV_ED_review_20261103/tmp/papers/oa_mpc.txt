@@ -1,0 +1,689 @@
+[PDF PAGE 1]
+                  OA-MPC: Occlusion-Aware MPC for Guaranteed Safe
+                       Robot Navigation with Unseen Dynamic Obstacles
+
+                          Roya Firoozi, Alexandre Mir, Gadiel Sznaier Camps, Mac Schwager
+
+
+   Abstract—For safe navigation in dynamic uncertain environ-
+ments, robotic systems rely on the perception and prediction
+of other agents. Particularly, in occluded areas where cameras
+and  LiDAR  give  no  data,  the  robot  must  be  able  to  reason
+about  the  potential  movements  of  invisible  dynamic  agents.
+This work presents a provably safe motion planning scheme
+for real-time navigation in an a priori unmapped environment,
+where occluded dynamic agents are present. Safety guarantees
+are provided based on reachability analysis. Forward reach-
+able  sets  associated  with  potential  occluded  agents,  such  as
+pedestrians, are computed and incorporated into planning. An
+iterative optimization-based planner is presented that alternates
+between two optimizations: Nonlinear Model Predictive Control
+(NMPC) and collision avoidance. The recursive feasibility of
+the  MPC  is  guaranteed  by  introducing  a  terminal  stopping
+constraint.  The  effectiveness  of  the  proposed  algorithm  is
+demonstrated  through  simulation  studies  and  hardware  ex-
+periments  with  a  TurtleBot  robot  equipped  with  a  LiDAR
+system. The video of experimental results is also available at
+https://youtu.be/OUnkB5Feyuk.
+
+                       I.  INTRODUCTION
+   Robotic systems rely on various types of sensors including
+range-based  sensors  such  as  LiDAR  or  depth  cameras  to
+perceive the surrounding environment. However, sensors are
+susceptible to occlusion. The field of view of the robot’s
+sensors  limits  its  visibility,  and  dynamic  agents  can  hide
+undetected in occluded regions. In a dynamic environment,
+safe trajectory planning for a robot requires predicting the
+futurebehaviorofotheragentspresentinthescene.However,
+occluded areas may hide undetected dynamic agents, whose
+trajectory a robot cannot predict. Therefore, to safely navi-
+gate in an a priori unmapped environment among dynamic
+agents where occlusions are present, a robot must reason
+about all potential future motions of all potential dynamic
+agents that might be hidden in the occluded regions.
+   This  work  proposes  a  framework  for  general  robotics
+settings including ground robots, autonomous cars, or aerial
+robots to safely travel through the occluded environment in
+
+  This work is submitted on October 17th, 2023. This work was supported
+in part by ONR grant N00014-18-1-2830. Toyota Research Institute pro-
+vided funds to support this work. The first author was supported on an
+ASEE eFellows fellowship.                                                       Fig. 1: The ego vehicle (red) equipped with a range-based
+  Roya Firoozi, is with the Aeronautics & Astronautics Department at Stan-      sensor scans the visible regions. Top: Pedestrians (small blue
+ford University, Stanford CA 94305 USA (email: rfiroozi@stanford.edu)
+  Alexandre Mir, is with the Mechanical Engineering Department, Swiss           circles) who are hidden in an occlusion are not detected by
+Federal Institute of Technology Z¨urich (ETH), 8092 Zurich, Switzerland         thesensor.Middle:Nestedcapsulesrepresentingtheforward
+(email: alexmir@student.ethz.ch)                                                reachable sets for all pedestrians potentially hidden in the
+  Gadiel  Sznaier  Camps,  is  with  the  Aeronautics  &  Astronautics  De-
+partment  at  Stanford  University,  Stanford  CA  94305  USA  (email:  gsz-    occlusion  are  computed.  Bottom:  The  vehicle  optimizes
+naier@stanford.edu)                                                             its trajectory while avoiding the nested capsules along its
+  Mac   Schwager,   is   with   the   Aeronautics   &   Astronautics   Depart-  predictionhorizon,comingtoastopattheendofthehorizon.
+ment  at  Stanford  University,  Stanford  CA  94305  USA  (email:  schwa-
+ger@stanford.edu)
+
+[PDF PAGE 2]
+real-time while avoiding both static and dynamic obstacles.                   Sec. VI presents our proposed iterative optimization algo-
+Our approach relies on real-time sensor observations to de-                   rithm. Sec. VII presents the applications and numerical re-
+tect occluded region boundaries from which a potential mov-                   sultsbasedonsimulationstudiesandreal-worldexperiments.
+ing agent might emerge at any time in the future. Forward                     Sec. VIII makes concluding remarks and discusses the future
+reachability  analysis  is  performed  for  dynamic  obstacles                work.
+in both visible and occluded areas. The robot optimizes a                                             II.  RELATED WORK
+trajectory in an MPC fashion which attempts to reach its
+goal position as fast as possible while it avoids collision                      Reachability Analysis: Reachability analysis is a power-
+with the forward reachable sets that are computed based on                    ful set of theoretical tools to analyze safety-critical systems.
+the last updated LiDAR scan of the environment. Figure 1                      They  have  been  extensively  studied  and  widely  used  to
+illustrates an example of our approach in an autonomous                       achieve safety guarantees [1], [2]. To perform reachability
+driving scenario. The top figure shows that the ego vehicle                   analysis  set-based  approaches  or  Hamilton-Jabobian  (HJ)
+(red) uses its range sensor (LiDAR or depth camera) to scan                   reachability are employed. While set-based approaches are
+the visible regions (the visible region boundary is shown as                  limitedto lineardynamics andtherefore cannotprovide exact
+a solid green line). Dynamic agents or pedestrians (shown as                  reachability for nonlinear systems, Hamilton-Jabobian partial
+small blue circles) who are outside the visible region are not                differentialequations(PDEs)canhandlenonlineardynamics.
+detected by sensors. To reason about the movement of po-                      However, HJ reachability scales poorly with state dimension
+tential pedestrians in the occluded region, the robot assumes                 and  is  computationally  expensive.  Thus,  there  is  a  trade-
+their worst-case behavior, which is moving with maximum                       off between providing safety guarantees and computational
+speed  in  any  direction  from  the  occlusion  boundary.  The               efficiency  and  stronger  guarantees  can  be  provided  with
+middle figure shows capsules which are the pre-computed                       higher computational cost.
+reachable sets resulting from this worst-case assumption on                      In  particular,  for  real-time  applications  such  as  robot
+the undetected agents in the occlusion. These capsule sets                    navigation, to address this challenge and reduce the online
+are  constructed  on  top  of  the  boundary  of  occlusion  and              computation burden, the authors in [3] propose precomputa-
+enlarged along the MPC horizon. The nested capsule sets                       tion of HJ reachable sets offline and storing them in a look-
+and repeated blue circles represent the reachable sets and                    up table to be used online. In [4], the authors present a fast
+potential pedestrian movement along the prediction horizon                    and safe tracking approach (FaSTrack) in which slow offline
+of MPC. In the bottom figure, MPC prediction steps (open-                     computation provides safety guarantees for a faster online
+loop plan) are illustrated, where the vehicle avoids colliding                planner.FaSTrackincludesacomplexofflinetrackingsystem
+with  the  growing  reachable  capsules  over  the  prediction                and a simplified online planning system. A pursuit-evasion
+horizon. The minimum distance between the ego car at each                     game  between  the  two  systems  is  precomputed  using  HJ
+step of the MPC horizon is enforced with respect to each                      reachability and a safety bubble is built around the planning
+associated reachable set along the horizon. Also, we find                     system.  Online,  based  on  the  relative  state  of  the  two
+that  requiring  the  robot  to  come  to  a  stop  at  the  end  of          systems a safe controller is selected, using the precomputed
+its  prediction horizon  ensures  recursive  feasibility  for  the            look-up  table.  In  [5],  the  authors  propose  to  extend  the
+MPC, although, due to the MPC re-solving at each time step,                   FaSTrack approach to a meta-planning scheme in which a
+the vehicle does not actually come to a stop during normal                    refined offline computation enables safe switching between
+execution. Planning to stop can be seen as a guaranteed safe                  different  online  planners.  However,  these  approaches  are
+contingency plan in the unlikely event that the worst-case                    restricted to static environments and are not applicable to
+prediction comes true.                                                        dynamic  environments  with  moving  obstacles.  In  [6],  the
+   The contributions of the proposed approach are summa-                      authors present a pursuer-evader game theoretic framework
+rized below:                                                                  for occlusion-aware driving (in a dynamic environment) with
+   •  A  novel  reachability  analysis  is  proposed  based  on               safety guarantees using reachability, and simulation studies
+      the  line-of-sight  of  LiDAR  at  the  boundary  of  the               areprovidedbyassuminglineardynamics(doubleintegrator)
+      occluded region to determine the worst-case location                    for the vehicle model. Control Barrier Functions (CBFs) [7]
+      of all potential occluded agents over a time horizon.                   are a widely used tool in control synthesis for ensuring safety
+                                                                              in critical systems. CBFs convert the safety constraints of
+   •  A   computationally   efficient   iterative   optimization              control-affine systems into state-feedback constraints that are
+      scheme is proposed for online occlusion-aware plan-                     linear with respect to the control inputs. While this method
+      ning.                                                                   is  widely  used  as  a  safety  certificate,  to  the  best  of  our
+   •  A formal guarantee for recursive feasibility (which en-                 knowledge it is not incorporated with occlusion-aware safety
+      sures collision avoidance) of the proposed MPC scheme                   guarantees. Also, the reference governer [8] is another add-
+      is provided.                                                            on control scheme that provides state and input constraint
+   The paper is organized as follows: Sec. II reviews the                     satisfaction. However, the existing literature does not include
+relatedwork.Sec.IIIprovidestherequirednotations.Sec.IV                        occlusion-aware or perception-aware variants of this method
+describes  the  problem  definition.  Sec.  V  provides  recur-               as  well.  Compared  to  [3]  and  [2],  we  provide  a  simple
+sive feasibility guarantees for the proposed MPC scheme.                      reachability analysis as a safety certificate, which is compu-
+
+[PDF PAGE 3]
+tationally efficient for real-time applications. Our proposed                 Inspired by the coordination of human eyes, the work [22]
+approach is categorized as a set-based reachability method                    hasexploredthevisibilityinmulti-vehicleframeworks.Their
+andcomparedto[4]and[5],ourmethodisperception-aware,                           idea is to use distributed target measurements to overcome
+takes into account sensor limitations, does not require offline               the  occlusion  effects.  The  approach  of  recognizing  and
+computation of reachable sets, and is not limited to static                   supervising a geometrically complex environment by flying
+environments and can be used in dynamic environments as                       UAVs next to it has also been described in the [23]’s work.
+well. Compared to [6], our approach is not limited to linear                  The work [24] even equipped a robot with a sensor capable
+dynamic models and accommodates nonlinear dynamics as                         of  searching  for  better  points  of  view  to  facilitate  object
+well.                                                                         classification in occluded environments.
+   Active Perception and Planning: Joint active perception                       In this context of the unknown uncertainty, [25] proposes
+and planning help the robot to gather additional informa-                     a  planning  trajectory  when  the  obstacle  state  is  a-priori
+tion  about  the  occluded  regions  and  gain  visibility  in  a             unknown.  This  work  considers  the  occlusions  by  static
+partially occluded environment. The authors in [9], propose                   obstacles,  and  not  dynamic  ones,  that  could  appear  from
+a  perception-aware  MPC  framework  for  quadrotors  that                    behind the vehicle for example. Considering the behavior of
+simultaneouslyoptimizesplanningandperceptionobjectives.                       other vehicles and of humans in autonomous transportation,
+In [10], an MPC frameworkis coupled with a visual pipeline.                   [26] calculated the reachability sets from an occluded area in
+A deep optical flow dynamics presented as a combination                       order to avoid collisions. This work takes into consideration
+of optical flow and robot dynamics is used to predict the                     that  all  cars  obey  traffic  laws  and  therefore  cannot  be
+movement of points of interest. The proposed Pixel MPC                        generalized to all maps.
+algorithm controls the robot to accomplish a high-speed task                     Computation  Efficiency  and  Iterative  Optimization:
+while maintaining the visibility of the important features. In                Another challenge in designing algorithms for robot naviga-
+[11] a geometric heuristic is proposed to define a visibility                 tion is ensuring real-time performance. In particular, using
+measurearoundacorner.Theperceptionobjective(visibility)                       the  MPC  method  in  control  design  requires  solving  the
+is added to the MPC multi-objective cost to navigate the                      MPC optimization problem in real time. Imposing collision
+occluded corner while maximizing visibility. In our proposed                  avoidance  constraints  or  considering  a  nonlinear  dynamic
+approach visibility maximization is not incorporated explic-                  model [27] can lead to a nonlinear optimization formulation,
+itly. However, by including a minimum safety distance to                      which  can  be  computationally  prohibitive  in  some  cases
+the avoid set, the robot indirectly maximizes its visibility to               [28].  In  such  cases,  additional  reformulation  is  required
+minimize the occluded area.                                                   to develop a framework suitable for real-time applications.
+   Other  works  including  [12]  and  [13],  [14],  [15],  [16],             Alternation methods in optimization such as the Alternating
+[17], [18] consider the risk caused by occlusions, ranging                    Direction Method of Multipliers [29] are techniques where
+from simple visibility modeling for pre-detected obstacles                    optimization  problems  are  solved  by  alternating  between
+like [16], to more complex multi-layered models proposed                      different variables or subsets of variables iteratively. These
+in  [12].  These  works  minimize  the  risk  of  collision  but              methods can reduce the computation time by iteratively solv-
+they do not provide formal safety guarantees. In [19], MPC                    ing smaller optimization problems. Particularly for robotics
+planning is proposed in which the objective is to maximize                    applications  and  the  use  of  MPC,  [30]  shows  alternation
+visibility, but formal safety guarantees or recursive feasibility             between  the  NMPC  optimization  and  collision  avoidance
+ofMPCisnotprovided.Comparedtotheseonlinenavigation                            optimization in an iterative manner can significantly improve
+approaches,ourproposedMPCprovidessafetyguaranteesby                           the  computation  time  and  ensure  real-time  performance.
+online computation of reachable sets. In [20], an inference                   Similar to [30], we have shown real-time performance of our
+and motion planning scheme is proposed to guarantee safety                    proposed NMPC framework using iterative optimization.
+with respect to hypothetical hidden agents. Reachable sets                                               III.  NOTATION
+are constructed by taking an occupancy map and enlarging
+the occluded boundaries. However, this work assumes the                          The required definitions and notations are provided below.
+availability of a class of possible intentions for other agents               MPC Scheme: MPC is useful for online motion planning
+which is used in the prediction step of inference to evolve                   among  dynamic  obstacles  because  it  is  able  to  re-plan
+the dynamics of other agents. Compared to this work, our                      according to the newly available sensory data. MPC relies on
+approach  does  not  make  any  assumptions  regarding  the                   the receding-horizon principle. At each time step it solves a
+intention  of  hidden  agents.  Our  proposed  framework  is                  constrained optimization problem and obtains a sequence of
+dynamic-agnostic with respect to hidden agents and assumes                    optimalcontrolinputsthatminimizeadesiredcostfunctionl,
+the  hidden  agents  may  move  in  any  arbitrary  direction.                while considering dynamic, state, and input constraints, over
+In  [21]  the  objective  is  to  follow  a  moving  target  while            a fixed time horizon. Then, the controller applies, in a closed
+avoiding  obstacles  in  the  environment  and  occlusions  in                loop, the first control-input solution. At the next time step,
+the image space, in a smooth but reactive way. A vision-                      the procedure is repeated. In this paper, u0:N−1 and z0:N
+based  approach  is  implemented  on  a  real  quadrotor  on                  indicate the input and state values along the entire planning
+multi-objective  optimization,  with  an  occlusion  constraint               horizon N, predicted based on the measurements at time
+formulation, keeping a target in its camera’s field of view.                  t. For example [z0|t z1|t,...,zN|t] represents the entire state
+
+[PDF PAGE 4]
+trajectory along the horizon N predicted at time t (referred                   the collision avoidance constraints. The time-varying safe set
+to  as  the  open-loop  trajectory).  Throughout  this  paper τ                Zsk|t is defined asZsk|t = {gt(zk|t)≤ 0, ∀zk|t}. The com-
+represents the absolute time, t is the MPC execution time                      plementarity constraint (2e) formulation allows for gt(zk|t)
+and k is the open-loop prediction step for a given time t.                     to be greater than 0 (the collision avoidance constraint is
+The static obstacles are denoted as O and dynamic agents’                      violated) as long as zk|t = zk−1|t  (the robot is stopped).
+reachable sets are represented as Ω. So the unsafe set is                      As an example consider a scenario where a pedestrian hits
+defined  as  the  union  of  these  two  sets Ω∪O.  The  safe                  a stopped car, the collision avoidance constraint is violated
+set Zs is represented as the complement of the unsafe set                      but  since  the  car  is  stopped,  we  consider  the  plan  safe.
+Zs = (Ω∪O)c. Superscript c denotes the complement of                           The idea is that if the pedestrian hits a stopped car, likely
+the set.                                                                       there will not be a major injury, and the pedestrian bears
+Occluded Area: As the robot navigates in the environment,                      the fault in the collision, not the car. Constraint (2f) is the
+the occluded regions are identified using a LiDAR or depth                     terminal  constraint  that  is required  to  guarantee  recursive
+camera sensor. The boundary of the occluded area can be                        feasibility.  Details  are  discussed  in  the  next  section.  The
+used to perform reachability analysis for hidden occluded                      collision avoidance constraint gt(zk|t) ≤ 0 includes static
+agents. Similarly forward reachability analysis can be per-                    and dynamic constraint as follows:
+formed for visible agents, in case no prediction knowledge                                         C(zk|t)∩Ob =∅, b∈B,                      (3a)
+is assumed regarding their future actions.
+Forward Reachable Sets: The potential locations of dynamic                                         C(zk|t)∩Ωrk|t =∅, r∈S.                    (3b)
+agents (visible or invisible) in the environment are captured                  Constraints (3a) are collision-avoidance constraints between
+using forward reachability analysis. In general, a forward                     the robotC (modeled as a circle) and the static environment
+reachable  set ΩN  is  defined  as  the  set  of  states  that  are            denoted by set B indexed by b. Constraints (3b) represent
+reachable after N time steps by a dynamical system zk+1 =                      the collision-avoidance constraints between the robot C and
+f(zk,uk) from a given set of initial states Ω0 by applying                     hidden and visible dynamic obstacles in the scene denoted
+an admissible sequence control input uk ∈ U, specifically                      by the setS indexed by r.
+ΩN  = {zN  : ∃uk ∈ U ∀k = 0,...,N − 1,    s.t. zk+1 =
+f(zk,uk),z0∈ Ω0}. It follows from this definition that1                                 V.  RECURSIVE FEASIBILITY GUARANTEES
+           Ω′k⊂ Ωk  =⇒  Ω′N ⊂ ΩN for all N ≥k.          (1)                       Assumption 1: We assume the robot’s sensor at each time
+                  IV.  PROBLEM FORMULATION                                     t returns a set ¯Ωr0|t that contains agent r at time t. If r is
+   Safenavigationinadynamicoccludedenvironmentcanbe                            not occluded, this set describes the region implied by the
+formulated as an NMPC optimization problem that computes                       sensor measurement (e.g., a disk with some error radius).
+collision-free trajectories in real time. The MPC optimization                 If r is occluded, this set is the occlusion region itself. If a
+problem is formulated as follows                                               sensor measurement is not taken at time t, ¯Ωr0|t is the entire
+                            NX                                                 admissible space for the agent.
+
+        ut:t+N−1min             l(zk|t,uk|t)                              (2a)
+                           k=0                                                 Before we prove the main results of recursive feasibility, we
+       subject to       zk+1|t =f(zk|t,uk|t),                   (2b)           state and prove a lemma concerning the evolution of the safe
+                           z0|t =z(t),                                     (2c)set for the robot.
+                                                                                  Lemma 1: The predicted safe set at absolute time τ  is
+                           zk|t∈Z, uk|t∈U,                      (2d)           non-decreasing as t increases, that is,
+                           ∥zk|t−zk−1|t∥gt(zk|t)≤ 0,         (2e)                          Zs(τ−t1)|t1 ⊂Zs(τ−t2)|t2   ∀t1≤t2≤τ.            (4)
+                           zN|t =zN−1|t,                               (2f)
+                           and k∈{0,1,2,..,N},                                       Proof: We only have to show that the forward reachable
+where ut:t+N−1 = [u0|t,...,uN−1|t] denotes the sequence                        set of dynamic agents is non-increasing,
+
+of control inputs over the MPC planning horizon N. The                              Ωr(τ−t2)|t2 ⊂ Ωr(τ−t1)|t1   ∀t1≤t2≤τ   ∀r∈S,      (5)
+robot state and input variables zk|t and uk|t at step k are                    sincethesearetheonlydynamiccomponentsinZs.Consider
+predicted at time t. The function f(·) in (2b) represents the                  a forward reachable set Ωr(τ−t)|t predicted for absolute time
+nonlinear (dynamic or kinematic) model of the robot, which                     τ  based  on  an  initial  set  Ωr0|t.  Now  consider  a  sensor
+is discretized using Euler discretization. Z, U are the state                  measurement at time t+1 that localizes the agent to a set
+and  input  feasible  sets,  respectively.  These  sets  represent             ¯Ωr0|(t+1) based on Assumption 1. We know that the agent lies
+state and actuator limitations. Constraint (2e) is the com-                    both in the set ¯Ωr0|(t+1) from the sensor, and in the one-step
+plementarity constraint in which gt(zk|t)≤ 0 represents all                    reachable set Ωr1|t  computed from the previous time step.
+
+  1Proof: Consider zk∈ Ω′k, a sequence of inputs (uk,...,uN−1), and            Therefore, at time step (t + 1) the agent is in Ωr0|(t+1) =
+the resulting reachable point zN ∈ Ω′N. Since Ω′k⊂ Ωk, we know zk∈             ¯Ωr0|(t+1)∩Ωr1|t⊂ Ωr1|t. By the nested property of reachable
+Ωk. Since zN  is reachable through the same set of control inputs, zN ∈
+ΩN. This is true for any zN∈ Ω′N, so Ω′N⊂ ΩN.                                  sets in (1) it follows that Ωr(τ−(t+1))|(t+1) ⊂ Ωr(τ−t)|t  for
+
+[PDF PAGE 5]
+all t≤ τ. Applying mathematical induction on t proves the
+desired result.
+As an illustration of the concept formalized in Lemma 1,
+Fig. 2 depicts the forward reachable sets as circular shapes.
+The black circles represent the forward reachable sets at time
+step t = 0 and the red circles show the forward reachable
+sets at the next time step t = 1. By comparing the sets in
+absolute time τ =t+k, the reachable set at prediction step
+k = 1 at execution time step t = 1 (shown in solid red)
+is always contained in the reachable set at prediction step
+k = 2 at execution time step t = 0 (shown in solid gray),
+so Ωrτ|t=1 ⊂ Ωrτ|t=0. Therefore, the safe set Zsτ|t=0 at time
+t = 0 is always contained in the safe set at time step t = 1.
+At timet = 0, the safe set isZsτ|t=0 = (Ωrτ|t=0∪Ob)c and at
+timet = 1, the safe set isZsτ|t=1 = (Ωrτ|t=0∩Ωrτ|t=1∪Ob)c.
+SoZs is always non-decreasing.                                                 Fig. 2: Forward reachable sets of unsafe region Ω are shown
+   We now state our main theoretical result.                                   for two consecutive time steps t = 0 and t = 1 in the simple
+   Theorem 2: If a feasible solution exists for the NMPC                       case of a single pedestrian based on a top speed bound.
+optimization (2) at time t = 0, a feasible solution exists
+for all t > 0, that is, the proposed NMPC framework is
+recursively feasible.                                                          methods can be used for collision detection and avoidance as
+      Proof:    Consider  the  NMPC  problem  (2)  is  solved                  well). Figure 3 depicts a LiDAR-based collision avoidance
+at   time  t    =    0.   Assume   feasibility   of  z0   and   let            scheme, where black dots are point clouds and blue areas are
+[u∗0|0,u∗1|0,...,u∗N−1|0]  be  the  optimal  feasible  control  se-            obstacles. Point clouds are down-sampled and green circles
+quence computed at z0  and [z0,z1|0,...,zN|0] be the cor-                      are  centered  at  the  sampled  point  clouds.  Circles’  radius
+responding feasible state trajectory (which are assumed to                     should  be  selected  to  ensure  full  coverage  of  the  visible
+exist  at t  =  0).  Apply u∗0|0  and  let  the  system  evolve                portion of the obstacle. The safe distance between the robot
+to z1  = f(z0,u∗0|0). At z1  consider the control sequence                     (magenta circle) and each green circle is incorporated as a
+[u∗1|0,u∗2|0,...,u∗N−1|0,u∗N−1|0]  for  the  consecutive  MPC                  constraint in the NMPC optimization
+problem at time t = 1. Since the time-varying state safe set
+Zs is non-decreasing (according to Lemma 1) and the input                          ut:t+N−1       (2a)                                                          (6a)min
+constraints do not change, the state and input constraints are                     subject to     (2b),(2c),(2d),(3a),  (2e),  (2f)              (6b)
+satisfied for all times except for potentially at state zN|1.                                      dist(C(zk|t),¯zprojk|t)≥dsafe, r∈S,     (6c)
+However, applying uN−1|1 = u∗N−1|0 at the last step keeps
+the state at the previous state zN|1 =zN−1|1. At time t = 1                                        and k∈{0,1,2,..,N},
+in case the collision-avoidance constraint is violated at the                  where¯zrprojk|t denotes the projected state trajectory computed
+last prediction time step g(zk=N|t=1) > 0, the fact that the                   bysolvingcollisionavoidanceoptimization(Thebarnotation
+robot is stopped zN|1 = zN−1|1 ensures the robot will not                      means the value is known). More details are included in
+violate the complementarity constraint at the last step, so                    the next section. The computed minimum distance is then
+the solution remains feasible. Applying this reasoning in a                    constrained  to  be  larger  than  a  safe  predefined  minimum
+mathematical induction for all subsequent time steps yields                    allowable  distance dsafe.  (dsafe  is  a  design  parameter  and
+the result stated in the theorem.                                              should be determined based on the uncertainty quantification
+While the result applies generally to all problems that fall                   of physical models and stochastic measurement errors.)
+under our assumptions, in the rest of this paper we consider
+a  specific  setup  in  which  the  sensor  is  a  LiDAR  sensor,              B. Collision Avoidance Optimization
+and  the  agents  are  assumed  to  be  able  to  move  in  any                   Occlusion detection: To detect the boundary of occlusion,
+direction with a known speed bound, leading to a simple                        the  consecutive  range  values  obtained  from  LiDAR  are
+geometric  computation  of  reachable  sets.  We  develop  a                   compared,  and  the  ones  with  a  difference  larger  than  a
+practical algorithm based on (2) for this setup.                               threshold are detected as occlusion boundaries. For example,
+           VI.  ITERATIVE OPTIMIZATION SCHEME                                  in Figure 4, there is a large jump between the range values of
+A. NMPC Optimization                                                           Point 1 and Point 2 (red points), so the LiDAR line-of-sight
+                                                                               that passes through those two points indicates a boundary of
+   The following optimization represents the nonlinear MPC                     occlusion. All the other red points in the figure are computed
+scheme. The collision-avoidance with static obstacles in the                   in the same way and their line-of-sight indicates an occlusion
+environmentOb represented in (3a) are performed based on                       boundary.
+point-cloud data received from LiDAR. (Other sensors and                       Reachable set construction: The reachable set represents the
+
+[PDF PAGE 6]
+                                                                             Fig.5:Thecapsulesetisconstructedbypolytopeandcircles.
+
+Fig.  3:  LiDAR-based  collision  avoidance:  Blue  areas  are
+obstacles;  Black  dots  are  point  clouds;  Green  circles  are
+centered at down-sampled point clouds.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Fig. 4: Boundary of occlusion is detected based on a jump
+in range values of two consecutive points 1 and 2.                           Fig. 6: Capsule sets are enlarged along the MPC prediction
+                                                                             horizon based on the speed upper-bound vtarget assumed for
+                                                                             the invisible agent. The gray circles illustrate forward reach-
+potential locations where target agents (pedestrians) could be               able sets for visible targets. The red dashed lines represent
+present. The initial set for constructing the reachable set is               LiDAR rays.
+a line segment which is the boundary of occlusion detected
+by LiDAR. To consider the worst-case, the pedestrian is as-
+sumedtostartitsmovementfromtheocclusionboundary.No                           travel in a time step ∆t. The corresponding polytopic set is
+prior knowledge of the agents’ dynamic model is assumed                      constructed as shown in Figure 5 based on the convex hull of
+and the only assumption is that the target maximum speed                     the 4 points (green dots) obtained from circle enlargement.
+vtarget  is known. This upper-bound speed can be specified                   The  capsule  set  construction  procedure  is  summarized  in
+according  to  the  environment  such  as  driving  or  in-door              Algorithm 1.
+settings.                                                                       Minimum distance from the capsule set: The robot shape
+  Capsules are described as the union of two circlesC1,C2,                   is approximated as a circle with radius rrobot and the colli-
+and a rectangle P  as shown in Figure 5. Figure 6 shows                      sion avoidance between the robot and the dynamic agent
+the forward reachable sets that are nested capsules, which                   such  as  pedestrian  is  formulated  based  on  the  minimum
+grow over time along the MPC horizon. The reachable sets                     distance  between  the  circle  (robot)  and  the  capsules  (the
+are enlarged at each time step k along the MPC planning                      pedestrian forward reachable sets). To compute the minimum
+horizon. The enlarged capsule set is computed by increasing                  distance  dist(Crobot,Ω),  first  the  robot’s  center  of  mass z
+the radius of the two circlesC1 andC2 by distance dtarget =                  is projected on to the capsule dproj  =  min{dC1,dC2,dP},
+vtarget                                                                      where dC1,dC2,dP are distances to the circle C1 and circle
+ ∆t , which is the maximum distance that a pedestrian can
+
+[PDF PAGE 7]
+Algorithm 1 Capsule Set Construction Algorithm                                  Algorithm 2 Iterative Optimization Algorithm
+ 1: According to the LiDAR scan of the environment, the jump                     1: Initialize state trajectory [z(1),...,z(N)]
+    in the values of two consecutive range measurements indicates                2: for  t = 0,1,...,∞ do
+    the boundary of an occluded region.                                          3:       Receive   LiDAR   scan   and   compute   the   capsule   sets:
+ 2: The  circles C1  and C2  with  radius  dtarget  centered  at  the               [Ωr(1),...,Ωr(N)] for each r∈S
+    endpoints of line-of-sight are created and the vertices of the               4:       Compute the shifted state [¯z(2),...,¯z(N),¯z(Extrap)].
+    associated polytope are determined according to the circles’                 5:       Solve Problem (7) for the shifted state trajectory for each
+    radius.                                                                         r∈S in parallel to find projected robot states on the capsule
+ 3: Convex hull of polytope vertices is obtained to determine H-                    sets[zproj(2),...,zproj(N),zproj(Extrap)]foreachpredictionstep
+    representationofthepolytope,necessaryforcollisionavoidance                      of the open-loop trajectory.
+    optimization.                                                                6:       Solve NMPC Problem (6)
+                                                                                 7:       Apply uMPC to move forward.
+                                                                                 8: end for
+C2 and the polytopeP, respectively. Then the robot radius is
+subtracted as dist(Crobot(z),Ω) =dproj−rrobot. Distance to the                  calculated as zero. One alternative solution is to formulate
+circlesdC1 anddC2 are computed by calculating the distance                      the collision avoidance with capsule sets exactly the same
+to  the  center  of  circles  and  subtracting  the  radius  of  the            as  collision  avoidance  formulation  for  static  obstacles,  in
+circle. Distance to the polytopeP is computed by solving the                    which circles are sampled on the occlusion boundary and the
+optimization problem:dP = miny {∥¯z−y∥2|Ay≤b}, where                            robot distance to these circles is incorporated into the NMPC
+¯z is the robot position, which is known (the bar notation                      problem  directly  as  collision  avoidance  constraint.  Using
+means  the  value  is  kept  as  fixed).  The  optimal  solution                this alternative approach no iterative optimization scheme is
+of the above optimization problem is denoted as y∗. After                       required. However, incorporating the constraints directly into
+computing dproj, the corresponding projected point zproj on                     the NMPC can slightly affect the computation time.
+the capsule set is computed (the projection of robot on the                     C. Iterative Optimization Algorithm
+capsule set) by
+                                                                                Problem (7) is itself an optimization problem, so imposing
+              y∗                                            if dproj =dP        it as a constraint of Problem (2) yields a bilevel optimization
+  zproj =   (1−ratio1)¯z+ratio1C1center    if dproj =dC1              (7)     thatiscomputationallyintensive.Toovercomethischallenge,
+              (1−ratio2)¯z+ratio2C2center    if dproj =dC2,                     by relying on the ability of MPC to generate predicted open-
+                                                                                loop trajectories, we devise an alternative optimization algo-
+where  ratio1  =  (dC1 − rC1)/dC1  and  ratio2  =  (dC2 −                       rithm in which we alternate between the two optimizations:
+rC2)/dC2,  and  rC1  and  rC2  are  radius  of  the  Circle  1                  NMPC optimization (6) and collision avoidance optimization
+and Circle 2, respectively. In (7), the first equation is the                   (7), as detailed in Algorithm 2. In step   1⃝ of Algorithm 2,
+projection of the robot on polytope and the second and third                    the  sequence  of  state  trajectory  is  initialized.  In  step    3⃝,
+equations represent the projection of the robot on Circle 1                     a new LiDAR measurement is received and the reachable
+and Circle 2, respectively. The projection of the robot on the                  sets are computed accordingly. In step   4⃝, the associated
+capsule setzproj is computed by solving (7). This projection                    open-loop state trajectory is shifted forward one step in time,
+stepissolvedforalltherobotpredictedstatesalongtheMPC                            and the last step is copied or extrapolated. In step   5⃝, the
+horizon ¯zk|t ∀k ∈ {1,...,N}  (open-loop  state  trajectory)                    collision avoidance optimization is solved in parallel for each
+and for each boundary of occlusion r∈S, in parallel. The                        boundaryoftheoccludedarea.Instep  6⃝NMPCproblem(6)
+projected open-loop state trajectory ¯zrprojk|t is computed and                 is solved and a sequence of open-loop actions is computed.
+is  incorporated  into  the  constraint  (6c)  as  a  fixed  known              In step   7⃝, the first control input uMPC is applied and the
+value. To summarize, the optimization (6) and optimization                      procedure is repeated for the next time step.
+(7)alternate.IntheNMPC(6),theprojectedstates¯zrprojk|t are                         VII.  SIMULATIONS AND HARDWARE EXPERIMENTS
+keptfixedanddecisionvariablesofoptimizationaretherobot
+states along the MPC horizon zk|t. In collision avoidance                          To validate the effectiveness of the proposed approach,
+optimization (7), the robot states are kept fixed ¯zk|t and the                 both  simulation  studies  and  real-world  experiments  have
+projected states zprojk|t are computed.                                         been performed. The NMPC optimization is modeled using
+Also,  to  use  open-loop  projected  states  in  the  NMPC  in                 CasADi[31]inPython.Fortheexperiment,aTurtleBotrobot
+constraint (4c), we need to rely on the projected states from                   equipped with Velodyne LiDAR (Vlp-16 Puck Lidar Sensor
+the  previous  iteration (t− 1)  of  NMPC  solutions  (open-                    360 Degree) is used. OptiTrack motion capture system is
+loop state trajectory). So, before solving (7), the robot state                 used for robot localization. The MPC is run on a Lenovo
+trajectory ¯zk|t is shifted one step forward in time and the                    ThinkPad laptop with Ubuntu 20.04 OS with 3.00 GHz Intel
+last step is extrapolated as [¯z(2),...,¯z(N),¯z(Extrap)].                      CPU Core i7 with 32 GB of RAM.
+   Note  that  the  optimization  problem  for  projecting  the                    The Robot dynamic is modeled by a nonlinear kinematic
+robot on polytope and findingdP has a lower bound on the                        unicycle  model  ˙x  =  vcos(ψ),   ˙y  =  vsin(ψ),   ˙ψ  =  δ,
+minimum distance which is zero, so in case the point z is                       where  the  state  vector  is z  =  [x,y,ψ]⊤  (x, y,  and ψ
+already inside the polytopic set P the minimum distance is                      are the longitudinal position, the lateral position, and the
+
+[PDF PAGE 8]
+heading angle, respectively). The input vector isu = [v,δ]⊤                                          Computation Time (Sec)
+(v  and δ  are  the velocity  and  the  steering angle,  respec-                     Approach                Average     Max         Std
+                                                                                     Baseline MPC            0.023       0.030       0.004
+tively).  Using  Euler  discretization,  the  unicycle  model  is                    NMPC Optimization       0.033       0.054       0.006
+discretized with sampling time ∆t as x(t + 1) = x(t) +                               CA Optimization         0.004       0.007       0.001
+∆tv(t)cos(ψ(t)), y(t+1) =y(t)+∆tv(t)sin(ψ(t)), ψ(t+                                  OA-MPC (Total)          0.037       0.061       0.007
+1)  =  ψ(t) + ∆t  δ(t).  The  cost  is  defined  as l(z,u)                   TABLE I: Computation time statistics over 100 iterations is
+= Pt+Nk=t  ∥(zk|t −zGoal)∥2Qz  +Pt+N−1k=t      (∥(uk|t)||2Qu  +∥             compared for baseline MPC and OA-MPC.
+(∆uk|t)∥2Q∆u), where ∆u penalizes changes in the input
+rate. Qz ⪰ 0, Qu,Q∆u ≻ 0 are weighting matrices, zGoal
+is  the  goal  location  that  robot  should  reach.  Throughout                Figure8showsnavigationinanenvironmentwithmultiple
+the simulations the sampling time ∆t is 0.1s. Simulation                     obstacles that lead to various occluded regions. Closed-loop
+studies are performed for two different scenarios including                  simulation for baseline MPC and OA-MPC with different
+navigating a corner and navigating a complex environment                     speeds assumed for invisible agents are compared. As seen,
+with  multiple  obstacles.  In  both  scenarios,  the  proposed              the  baseline  MPC  (blue)  is  the  less  conservative  planner
+Occlusion-Aware  planner  (OA-MPC)  is  compared  against                    which is close to the obstacles, but the OA-MPC withvped =
+baseline MPC which is agnostic towards occlusions and the                    0.3m/sconsiderscollisionavoidancewiththepossibleinvis-
+possible presence of invisible agents.                                       ible agent and keeps a larger distance to the obstacles. Also,
+  Figure 7 illustrates the corner navigation scenario. The                   as the presumed speed upper-bound for the invisible target
+closed-loopsimulationforbothplanners(OA-MPCandbase-                          agent increases to vped = 0.5m/s and vped = 0.6m/s values
+line MPC) is shown. In this simulation, minimum allowable                    (shown  in  red  and  light  green,  respectively),  the  robot’s
+                                                                             behavior is more conservative and it keeps larger distance
+                                                                             towards  the  occluded  regions,  as  expected.  Computation
+                                                                             times for baseline MPC and OA-MPC for the scenario of
+                                                                             Figure 8 are reported in Table I for over 100 iterations. As
+                                                                             seen, the average computation time for OA-MPC is larger
+                                                                             than baseline MPC, due to extra constraints associated with
+                                                                             reachable sets on occluded boundaries, but OA-MPC is still
+                                                                             suitable for real-time implementation. Figure 9 shows the
+                                                                             enlargement of capsule sets along the MPC horizon. The
+                                                                             blue trajectory shows the closed-loop plan from the initial
+                                                                             condition z0  =  [x0,y0,ψ0]  = [0.8m,0.3m, π2rad]  to  the
+                                                                             goal position zgoal  as [x = 2.9,y = 2.8]. The open-loop
+                                                                             trajectory at time stept = 7s is shown as colored dots, where
+                                                                             each color represents one step of prediction. For example red
+                                                                             dot showszk=0|t=7, light red iszk=1|t=7, purple iszk=2|t=7,
+                                                                             green iszk=3|t=7, yellow iszk=4|t=7, light blue iszk=5|t=7,
+                                                                             pink is zk=6|t=7 and so on (only portion of horizon steps
+             Fig. 7: Corner navigation simulation.                           are illustrated in the figure for clarity). The corresponding
+                                                                             capsule sets are shown in the same color. As seen, at each
+distance dsafe is 0.5m, the velocity input is bounded within                 horizon  step k,  the  robot  satisfies  the  minimum  distance
+0 to 2m/s. The steering input is bounded within ±πrad.                       requirement to capsule sets.
+The robot shape is defined by a circular shape with radius                      Figure 10 shows snapshots of closed-loop simulation of
+rrobot = 0.2m. Boundaries of the track shown are defined                     LiDAR  and  OA-MPC  for  a  scenario  in  which  a  robot
+as  the  limits  on  the  position  states x  and y.  The  width             (magenta circle) navigates in an environment with multiple
+of  the  track  is  1m.  The  robot’s  initial  condition z0  is             static (blue regions) and dynamic obstacles or pedestrians
+[x0,y0,ψ0] =[0.8m,0.3m, π2rad].Two goalpositionszgoal1                       (green circles). The speed limit of the robot in this scenario
+as [x = 1,y = 2.5] and zgoal2 as [x = 2.5,y = 2.5] are                       is considered as 10m/s. The Top (a) figure shows the initial
+specified. The MPC prediction horizonN is 10. A potential                    condition in which one pedestrian is visible to the robot and
+dynamic agent hidden behind the occluded area is assumed                     the  other  is  initially  hidden  in  an  occluded  region.  Point
+to be moving with speed vped = 0.5m/s. As seen, baseline                     clouds  from  the  LiDAR  simulation  are  shown  in  purple.
+MPC (red) is agnostic towards the occlusion boundary and                     The boundary of occlusion and capsule reachable sets are
+navigates the corner without considering collision with any                  shown in red. As the robot navigates the environment to
+possible potential invisible agent that might emerge from the                reach its goal (red star), the occlusion boundary changes as
+occluded  region.  Conversely,  the  OA-MPC  planner  (blue)                 theLiDARscanisupdated.Assoonasthepedestriancrosses
+slightly turns to the left as it approaches the corner to take               the boundary of occlusion as shown in the Second Top (b)
+a wider turn before turning completely to the right to avoid                 figure,  the  OA  planner  creates  the  pedestrian’s  reachable
+collision with any potential invisible agent.                                sets (nested green circles) and avoids collision with visible
+
+[PDF PAGE 9]
+                                                                                                                     (a)
+
+
+
+
+
+Fig.  8:  Navigation  in  the  environment  with  multiple  ob-
+stacles.  The  plots  compare  robot-executed  trajectories  for
+various speed upper bounds assumed for the target agent.
+
+
+
+
+                                                                                                                    (b)
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                                                    (c)
+
+
+
+Fig. 9: Open-loop MPC trajectories are shown for time step
+t = 7s. Capsule sets corresponding to each predicted step of
+MPC are shown in the same color.
+
+
+agents  (green  reachable  sets)  and  capsules  (red  reachable
+sets)  corresponding  to  occluded  area.  The  Third  Top  (c)
+figure  shows  the  open-loop  trajectory  (black  dots)  as  the                                                   (d)
+robot moves towards its goal. The Bottom (d) figure shows
+the entire executed trajectory in which the robot reaches its                   Fig. 10: Top (a): One of the pedestrians (green circles in
+goal while avoiding collision with hidden/visible pedestrians.                  the  top  right)  is  moving  to  the  left  and  is  visible  to  the
+Note that visible targets can create dynamic occlusion in the                   robot. The other pedestrian (green circle in the bottom left
+environment. This type of occlusion can be handled in a sim-                    region) is initially in the occluded region and she/he starts
+ilar way. However, in this simulation, the occlusion caused                     to move towards the top. Second Top (b): At the moment
+by a moving visible pedestrian is considered negligible due                     that the pedestrian crosses the occlusion boundary, she/he is
+to the small size of the pedestrian.                                            visible to the robot, and the forward reachable sets (green)
+   Figure 11, shows experimental results that compare base-                     are computed to avoid collision with the visible target. Third
+line  MPC  with  OA-MPC  for  robot  navigation  in  differ-                    Top (c): The robot moves towards its goal while avoiding
+ent  environments,  a  corner,  square-shaped  obstacle,  and                   collision with visible/hidden agents, (open-loop trajectories
+triangular-shaped  obstacle.  For  all  these  experiments,  the                are shown in black). Bottom (d): Finally, the robot reaches
+                                                                                its goal, and its executed trajectory is illustrated (blue).
+
+[PDF PAGE 10]
+Fig. 11: Experimental Results: Gray arrows show the robot’s heading at each time step; Blue dots show the executed plan;
+LiDAR point clouds are shown in purple. Top Row: Different environments (corner, square obstacle, triangle obstacle (from
+left to right). Second Row: Baseline MPC is occlusion-agnostic and navigates the occluded regions by taking tight turns
+without considering collision avoidance with potential invisible dynamic agents. Third Row: Occlusion-Aware MPC planner
+takes wide turns in occluded regions.
+
+
+environment  is  unknown  to  the  robot,  so  it  relies  on  its          square-shaped and triangular-shaped obstacles.
+LiDAR  to  perceive  the  environment  in  real-time.  LiDAR                   Figures 12, 13, and 14 represent experimental results that
+point cloud data (purple) define the environment boundaries                 includeadynamicagentinthescene.Figure12illustratesthe
+and obstacles. Both MPC planners detect the obstacles using                 experimental results for the baseline MPC, where the robot
+LiDAR in real time and perform collision avoidance with                     operates  in  an  environment  with  the  presence  of  another
+obstacles. However, they act differently in how they navigate               dynamic agent. In the leftmost image labeled as 1, the ego
+the occluded regions. Blue dots represent the executed plan                 robotisontherightside,andthedynamicagentisontheleft.
+starting from the small black triangle and reaching the goal                The ego robot plans to navigate around the corner to reach its
+position (red star). Gray arrows show the heading of the                    goal. However, the baseline MPC is unaware of occlusions
+robot at each time step. Both MPC planners operate at 10 Hz                 and does not account for potential dynamic agents in the
+with a horizon of N = 10. The left column shows a corner                    occluded region. As shown in the middle image labeled as
+scenarioinwhichOA-MPCtakesawiderturntonavigatethe                           2, this results in a collision. MPC planner operates at 10 Hz
+corner to avoid collision with possible invisible agents, but               with a horizon of N = 5. In the rightmost image, the ego
+baseline MPC which is agnostic towards occlusion regions                    robot’s closed-loop trajectory is displayed in blue, while the
+navigates the corner without considering collision avoidance                dynamic agent’s executed trajectory is shown in green. The
+withoccludeddynamicagents.Themiddleandrightcolumns                          goal positions for the ego robot and the dynamic agent are
+confirm the same results for navigation in environments with                represented by red and green stars, respectively, and their
+
+[PDF PAGE 11]
+initial positions are marked by black triangles. Lidar point                              [5]David  Fridovich-Keil,  Sylvia  L.  Herbert,  Jaime  F.  Fisac,  Sampada
+clouds are shown in purple, with the green and blue circles                                    Deglurkar, and Claire J. Tomlin.  Planning, fast and slow: A frame-
+indicating the points of collision between the robots.                                         work for adaptive real-time safe trajectory planning.  In 2018 IEEE
+                                                                                               International Conference on Robotics and Automation (ICRA), pages
+   Figure 13 represents the experimental results for the OA-                                   387–394, 2018.
+MPC, where the robot operates in the same corner environ-                                 [6]Zixu Zhang and Jaime F Fisac.  Safe Occlusion-Aware Autonomous
+mentwiththepresenceofthesamedynamicagent.Thesetup                                              Driving via Game-Theoretic Active Perception.   In Proceedings of
+                                                                                               Robotics: Science and Systems, Virtual, July 2021.
+is the same as the previous baseline MPC and the OA-MPC                                   [7]Aaron D Ames, Xiangru Xu, Jessy W Grizzle, and Paulo Tabuada.
+planner operates at 10 Hz with a horizon of N = 5. Images                                      Control barrier function based quadratic programs for safety critical
+labeled 1,2,3,4, and 5 are sequential snapshots in time. The                                   systems. IEEE Transactions on Automatic Control, 62(8):3861–3876,
+                                                                                               2017.
+bottom right image shows the executed trajectories. The ego                               [8]Emanuele Garone, Stefano Di Cairano, and Ilya Kolmanovsky. Refer-
+robot’s closed-loop trajectory is displayed in blue, while the                                 ence and command governors for systems with constraints: A survey
+dynamic agent’s executed trajectory is shown in green. The                                     on theory and applications. Automatica, 75:306–328, 2017.
+goal positions for the ego robot and the dynamic agent are                                [9]Davide Falanga, Philipp Foehn, Peng Lu, and Davide Scaramuzza.
+                                                                                               Pampc: Perception-aware model predictive control for quadrotors. In
+represented by red and green stars, respectively, and their                                    2018 IEEE/RSJ International Conference on Intelligent Robots and
+initial positions are marked by black triangles. Lidar point                                   Systems (IROS), pages 1–8, 2018.
+clouds are shown in purple. As seen in the snapshots and                                 [10]Keuntaek Lee, Jason Gibson, and Evangelos A. Theodorou.  Aggres-
+                                                                                               sive perception-aware navigation using deep optical flow dynamics
+the trajectories, the OA-MPC takes a wider turn to navigate                                    and pixelmpc. IEEE Robotics Autom. Lett., 5(2):1207–1214, 2020.
+the corner to avoid collision with possible invisible agents.                            [11]Jacob Higgins and Nicola Bezzo.  Negotiating visibility for safe au-
+As expected, there is no collision, and both the ego robot                                     tonomous navigation in occluding and uncertain environments. IEEE
+and dynamic agent can safely reach their goals. Figure 14                                      Robotics and Automation Letters, 6(3):4409–4416, 2021.
+                                                                                         [12]Stefan Hoermann, Felix Kunz, Dominik Nuss, Stephan Renter, and
+compares the results of the OA-MPC versus the baseline                                         Klaus  Dietmayer.    Entering  crossroads  with  blind  corners.  a  safe
+MPC for the same corner scenario with a dynamic agent. As                                      strategy for autonomous vehicles.  In 2017 IEEE Intelligent Vehicles
+shown, OA-MPC is safe, it is aware of occluded areas and                                       Symposium (IV), pages 727–732, 2017.
+                                                                                         [13]Minchul  Lee,  Kichun  Jo,  and  Myoungho  Sunwoo.    Collision  risk
+takes a wide turn close to the corner. So both the ego robot                                   assessment  for  possible  collision  vehicle  in  occluded  area  based
+and the dynamic agent navigate the corner safely and reach                                     on  precise  map.   In 2017 IEEE 20th International Conference on
+their goals. However, baseline MPC which is agnostic to                                        Intelligent Transportation Systems (ITSC), pages 1–6, 2017.
+                                                                                         [14]Woojin Chung, Seokgyu Kim, Minki Choi, Jaesik Choi, Hoyeon Kim,
+occlusion, does not take into account the potential invisible                                  Chang-bae Moon, and Jae-Bok Song.   Safe navigation of a mobile
+dynamic agent and takes a tight turn at the corner. So it                                      robot considering visibility of environment.   IEEE Transactions on
+results in a collision between the ego robot and the dynamic                                   Industrial Electronics, 56(10):3941–3950, 2009.
+agent.                                                                                   [15]Sebastian  Brechtel,  Tobias  Gindele,  and  R      ¨udiger  Dillmann.   Prob-
+                                                                                               abilistic decision-making under uncertainty for autonomous driving
+                                                                                               using continuous pomdps. In 17th International IEEE Conference on
+            VIII.  CONCLUSION AND FUTURE WORK                                                  Intelligent Transportation Systems (ITSC), pages 392–399, 2014.
+                                                                                         [16]Isaac Miller, Mark Campbell, Dan Huttenlocher, Frank-Robert Kline,
+   This work proposed a novel perception-aware real-time                                       Aaron Nathan, Sergei Lupashin, Jason Catlin, Brian Schimpf, Pete
+planning  framework  for  the  safe  navigation  of  robotics                                  Moran,  Noah  Zych,  Ephrahim  Garcia,  Mike  Kurdziel,  and  Hikaru
+                                                                                               Fujishima.   Team cornell’s skynet: Robust perception and planning
+systems in an a priori unknown dynamic environment where                                       in an urban environment. J. Field Robot., 25(8):493–527, aug 2008.
+occlusions  exist.  The  presented  NMPC  strategies  provide                            [17]M. Sadou, V. Polotski, and P. Cohen. Occlusions in obstacle detection
+safety guarantees and computational efficiency. For future                                     for safe navigation.  In IEEE Intelligent Vehicles Symposium, 2004,
+                                                                                               pages 716–721, 2004.
+work, the proposed algorithm can be extended to be used                                  [18]S. Bouraine, Th. Fraichard, O. Azouaoui, and Hassen Salhi. Passively
+for safe navigation in 3-dimensional spaces for aerial robot                                   safe partial motion planning for mobile robots with limited field-of-
+applications.                                                                                  views in unknown dynamic environments. In 2014 IEEE International
+                                                                                               Conference on Robotics and Automation (ICRA), pages 3576–3582,
+                                                                                               2014.
+                                REFERENCES                                               [19]Hans  Andersen,  Wilko  Schwarting,  Felix  Naser,  You  Hong  Eng,
+                                                                                               Marcelo H. Ang, Daniela Rus, and Javier Alonso-Mora.  Trajectory
+ [1]Jeremy H. Gillula, Haomiao Huang, Michael P. Vitus, and Claire J.                          optimization for autonomous overtaking with visibility maximization.
+      Tomlin.  Design of guaranteed safe maneuvers using reachable sets:                       In2017IEEE20thInternationalConferenceonIntelligentTransporta-
+      Autonomous quadrotor aerobatics in theory and practice.   In 2010                        tion Systems (ITSC), pages 1–8, 2017.
+      IEEE International Conference on Robotics and Automation, pages                    [20]Yannik  Nager,  Andrea  Censi,  and  Emilio  Frazzoli.    What  lies  in
+      1649–1654, 2010.                                                                         the shadows? safe and computation-aware motion planning for au-
+ [2]Jaime  F.  Fisac,  Mo  Chen,  Claire  J.  Tomlin,  and  S.  Shankar  Sas-                  tonomous vehicles using intent-aware dynamic shadow regions.   In
+      try.  Reach-avoid problems with time-varying dynamics, targets and                       2019 International Conference on Robotics and Automation (ICRA),
+      constraints.  In Proceedings of the 18th International Conference on                     pages 5800–5806, 2019.
+      Hybrid Systems: Computation and Control, HSCC ’15, page 11–20,                     [21]Bryan  Penin,  Paolo  Robuffo  Giordano,  and  Franc¸ois  Chaumette.
+      New York, NY, USA, 2015. Association for Computing Machinery.                            Vision-based reactive planning for aggressive target tracking while
+ [3]Jerry   Ding,   Eugene   Li,   Haomiao   Huang,   and   Claire   Tomlin.                   avoiding collisions and occlusions.  IEEE Robotics and Automation
+      Reachability-based synthesis of feedback policies for motion plan-                       Letters, 3(4):3725–3732, 2018.
+      ning under bounded disturbances.  Proceedings - IEEE International                 [22]Yuan Chang, Han Zhou, Xiangke Wang, Lincheng Shen, and Tianjiang
+      Conference on Robotics and Automation, pages 2160–2165, 05 2011.                         Hu.   Cross-drone binocular coordination for ground moving target
+ [4]Sylvia L. Herbert, Mo Chen, SooJean Han, Somil Bansal, Jaime F.                            tracking in occlusion-rich scenarios.  IEEE Robotics and Automation
+      Fisac, and Claire J. Tomlin. Fastrack: A modular framework for fast                      Letters, 5(2):3161–3168, 2020.
+      and guaranteed safe motion planning.   In 2017 IEEE 56th Annual                    [23]Jian Zhang.  Occlusion-aware uav path planning for reconnaissance
+      Conference on Decision and Control (CDC), pages 1517–1522, 2017.                         andsurveillanceincomplexenvironments. In2019IEEEInternational
+
+[PDF PAGE 12]
+Fig. 12: Left: The ego robot initially is located on the right side, and is unaware of the existence of the dynamic agent
+shown on the right side, since the corner causes occlusion. Middle: The baseline MPC which is agnostic towards occlusion
+regions navigates the corner without considering collision avoidance with occluded dynamic agents and collides with the
+dynamic agent. Right: Blue dots represent the ego robot’s executed plan starting from the small black triangle and reaching
+the goal position (red star). Green dots represent the ego robot’s executed plan starting from the small black triangle and
+reaching the goal position (green star).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Fig. 13: Images labeled as 1,2,3,4, and 5 are sequential snapshots in time. The bottom right image shows the executed
+trajectories. The ego robot’s closed-loop trajectory is displayed in blue, while the dynamic agent’s executed trajectory
+is shown in green. The goal positions for the ego robot and the dynamic agent are represented by red and green stars,
+respectively, and their initial positions are marked by black triangles. Lidar point clouds are shown in purple.
+
+
+
+      Conference on Robotics and Biomimetics (ROBIO), pages 1435–1440,                  [28]Roya Firoozi, Xiaojing Zhang, and Francesco Borrelli.   Formation
+      2019.                                                                                   and reconfiguration of tight multi-lane platoons. Control Engineering
+[24]Duc  Fehr,  William  J.  Beksi,  Dimitris  Zermas,  and  Nikolaos  Pa-                    Practice, 108:104714, 2021.
+      panikolopoulos. Occlusion alleviation through motion using a mobile               [29]Stephen Boyd, Neal Parikh, Eric Chu, Borja Peleato, and Jonathan
+      robot.  In Proceedings - IEEE International Conference on Robotics                      Eckstein.    Distributed  optimization  and  statistical  learning  via  the
+      and  Automation,  Proceedings  -  IEEE  International  Conference  on                   alternating  direction  method  of  multipliers.    Found.  Trends  Mach.
+      Robotics and Automation, pages 3179–3184. Institute of Electrical                       Learn., 3(1):1–122, January 2011.
+      and Electronics Engineers Inc., September 2014. Publisher Copyright:              [30]RoyaFiroozi,LauraFerranti,XiaojingZhang,SebastianNejadnik,and
+      © 2014 IEEE.; 2014 IEEE International Conference on Robotics and                        Francesco Borrelli. A distributed multi-vehicle coordination algorithm
+      Automation, ICRA 2014 ; Conference date: 31-05-2014 Through 07-                         for navigation in tight environments. IEEE Transactions on Vehicular
+      06-2014.                                                                                Technology, pages 1–11, 2024.
+[25]LucasJanson,TommyHu,andMarcoPavone. Safemotionplanningin                            [31]Joel Andersson, Joris Gillis, and Moritz Diehl.  User documentation
+      unknown environments: Optimality benchmarks and tractable policies,                     for casadi v3.2 - sourceforge, Sep 2017.
+      2018.
+[26]Piotr F. Orzechowski, Annika Meyer, and Martin Lauer.   Tackling
+      occlusions and limited sensor range with set-based safety verification.
+      In 2018 21st International Conference on Intelligent Transportation
+      Systems (ITSC). IEEE, nov 2018.
+[27]Roya  Firoozi,  Jacopo  Guanetti,  Roberto  Horowitz,  and  Francesco
+      Borrelli.  Vehicle localization and control on roads with prior grade
+      map. In2018IEEEConferenceonDecisionandControl(CDC),pages
+      6982–6987, 2018.
+
+[PDF PAGE 13]
+Fig. 14: Left: OA-MPC, Right:   Baseline MPC. By comparing the results from the OA-MPC and the baseline MPC, as
+seen the OA-MPC is aware of occluded regions and takes wider turns close to the corner (occluded area). So both ego robot,
+as well as dynamic agent, can reach their goal positions safely. However, baseline MPC is agnostic to occlusions and takes
+a tight turn close to the corner which causes a collision with the dynamic agent that is invisible to the ego robot. The Blue
+and green circles in the right figure represent the ego robot and the dynamic agent locations at the collision point.

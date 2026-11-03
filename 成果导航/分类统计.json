@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-03",
+  "scope": "Known research roots and organization documents; inventory snapshot",
+  "excluded_directory_names": [
+    ".git",
+    "__pycache__",
+    "python_packages"
+  ],
+  "self_excluded_outputs": [
+    "成果导航/分类统计.json",
+    "成果导航/整理校验.json",
+    "成果导航/文件清单.csv"
+  ],
+  "files": 712,
+  "bytes": 142706213,
+  "by_category": {
+    "01 研究说明": 6,
+    "02 仿真代码": 23,
+    "03 实验结果": 543,
+    "04 文献与查新": 73,
+    "05 历史探索": 40,
+    "06 复现与交接": 27
+  },
+  "by_stage": {
+    "H-ACC 观测中断": 12,
+    "H-MARKET 等待位姿": 18,
+    "H-TIMETRAP 阅读翻译": 42,
+    "INDEX 导航与管理": 13,
+    "MAIN 主线说明": 6,
+    "S00 原始调度": 17,
+    "S00-R 审阅复现": 50,
+    "S01 运动机制": 9,
+    "S02 BEV初版与共享定义": 17,
+    "S03 停车v2": 17,
+    "S04 二维横穿": 133,
+    "S05 观测误差与更新": 378
+  },
+  "by_root": {
+    ".gitattributes": 1,
+    ".gitignore": 1,
+    "README.md": 1,
+    "STV_ED_motion_study": 560,
+    "STV_ED_reproducible_pilot_bundle": 16,
+    "STV_ED_reproducible_pilot_bundle.zip": 1,
+    "STV_ED_review_20261103": 50,
+    "acc_observation_gap": 12,
+    "market_decision_research": 18,
+    "timetrap_translation": 42,
+    "成果导航": 9,
+    "智能车辆_ITSC_ICMA文献与选题分析报告.md": 1
+  }
+}

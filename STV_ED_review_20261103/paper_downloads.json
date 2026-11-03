@@ -1,0 +1,38 @@
+[
+  {
+    "name": "sipp_2011",
+    "url": "https://www.cs.cmu.edu/~maxim/files/sipp_icra11.pdf",
+    "status": "downloaded",
+    "bytes": 549392
+  },
+  {
+    "name": "sipp_ip_2023",
+    "url": "https://arxiv.org/pdf/2302.00776",
+    "status": "downloaded",
+    "bytes": 462709
+  },
+  {
+    "name": "fail_safe_2016",
+    "url": "https://archive.air.in.tum.de/Main/Publications/Magdici2016.pdf",
+    "status": "downloaded",
+    "bytes": 292977
+  },
+  {
+    "name": "oa_mpc",
+    "url": "https://arxiv.org/pdf/2211.09156",
+    "status": "downloaded",
+    "bytes": 5529363
+  },
+  {
+    "name": "narrow_road_2026",
+    "url": "https://www.jstage.jst.go.jp/article/mej/13/2/13_25-00380/_pdf/-char/en",
+    "status": "downloaded",
+    "bytes": 3054746
+  },
+  {
+    "name": "cp_sipp_2025",
+    "url": "https://arxiv.org/pdf/2511.18170",
+    "status": "downloaded",
+    "bytes": 982470
+  }
+]

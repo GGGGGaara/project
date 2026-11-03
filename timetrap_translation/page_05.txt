@@ -1,0 +1,101 @@
+adversarial behavior under the following conditions. (i) The
+aggressor workload executes on the same computing platform
+as the target application. (ii) The aggressor is restricted to
+execute at a lower priority than all other tasks on the system.
+It lacks the ability to directly modify scheduling priorities or
+CPU afﬁnities, including its own. (iii) The aggressor workload
+executes at a non-privileged level – it does not have access to
+the address space of any other task.
+IV . TIME TRAP DESIGN
+Overview. TimeTrap is a tool that aims to discover tim-
+ing issues and generate aggressor workloads to conﬁrm the
+possibility of triggering such timing issues. Its workﬂow is
+generalized into three steps, as shown in Figure 3.
+Testing Platforms
+Target SoftwareExploitable Temporal Displacement Discovery
+Task Execution Phase Breakdown and Interference
+Aggressor Workload GenerationAttack Binary
+Exploitable Conditions
+Sensitivity & Uncertainty
+Fig. 3: The workﬂow of TimeTrap.
+Step 1 - Exploitable Temporal Displacement Discovery. (Sec-
+tion IV -A) It is clear that not all temporal displacements
+can trigger timing bugs, and that not all timing bugs lead
+to severe control performance degradation. Building on top
+of existing literature that features discovering concurrency
+bugs [47], TimeTrap injects delays into program execution and
+then observes the control behavior and immediate variables
+in the testing. The delay patterns that have evident physical
+impacts are regarded as exploitable timing bugs.
+Step 2 - Task Execution Phase Breakdown and Interference.
+(Section IV -B) This step involves the proﬁling of resource
+contention sensitivity. To cause the desired timing delay in
+speciﬁc tasks, it is essential to have an in-depth understand-
+ing of the target workloads’ resource usage, as well as the
+potential impact of the aggressor workload. To facilitate ﬁner
+control over the delay, we break down program execution into
+phases that display unique resource usage proﬁles. Based on
+these execution phases, individual attack primitives (contention
+channels) are then measured to understand their potential
+impact on the temporal properties of the system.
+Step 3 - Aggressor Workload Generation. (Section IV -C) The
+attack strategy is developed based on exploitable temporal
+displacement and sensitivity analysis, formulating the genera-
+tion as an optimization problem. The objective is to maximize
+expected execution timings while minimizing side effects on
+unrelated co-running tasks.
+A. Discovering Exploitable Conditions
+Challenge. To cause temporal displacement, an attacker must
+selectively delay certain threads with minimal impact on
+others. Simply delaying all tasks often leads to an end-to-
+end delay (input-output latency), which is typically handled
+by built-in mechanisms, such as aborting the task or algorith-
+mically predicting data (refer to Section II). TimeTrap seeks to
+introduce speciﬁc data desynchronization or jitters, bypassing
+these countermeasures.
+Execution timing control via delay injection. To discover such
+exploitable conditions, TimeTrap follows the principles of
+software fault injection [25], injecting delays during execution
+to generate diverse timing execution patterns. Concretely, it
+injects delays in different program locations to drive the
+program toward producing erroneous control results. There are
+two key design questions to answer: (i) which code locations
+are eligible for delay injection? and (ii) how much delay
+should be injected to trigger adverse control outcomes?
+Where to inject delays? There are three alternative methods for
+injecting delays: (1) injecting delays at the OS level by manip-
+ulating scheduling; (2) injecting delays in the runtime library
+by intercepting library calls; and (3) directly injecting delays
+into the source code through compile-time transformation. The
+ﬁrst two methods do not require the availability of source
+code. However, they also come with drawbacks. Injecting
+delays in scheduling loses a lot of semantic context, such
+as the data dependencies between different code locations.
+Injecting delays in the library can potentially maintain such
+relations, since it can provide semantic information about the
+sender and receiver. However, this approach is speciﬁc to the
+implementation of the target software and cannot scale to cases
+where shared data are not implemented via APIs, such as
+variables used for communication.
+As such, TimeTrap injects delay in source code. At compile-
+time, it performs static analysis to identify all the code
+regions that access shared data with other tasks. This shared
+data can be intra-process memory or inter-process messages,
+exhibiting different granularity across various target software.
+For intra-process shared variable analysis, it employs points-
+to analysis [48]; for inter-process communication analysis, it
+utilizes string matching. This analysis is straightforward and it
+reports the code location without checking their contexts. We
+will refer to these locations as delay injection points. Each
+delay injection point is paired with other locations interacting
+with the shared data, with at least one point in a pair involving
+a write operation.
+Since most timing issues often lead to erroneous results,
+TimeTrap conducts A/B testing to infer the impacts of delays.
+Speciﬁcally, it sets up the software on the target testing plat-
+form and replays the same data for two different runs, one with
+delay and one without. It then compares the computational
+results of these two executions; the results could be interme-
+diate or ﬁnal control outcomes, which can be logged through
+instrumentation or built-in logging mechanisms. The extent
+of the difference between these results indicates the impact of

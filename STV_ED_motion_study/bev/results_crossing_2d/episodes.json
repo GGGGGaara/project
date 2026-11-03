@@ -1,0 +1,1715 @@
+[
+  {
+    "case": "cross2_normal_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 9.4060667380649,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross2_normal_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 16.191491138375163,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross2_normal_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 5.3098432997281275,
+    "finish_s": 30.619999999999436,
+    "wait_s": 0.0,
+    "samples": 1531,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "resume",
+        "wait_s": 0.0
+      }
+    ]
+  },
+  {
+    "case": "cross2_normal_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 9.4060667380649,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "slow": 58.38000000000353,
+          "stop_wait": 30.619999999999436
+        }
+      }
+    ]
+  },
+  {
+    "case": "cross2_cold_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 9.4060667380649,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross2_cold_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 16.191491138375163,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross2_cold_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 5.3098432997281275,
+    "finish_s": 30.619999999999436,
+    "wait_s": 0.0,
+    "samples": 1531,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "resume",
+        "wait_s": 0.0
+      }
+    ]
+  },
+  {
+    "case": "cross2_cold_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 9.4060667380649,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "slow": 58.38000000000353,
+          "stop_wait": 30.619999999999436
+        }
+      }
+    ]
+  },
+  {
+    "case": "cross2_cold_slow_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 9.4060667380649,
+    "finish_s": 29.379999999999463,
+    "wait_s": 0.0,
+    "samples": 1469,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross2_cold_slow_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 16.191491138375163,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross2_cold_slow_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 5.3071528446973915,
+    "finish_s": 30.45999999999944,
+    "wait_s": 0.0,
+    "samples": 1523,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 11.879999999999836,
+        "chosen": "resume",
+        "wait_s": 0.0
+      }
+    ]
+  },
+  {
+    "case": "cross2_cold_slow_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 2.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 9.4060667380649,
+    "finish_s": 29.379999999999463,
+    "wait_s": 0.0,
+    "samples": 1469,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "slow": 58.38000000000353,
+          "stop_wait": 30.619999999999436
+        }
+      }
+    ]
+  },
+  {
+    "case": "cross14_normal_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": true,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": false,
+    "min_ped_clearance_m": -0.3,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross14_normal_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 9.239870195623004,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross14_normal_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.48385377973786353,
+    "finish_s": 31.119999999999425,
+    "wait_s": 0.5,
+    "samples": 1556,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "hold",
+        "wait_s": 0.0
+      },
+      {
+        "t_s": 12.57999999999982,
+        "chosen": "resume",
+        "wait_s": 0.5
+      }
+    ]
+  },
+  {
+    "case": "cross14_normal_candidate",
+    "policy": "candidate",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.48385377973786353,
+    "finish_s": 31.119999999999425,
+    "wait_s": 0.5,
+    "samples": 1556,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "stop_wait",
+        "safe_candidates": [
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "slow": 58.38000000000353,
+          "stop_wait": 31.119999999999425
+        }
+      },
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "hold",
+        "wait_s": 0.0
+      },
+      {
+        "t_s": 12.57999999999982,
+        "chosen": "resume",
+        "wait_s": 0.5
+      }
+    ]
+  },
+  {
+    "case": "cross14_cold_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": true,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": false,
+    "min_ped_clearance_m": -0.3,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross14_cold_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 9.239870195623004,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross14_cold_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.483853779736993,
+    "finish_s": 31.119999999999425,
+    "wait_s": 0.5,
+    "samples": 1556,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "hold",
+        "wait_s": 0.0
+      },
+      {
+        "t_s": 12.57999999999982,
+        "chosen": "resume",
+        "wait_s": 0.5
+      }
+    ]
+  },
+  {
+    "case": "cross14_cold_candidate",
+    "policy": "candidate",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.483853779736993,
+    "finish_s": 31.119999999999425,
+    "wait_s": 0.5,
+    "samples": 1556,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "stop_wait",
+        "safe_candidates": [
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "slow": 58.38000000000353,
+          "stop_wait": 31.119999999999425
+        }
+      },
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "hold",
+        "wait_s": 0.0
+      },
+      {
+        "t_s": 12.57999999999982,
+        "chosen": "resume",
+        "wait_s": 0.5
+      }
+    ]
+  },
+  {
+    "case": "cross14_cold_slow_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": true,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": false,
+    "min_ped_clearance_m": -0.3,
+    "finish_s": 29.379999999999463,
+    "wait_s": 0.0,
+    "samples": 1469,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross14_cold_slow_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 9.239870195623004,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross14_cold_slow_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.3944692459954468,
+    "finish_s": 30.95999999999943,
+    "wait_s": 0.5,
+    "samples": 1548,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 11.879999999999836,
+        "chosen": "hold",
+        "wait_s": 0.0
+      },
+      {
+        "t_s": 12.379999999999825,
+        "chosen": "resume",
+        "wait_s": 0.5
+      }
+    ]
+  },
+  {
+    "case": "cross14_cold_slow_candidate",
+    "policy": "candidate",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 14.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.3944692459954468,
+    "finish_s": 30.95999999999943,
+    "wait_s": 0.5,
+    "samples": 1548,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "stop_wait",
+        "safe_candidates": [
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "slow": 58.38000000000353,
+          "stop_wait": 31.119999999999425
+        }
+      },
+      {
+        "t_s": 11.879999999999836,
+        "chosen": "hold",
+        "wait_s": 0.0
+      },
+      {
+        "t_s": 12.379999999999825,
+        "chosen": "resume",
+        "wait_s": 0.5
+      }
+    ]
+  },
+  {
+    "case": "cross17_normal_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 1.050077904341995,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross17_normal_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 6.826314641036779,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross17_normal_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.48423923455656853,
+    "finish_s": 34.119999999999735,
+    "wait_s": 3.5,
+    "samples": 1706,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "hold",
+        "wait_s": 0.0
+      },
+      {
+        "t_s": 12.57999999999982,
+        "chosen": "hold",
+        "wait_s": 0.5
+      },
+      {
+        "t_s": 13.07999999999981,
+        "chosen": "hold",
+        "wait_s": 1.0
+      },
+      {
+        "t_s": 13.5799999999998,
+        "chosen": "hold",
+        "wait_s": 1.5
+      },
+      {
+        "t_s": 14.079999999999789,
+        "chosen": "hold",
+        "wait_s": 2.0
+      },
+      {
+        "t_s": 14.579999999999778,
+        "chosen": "hold",
+        "wait_s": 2.5
+      },
+      {
+        "t_s": 15.079999999999767,
+        "chosen": "hold",
+        "wait_s": 3.0
+      },
+      {
+        "t_s": 15.579999999999757,
+        "chosen": "resume",
+        "wait_s": 3.5
+      }
+    ]
+  },
+  {
+    "case": "cross17_normal_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 1.050077904341995,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "slow": 58.38000000000353,
+          "stop_wait": 34.119999999999735
+        }
+      }
+    ]
+  },
+  {
+    "case": "cross17_cold_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 1.050077904341995,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross17_cold_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 6.826314641036779,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross17_cold_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.4842392345556979,
+    "finish_s": 34.119999999999735,
+    "wait_s": 3.5,
+    "samples": 1706,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "hold",
+        "wait_s": 0.0
+      },
+      {
+        "t_s": 12.57999999999982,
+        "chosen": "hold",
+        "wait_s": 0.5
+      },
+      {
+        "t_s": 13.07999999999981,
+        "chosen": "hold",
+        "wait_s": 1.0
+      },
+      {
+        "t_s": 13.5799999999998,
+        "chosen": "hold",
+        "wait_s": 1.5
+      },
+      {
+        "t_s": 14.079999999999789,
+        "chosen": "hold",
+        "wait_s": 2.0
+      },
+      {
+        "t_s": 14.579999999999778,
+        "chosen": "hold",
+        "wait_s": 2.5
+      },
+      {
+        "t_s": 15.079999999999767,
+        "chosen": "hold",
+        "wait_s": 3.0
+      },
+      {
+        "t_s": 15.579999999999757,
+        "chosen": "resume",
+        "wait_s": 3.5
+      }
+    ]
+  },
+  {
+    "case": "cross17_cold_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 1.050077904341995,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "slow": 58.38000000000353,
+          "stop_wait": 34.119999999999735
+        }
+      }
+    ]
+  },
+  {
+    "case": "cross17_cold_slow_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 1.050077904341995,
+    "finish_s": 29.379999999999463,
+    "wait_s": 0.0,
+    "samples": 1469,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross17_cold_slow_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 6.826314641036779,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross17_cold_slow_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.3954903792792987,
+    "finish_s": 33.95999999999971,
+    "wait_s": 3.5,
+    "samples": 1698,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 11.879999999999836,
+        "chosen": "hold",
+        "wait_s": 0.0
+      },
+      {
+        "t_s": 12.379999999999825,
+        "chosen": "hold",
+        "wait_s": 0.5
+      },
+      {
+        "t_s": 12.879999999999814,
+        "chosen": "hold",
+        "wait_s": 1.0
+      },
+      {
+        "t_s": 13.379999999999804,
+        "chosen": "hold",
+        "wait_s": 1.5
+      },
+      {
+        "t_s": 13.879999999999793,
+        "chosen": "hold",
+        "wait_s": 2.0
+      },
+      {
+        "t_s": 14.379999999999782,
+        "chosen": "hold",
+        "wait_s": 2.5
+      },
+      {
+        "t_s": 14.879999999999772,
+        "chosen": "hold",
+        "wait_s": 3.0
+      },
+      {
+        "t_s": 15.379999999999761,
+        "chosen": "resume",
+        "wait_s": 3.5
+      }
+    ]
+  },
+  {
+    "case": "cross17_cold_slow_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 17.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 1.050077904341995,
+    "finish_s": 29.379999999999463,
+    "wait_s": 0.0,
+    "samples": 1469,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "slow": 58.38000000000353,
+          "stop_wait": 34.119999999999735
+        }
+      }
+    ]
+  },
+  {
+    "case": "cross25_normal_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 8.616645114108666,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross25_normal_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.2587784906464918,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross25_normal_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 5.001395085829675,
+    "finish_s": 30.619999999999436,
+    "wait_s": 0.0,
+    "samples": 1531,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "resume",
+        "wait_s": 0.0
+      }
+    ]
+  },
+  {
+    "case": "cross25_normal_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 8.616645114108666,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "slow": 58.38000000000353,
+          "stop_wait": 30.619999999999436
+        }
+      }
+    ]
+  },
+  {
+    "case": "cross25_cold_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 8.616645114108666,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross25_cold_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.2587784906464918,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross25_cold_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 5.001395085830017,
+    "finish_s": 30.619999999999436,
+    "wait_s": 0.0,
+    "samples": 1531,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "resume",
+        "wait_s": 0.0
+      }
+    ]
+  },
+  {
+    "case": "cross25_cold_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 8.616645114108666,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "slow": 58.38000000000353,
+          "stop_wait": 30.619999999999436
+        }
+      }
+    ]
+  },
+  {
+    "case": "cross25_cold_slow_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 8.616645114108666,
+    "finish_s": 29.379999999999463,
+    "wait_s": 0.0,
+    "samples": 1469,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross25_cold_slow_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 0.2587784906464918,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross25_cold_slow_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 5.1870357148280375,
+    "finish_s": 30.45999999999944,
+    "wait_s": 0.0,
+    "samples": 1523,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 11.879999999999836,
+        "chosen": "resume",
+        "wait_s": 0.0
+      }
+    ]
+  },
+  {
+    "case": "cross25_cold_slow_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 25.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 8.616645114108666,
+    "finish_s": 29.379999999999463,
+    "wait_s": 0.0,
+    "samples": 1469,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "slow",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "slow": 58.38000000000353,
+          "stop_wait": 30.619999999999436
+        }
+      }
+    ]
+  },
+  {
+    "case": "cross28_normal_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 11.443808467068358,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross28_normal_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": true,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": false,
+    "min_ped_clearance_m": -0.3,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross28_normal_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 7.814005528737538,
+    "finish_s": 30.619999999999436,
+    "wait_s": 0.0,
+    "samples": 1531,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "resume",
+        "wait_s": 0.0
+      }
+    ]
+  },
+  {
+    "case": "cross28_normal_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": 25.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 11.443808467068358,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "stop_wait": 30.619999999999436
+        }
+      }
+    ]
+  },
+  {
+    "case": "cross28_cold_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 11.443808467068358,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross28_cold_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": true,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": false,
+    "min_ped_clearance_m": -0.3,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross28_cold_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 7.8140055287378685,
+    "finish_s": 30.619999999999436,
+    "wait_s": 0.0,
+    "samples": 1531,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 12.079999999999831,
+        "chosen": "resume",
+        "wait_s": 0.0
+      }
+    ]
+  },
+  {
+    "case": "cross28_cold_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.18,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 11.443808467068358,
+    "finish_s": 29.339999999999463,
+    "wait_s": 0.0,
+    "samples": 1467,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "stop_wait": 30.619999999999436
+        }
+      }
+    ]
+  },
+  {
+    "case": "cross28_cold_slow_nominal",
+    "policy": "nominal",
+    "chosen_motion": "nominal",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 11.443824396262194,
+    "finish_s": 29.379999999999463,
+    "wait_s": 0.0,
+    "samples": 1469,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross28_cold_slow_slow_only",
+    "policy": "slow_only",
+    "chosen_motion": "slow_only",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": true,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": false,
+    "min_ped_clearance_m": -0.3,
+    "finish_s": 58.38000000000353,
+    "wait_s": 0.0,
+    "samples": 2919,
+    "dt_s": 0.02,
+    "decision_events": []
+  },
+  {
+    "case": "cross28_cold_slow_stop_wait",
+    "policy": "stop_wait",
+    "chosen_motion": "stop_wait",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 8.0003430126478,
+    "finish_s": 30.45999999999944,
+    "wait_s": 0.0,
+    "samples": 1523,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 11.879999999999836,
+        "chosen": "resume",
+        "wait_s": 0.0
+      }
+    ]
+  },
+  {
+    "case": "cross28_cold_slow_candidate",
+    "policy": "candidate",
+    "chosen_motion": "proceed",
+    "center_time_s": 28.0,
+    "ped_speed_m_s": 1.0,
+    "soc_initial": 0.55,
+    "temperature_c": -5.0,
+    "friction_tau_s": 0.35,
+    "completed": true,
+    "ped_collision": false,
+    "static_collision": false,
+    "road_exit": false,
+    "collision_free_completion": true,
+    "min_ped_clearance_m": 11.443824396262194,
+    "finish_s": 29.379999999999463,
+    "wait_s": 0.0,
+    "samples": 1469,
+    "dt_s": 0.02,
+    "decision_events": [
+      {
+        "t_s": 0.0,
+        "chosen": "proceed",
+        "safe_candidates": [
+          "proceed",
+          "stop_wait"
+        ],
+        "predicted_finishes_s": {
+          "proceed": 29.339999999999463,
+          "stop_wait": 30.619999999999436
+        }
+      }
+    ]
+  }
+]

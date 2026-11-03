@@ -1,0 +1,117 @@
+{
+  "dt_s": 0.02,
+  "vehicle_parameters": {
+    "mass_kg": 1900.0,
+    "equivalent_mass_kg": 1976.0,
+    "wheel_radius_m": 0.31,
+    "ratio": 9.0,
+    "motor_max_nm": 320.0,
+    "motor_max_w": 150000.0,
+    "regen_max_nm": 120.0,
+    "charge_max_w": 50000.0,
+    "discharge_max_w": 170000.0,
+    "battery_j": 216000000.0,
+    "drive_efficiency": 0.9,
+    "regen_efficiency": 0.75,
+    "aux_w": 500.0,
+    "rolling_coefficient": 0.012,
+    "drag_area_m2": 0.65,
+    "motor_tau_s": 0.04,
+    "motor_slew_nm_s": 2000.0,
+    "friction_tau_s": 0.18,
+    "regen_zero_m_s": 0.3,
+    "regen_full_m_s": 1.5,
+    "mu": 0.85
+  },
+  "scene": {
+    "center_time_s": 14.0,
+    "pedestrian_speed_m_s": 1.0,
+    "pedestrian_x_m": 20.0,
+    "pedestrian_radius_m": 0.3
+  },
+  "static_stalls": [
+    [
+      13.0,
+      24.0,
+      1.6,
+      3.0
+    ],
+    [
+      13.0,
+      24.0,
+      -3.0,
+      -1.6
+    ]
+  ],
+  "road_y_bounds_m": [
+    -3,
+    3
+  ],
+  "vehicle_footprint_rear_axle_m": {
+    "rear": -1,
+    "front": 3.5,
+    "half_width": 0.9
+  },
+  "predictor": "perfect present position and velocity, constant velocity; exact in these scripted cases",
+  "prediction_extra_clearance_m": 0.25,
+  "hold_recheck_s": 0.5,
+  "path": "y=0.25*sin(pi*x/40)^2, arc-length parameterized",
+  "reference_feasibility": "sampled derivatives; baseline, not continuous-time certificate",
+  "control": "reuse stopping_v2 torque/brake interface and plant, bicycle steering; predictor plant tau=.18 vs actual .18/.35",
+  "limits": [
+    "sampled collision checking",
+    "no occlusion or prediction noise",
+    "no moving obstacles besides one pedestrian",
+    "no continuous replanning during a segment; initial candidate selection and hold/resume checks only",
+    "synthetic parameters; no real vehicle calibration",
+    "no research novelty or state-of-art superiority claim"
+  ],
+  "python": "3.14.7 (tags/v3.14.7:823f032, Aug  5 2026, 10:51:32) [MSC v.1944 64 bit (AMD64)]",
+  "code_sha256": {
+    "bev_probe.py": "3ad5c9602096955774121967ad737b2b75ce9575682496898d718eecaff04613",
+    "stopping_v2.py": "b0cc1db08b814a889f8311719204249aff75d64c84d355f4273a1da9950d805e",
+    "crossing_2d.py": "743bf8c2f30f8866927a33bc7828f274a57832da49237f6afba5694f9cf3ae55"
+  },
+  "results": [
+    {
+      "policy": "nominal",
+      "n": 15,
+      "completed": 15,
+      "collision_free_completion": 12,
+      "ped_collision": 3,
+      "static_collision": 0,
+      "road_exit": 0,
+      "mean_finish_s": 29.353333333332795
+    },
+    {
+      "policy": "slow_only",
+      "n": 15,
+      "completed": 15,
+      "collision_free_completion": 12,
+      "ped_collision": 3,
+      "static_collision": 0,
+      "road_exit": 0,
+      "mean_finish_s": 58.38000000000353
+    },
+    {
+      "policy": "stop_wait",
+      "n": 15,
+      "completed": 15,
+      "collision_free_completion": 15,
+      "ped_collision": 0,
+      "static_collision": 0,
+      "road_exit": 0,
+      "mean_finish_s": 31.36666666666616
+    },
+    {
+      "policy": "candidate",
+      "n": 15,
+      "completed": 15,
+      "collision_free_completion": 15,
+      "ped_collision": 0,
+      "static_collision": 0,
+      "road_exit": 0,
+      "mean_finish_s": 29.695999999999454
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+delays. For each pair of injection points, it selects one to inject
+a delay at runtime. There is a clear trade-off between injecting
+a single delay and multiple delays throughout a run. Delays
+are injected at multiple points in one run if the intermediate
+results can be observed to distinguish the impact of the delay
+at each injection point.
+How much should threads be delayed? As discussed in Sec-
+tion II-B, erroneous results only manifest after consecutive ab-
+normal timings. Thus, traditional delay injection methods for
+discovering concurrency bugs, which are one-time shots [47],
+are not suitable for these scenarios. Instead, TimeTrap contin-
+uously injects the same execution timing patterns throughout
+one mission execution. The timing patterns are represented
+by three factors: the code location, whether the type is delay
+or jitter, and the extent of delay or jitter. An alternative
+representation is the weakly-hard task model [49], [50], which
+is unsuitable for our scenario for two reasons. First, this
+model only describes the number of deadline hits or misses
+but ignores the extent of the delay. Our preliminary study
+found that many applications have built-in check conditions on
+the data freshness. Second, the shared data is not necessarily
+updated at the end of the deadline, which means a deadline
+miss does not necessarily impact the data consumption of
+dependent tasks.
+To obtain an effective range of delay, we progressively inject
+delays from large to small at the same program location. We
+then observe the intermediate results and the ﬁnal control
+outcome after each change. If the ﬁnal control outcome shows
+fail-safe operations, the extent of delays will be decreased to
+avoid triggering it. If the intermediate results show signiﬁcant
+changes but the control outcome does not, this indicates that
+the downstream tasks are robust to such timing issues. In this
+case, or after exploring all extents of delays within a predeﬁned
+range, the injection point is removed from the candidate list.
+Once an execution timing pattern is demonstrated to cause
+an adverse physical outcome, that pattern is recorded as
+exploitable and used in subsequent steps.
+B. Resource-Oriented Execution Proﬁling
+Challenge. Triggering an expected timing execution pattern
+through performance interference is non-trivial. Typically,
+multiple threads are co-running on the target platform. To
+induce the expected timing, it is necessary to interfere with
+only a subset of tasks while keeping the remaining ones un-
+touched. Additionally, the delay should be manipulated within
+a speciﬁc range. TimeTrap exploits the diversity of resource
+usage patterns and the sensitivity of different interference
+channels to achieve targeted delays.
+Resource-focused task execution phases. Different tasks often
+have diverse demands on resources. For example, motion plan-
+ning tasks often solve cache-intensive optimization problems,
+whereas drivers that read from sensor devices rely more on I/O
+resources. In addition, the resource usage pattern of individual
+tasks also varies throughout its execution. Inspired by previous
+work [51], we ﬁrst precisely proﬁle a workload’s resource
+CacheDRAMNet. I/ODisk I/O
+#0 #1 #2 #3…Execution Phase
+Task i-1Task i+1
+Task i Sensitivity Curve
+Attack Intensity14
+2 X
+1.2 XDelay
+1 X
+Fig. 4: Proﬁling resource contention sensitivity for tasks.
+usage over time, and then divide each task into a sequence of
+execution phases where similar resources are intensively used
+in each phase. Depending on the desired granularity, the phase
+may vary from thousands to tens of thousands of instructions.
+Then, we individually characterize each phase’s sensitivity to
+individual resource contention channels. This is achieved by
+scheduling the target phase of the victim task on a speciﬁc core
+and placing interference tasks on other cores. By measuring
+the delays in the victim tasks’ phases, we determine the effects
+of interference.
+This ﬁne-grained analysis beneﬁts aggressor workload gen-
+eration in three aspects: First, this analysis concentrates our
+focus on the most resource-demanding phases of the task.
+Launching attacks at these phases can be far more effective,
+allowing us to make a conscious trade-off between conserving
+the CPU budget, and triggering the delay at the appropriate
+phase. Second, separating each resource channel also helps
+to ﬁnd the attack strategy that delays some speciﬁc threads
+without affecting the rest. Third, this ﬁne-grained analysis
+facilitates TimeTrap to target only one resource channel at
+each phase, which reduces the search space while ﬁnding the
+optimal attack strategy.
+Sensitivity analysis of interference channels. In TimeTrap, the
+aggressor workloads have to create an appropriate delay that
+corrupts the algorithmic results without triggering the fail-
+safe. To this end, we leverage the insight that a performance
+interference attack can be parameterized, thus allowing control
+over its delay extent by changing the attack parameters [9]. We
+ﬁrst proﬁle task delays under different levels of contention,
+with each level representing one set of attack parameters.
+As illustrated in Figure 4, for each resource channel, we
+incrementally increase the contention intensity and record the
+corresponding task delay. The attack intensity is controlled
+by tuning the parameters, such as memory access stride in
+memory-related contention. The result is a set of delays at
+varying discretized attack intensities. These recorded delays
+are then interpolated to produce a sensitivity curve [52]. This
+curve is utilized during the generation of an attack strategy
+(aggressor workloads) to predict the delay caused by any
+contention intensity (Section IV -C). Furthermore, we analyze
+sensitivity to different task alignments, yielding different col-
+lective resource usage proﬁles.
+A limitation is that the relations between delay and attack
+parameters are non-linear, and the effects of different channels

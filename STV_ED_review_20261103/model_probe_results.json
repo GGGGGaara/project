@@ -1,0 +1,76 @@
+{
+  "safe_refusal_scored_as_exposure": {
+    "plan": null,
+    "evaluation": {
+      "exposure": true,
+      "cause": "no_plan",
+      "completion": false,
+      "finish": null,
+      "entry": null,
+      "used_refuge": false
+    }
+  },
+  "touching_endpoints": {
+    "events": [
+      [
+        2,
+        3
+      ]
+    ],
+    "usage": [
+      3,
+      4
+    ],
+    "overlap": false
+  },
+  "reactive_future_half_second_query": {
+    "events": {
+      "gate_1": [
+        [
+          0.25,
+          0.4
+        ]
+      ],
+      "gate_2": [],
+      "refuge": []
+    },
+    "chosen_entry": 0.5
+  },
+  "delivered_reactive_results": {
+    "episodes": 3000,
+    "unique_entry": [
+      "0.0"
+    ],
+    "unique_planned_finish": [
+      "12.0"
+    ]
+  },
+  "delivered_no_plan_events": 0,
+  "grid_optimality_probe": {
+    "scenes": 60,
+    "policy_runs": 120,
+    "disagreements": [],
+    "mean_ms": 0.6366649995470652,
+    "max_ms": 1.810799993108958,
+    "timing_scope": "small two-gate scheduler only; not vehicle-planning runtime benchmark"
+  },
+  "finite_generator_support": {
+    "latest_possible_end_s": {
+      "gate_1": 38.5,
+      "gate_2": 47.5,
+      "refuge": 45.0
+    },
+    "fixed_actual_safe_entry_s": 39.5,
+    "fixed_actual_safe_finish_s": 51.5,
+    "random_scenes": 10000,
+    "conflicts": 0,
+    "interpretation": "uses known finite support of synthetic generator, not an operational AV policy"
+  },
+  "padding_coverage_at_sigma_1": {
+    "single_event_shift_coverage": 0.7887004526662894,
+    "six_present_independent_events_coverage": 0.24069803261326228,
+    "every_corresponding_event_shift_within_padding_probability": 0.3476470580499914,
+    "interpretation": "probability that every present event shift is within padding; sufficient for envelope containment, not the exact probability of union containment or collision avoidance; assumes exactly the supplied independent timing-error model"
+  },
+  "original_file_hash_changes": []
+}

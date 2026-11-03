@@ -1,0 +1,24 @@
+[
+  {
+    "t_s": 0.0,
+    "chosen": "stop_wait",
+    "safe_candidates": [
+      "slow",
+      "stop_wait"
+    ],
+    "predicted_finishes_s": {
+      "slow": 58.38000000000353,
+      "stop_wait": 31.119999999999425
+    }
+  },
+  {
+    "t_s": 12.079999999999831,
+    "chosen": "hold",
+    "wait_s": 0.0
+  },
+  {
+    "t_s": 12.57999999999982,
+    "chosen": "resume",
+    "wait_s": 0.5
+  }
+]

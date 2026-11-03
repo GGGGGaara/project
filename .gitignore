@@ -1,0 +1,24 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Locally installed review dependencies; source research artifacts stay tracked
+STV_ED_review_20261103/python_packages/
+
+# Credentials and machine-only state
+.env
+.env.*
+!.env.example
+credentials.json
+*.pem
+*.key
+*.pfx
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,43 @@
+{
+  "case_count": 60,
+  "center_time_values_s": [
+    2.0,
+    14.0,
+    17.0,
+    25.0,
+    28.0
+  ],
+  "conditions": [
+    [
+      0.55,
+      -5.0,
+      0.18
+    ],
+    [
+      0.55,
+      -5.0,
+      0.35
+    ],
+    [
+      0.55,
+      25.0,
+      0.18
+    ]
+  ],
+  "policies": [
+    "candidate",
+    "nominal",
+    "slow_only",
+    "stop_wait"
+  ],
+  "numpy_version": "2.5.3",
+  "code_sha256": {
+    "crossing_2d.py": "743bf8c2f30f8866927a33bc7828f274a57832da49237f6afba5694f9cf3ae55",
+    "test_crossing_2d.py": "9b1dd284fe33463033ee84cb196378862bf0a34911063cfbd8d909911ca2331d",
+    "verify_crossing_2d.py": "a1de5b0da60bfaa274dfba1303efd0e57adb2de9c83c3de889259d8429a0f9cb",
+    "plot_crossing_2d.py": "4571b9467809affe8e6821b4cbbf3317cac50a79e3c4f02138810673ca80ea9f",
+    "stopping_v2.py": "b0cc1db08b814a889f8311719204249aff75d64c84d355f4273a1da9950d805e",
+    "bev_probe.py": "3ad5c9602096955774121967ad737b2b75ce9575682496898d718eecaff04613"
+  },
+  "replay": "CSV frame subsampling in simulated time; local view 8-22s; playback speed is not wall-clock vehicle speed"
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "id": "itsc2020_proactive",
+    "url": "https://www-sop.inria.fr/members/Philippe.Martinet/publis/2020/ITSC20maria.pdf",
+    "pages": 6,
+    "bytes": 1690883,
+    "status": "readable"
+  },
+  {
+    "id": "icsr2015_waiting",
+    "url": "https://www.tu-ilmenau.de/fileadmin/Bereiche/IA/neurob/Publikationen/conferences_int/2015/Trinh-ICSR-2015.pdf",
+    "pages": 10,
+    "bytes": 1640099,
+    "status": "readable"
+  },
+  {
+    "id": "gross2017_hospital",
+    "url": "https://www.tu-ilmenau.de/fileadmin/Bereiche/IA/neurob/Publikationen/journals/Gross-AR-2017.pdf",
+    "pages": 20,
+    "bytes": 7474183,
+    "status": "readable"
+  }
+]

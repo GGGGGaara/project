@@ -1,0 +1,111 @@
+displacement. This accounts for 23 .9% of the issues.
+• Type II . Timing constraints are speciﬁed, but they are
+incomplete (34 .2%); temporal displacement is permitted
+only for a subset of the data or within a certain threshold.
+• Type III . Speciﬁed timing constraints are completely
+deﬁned but not effectively enforced, which account for
+41.8%. These are often caused by ﬂaws in system executors
+(e.g., schedulers) and improper coordination among them.
+As data-ﬂow-centric timing constraints are more prevalent
+in software (69 .3%), many Type I issues are largely caused
+by the absence of timing information (e.g., timestamps) on
+data. Although ROS offers a built-in timestamp assignment
+interface in its API, developers often fail to propagate these
+timestamps throughout the lengthy processing pipeline. This
+issue is exacerbated when multiple sensor data streams are
+fused within a single component.
+Type II issues prevail due to the challenge of accurately
+expressing timing semantics across different scenarios. This
+category includes vulnerabilities like imprecise value ranges
+or TOCTOU (‘time-of-check-to-time-of-use’) problems (e.g.,
+Apollo#144612), where timestamp veriﬁcation occurs prema-
+turely. Sometimes, these issues arise when timestamps are
+not expressed with sufﬁcient granularity (Cartographer#600 3).
+Exploiting these issues necessitates inducing precise delays
+during speciﬁc execution stages.
+Type III issues are commonly found in the ROS2 mid-
+dleware [45] due to ﬂawed implementations in schedulers.
+Most of these issues stem from race conditions (e.g., ROS2-
+rcl#20124) and often involve various scheduling entities, such
+as timers (e.g., ROS2-rclpy#1016 5). Additionally, timing-
+related utilities are also error-prone. For example, the issues
+caused by incompatible timing formats between different clock
+systems (e.g., ROS2-rcl#947 6) are common.
+Manifestation. The triggering conditions of timing issues
+we collected exhibit characteristics similar to conventional
+concurrency bugs [46], making them challenging to distinguish
+since both are triggered by unexpected timing. Our focus is
+on the issues related to algorithm-level semantics and control
+performance, given that the symptoms of concurrency bugs
+have been well-studied in prior work. Generally, timing issues
+do not necessarily lead to delays in control outputs because
+actuation commands are usually sent by a separate task that
+may be unaffected by the task experiencing abnormal timings.
+However, timing issues often lead to data misuse, predom-
+inantly arising from the use of stale data or, occasionally,
+premature data. This stale data can lead to desynchroniza-
+tion when the program consumes data from disparate sensor
+modalities or components. Furthermore, it can cause data
+jitter if updates occur at inconsistent intervals (e.g., Cartogra-
+pher#2427). Desynchronization is common (more than 30%)
+2https://github.com/ApolloAuto/apollo/pull/14461/ﬁles
+3https://github.com/cartographer-project/cartographer/issues/600
+4https://github.com/ros2/rclcpp/issues/2012
+5https://github.com/ros2/rclpy/issues/1016
+6https://github.com/ros2/rcl/issues/947
+7https://github.com/cartographer-project/cartographer/issues/242
+due to the complexities in reasoning about multi-threaded
+concurrent execution. The scope of most issues involves two or
+three threads (both intra- and inter-process), where the delays
+in a subset of threads trigger unexpected timing.
+Most of these issues yield false computational results, which
+subsequently undermine the physical stability of the control
+system. Some of them ( < 5%) cause the software to become
+unresponsive, while slightly more ( < 10%) even lead to soft-
+ware crashes. Desynchronization and jitter are more subtle and
+typically result in adverse control degradation. In contrast, end-
+to-end latency is less of a concern because programmers are
+typically more aware of the data’s age within a sequential
+context and thus often adopt compensation strategies for such
+delays. When reproducing some timing issues, it is found that
+while timing issues cause erroneous intermediate results, most
+robotic software is robust enough to ﬁlter out such occasional
+faults; an adverse outcome (task output) requires consecutive
+abnormal timings to manifest.
+Insight: Discovering timing issues requires inducing delays
+in only a subset of the threads, leading to an abnormal
+execution order. Such delays should be injected consecutively
+to propagate the erroneous results to the ﬁnal control outcome.
+Mitigation Strategies. Among the analyzed issues, 141
+(58.5%) have been ﬁxed in their codebase. In general, we
+found that timing issues can be ﬁxed by either enforcing the
+correct execution timing or changing the software’s handling
+of the abnormal timing. The former is typically achieved by
+adding or modifying synchronization primitives (e.g., mutexes)
+in the software, while it is rarely achieved by modifying the
+underlying enforcement infrastructure, such as schedulers and
+timers. However, synchronization primitives are not a silver
+bullet. Adding locks can introduce new problems, including
+increased real-time overhead and potential inversion in lock
+ordering (rcl#1121). Regarding the latter, most issues (over
+80%) were ﬁxed in a data-ﬂow-centric manner. The mitigation
+strategy involves integrating more timing information into
+the data, typically by adding timestamps to data structures,
+and then adopting check conditions and handling mechanisms
+for abnormal timing cases. The most prevalent mechanisms
+for handling task misses are to (i) abort the task instances
+(e.g., callback in ROS) and then trigger operational-safe or
+fail-safe mechanisms (e.g., setting the velocity to zero); or
+(ii) use predictive models or algorithms to approximate the
+correct data. Such handling mechanisms introduce challenges
+to TimeTrap, which are discussed in Section IV.
+Insight: Among the target software we investigated, besides
+enforcing timing constraints (e.g., deadlines or periods) as
+conventional scheduling problems, it is also common for
+developers to implement detectors for abnormal timing and
+case-speciﬁc handlers to avoid adverse control outcomes.
+III. SYSTEM MODEL
+In this work, we target real-time systems with both event-
+triggered (e.g., data-driven) and time-triggered (e.g., periodic)
+execution models. These mechanisms are natively supported
+by the systems that we evaluate in Section VI. We consider

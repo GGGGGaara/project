@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-03",
+  "passed": true,
+  "organization_scope": "Documentation and catalog only; no physical simulations rerun",
+  "preexisting_files_checked": 685,
+  "missing_preexisting_files": [],
+  "unexpected_content_changes": [],
+  "allowed_content_changes": [
+    "STV_ED_motion_study/WORK_LOG.md"
+  ],
+  "allowed_change_explanation": "WORK_LOG gains links to organization results; prior research sections preserved",
+  "original_bundle_files_checked": 15,
+  "original_bundle_hash_issues": [],
+  "original_bundle_exact_file_set": true,
+  "latest_source_hashes_checked": 7,
+  "latest_source_hash_issues": [],
+  "latest_episodes": 72,
+  "latest_unique_cases": 72,
+  "latest_expected_episode_files": 216,
+  "latest_missing_episode_files": [],
+  "readme_links": {
+    "documents_checked": 22,
+    "local_links_checked": 215,
+    "broken_links": []
+  }
+}

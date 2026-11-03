@@ -1,0 +1,123 @@
+{
+  "worlds": [
+    {
+      "name": "constant17",
+      "center_nominal_s": 17.0,
+      "changes": [],
+      "x": 20.0,
+      "radius": 0.3
+    },
+    {
+      "name": "speedup_early",
+      "center_nominal_s": 17.0,
+      "changes": [
+        [
+          9.0,
+          2.0
+        ]
+      ],
+      "x": 20.0,
+      "radius": 0.3
+    },
+    {
+      "name": "speedup_late",
+      "center_nominal_s": 17.0,
+      "changes": [
+        [
+          12.0,
+          3.0
+        ]
+      ],
+      "x": 20.0,
+      "radius": 0.3
+    },
+    {
+      "name": "pause_in_road",
+      "center_nominal_s": 14.0,
+      "changes": [
+        [
+          13.5,
+          0.0
+        ],
+        [
+          18.0,
+          1.0
+        ]
+      ],
+      "x": 20.0,
+      "radius": 0.3
+    }
+  ],
+  "sensors": [
+    {
+      "name": "ideal",
+      "delay_s": 0.0,
+      "y_bias_m": 0.0,
+      "speed_bias_m_s": 0.0
+    },
+    {
+      "name": "delay_positive_bias",
+      "delay_s": 0.4,
+      "y_bias_m": 0.1,
+      "speed_bias_m_s": 0.12
+    },
+    {
+      "name": "delay_negative_bias",
+      "delay_s": 0.4,
+      "y_bias_m": -0.1,
+      "speed_bias_m_s": -0.12
+    }
+  ],
+  "initial_soc": 0.55,
+  "dt_s": 0.02,
+  "observation_period_s": 0.5,
+  "prediction_margin_m": 0.25,
+  "prediction_time_sampling_s": 0.2,
+  "results": [
+    {
+      "policy": "frozen",
+      "n": 24,
+      "statuses": {
+        "completed": 8,
+        "collision": 16,
+        "timeout": 0,
+        "no_progress": 0
+      },
+      "mean_success_finish_s": 30.71,
+      "emergency_episodes": 0
+    },
+    {
+      "policy": "refresh_hold",
+      "n": 24,
+      "statuses": {
+        "completed": 10,
+        "collision": 14,
+        "timeout": 0,
+        "no_progress": 0
+      },
+      "mean_success_finish_s": 30.830000000000002,
+      "emergency_episodes": 0
+    },
+    {
+      "policy": "rolling",
+      "n": 24,
+      "statuses": {
+        "completed": 22,
+        "collision": 2,
+        "timeout": 0,
+        "no_progress": 0
+      },
+      "mean_success_finish_s": 33.334545454545456,
+      "emergency_episodes": 10
+    }
+  ],
+  "scope": "Hand-designed causal pipeline tests; nominal execution in risk prediction; no certified emergency safety, joint lateral optimization or innovation claim.",
+  "python": "3.14.7 (tags/v3.14.7:823f032, Aug  5 2026, 10:51:32) [MSC v.1944 64 bit (AMD64)]",
+  "numpy": "2.5.3",
+  "source_sha256": {
+    "crossing_uncertain.py": "37399f6b287280f943aa1487b63fb70a51e46a43d756249c961980d7455d384e",
+    "crossing_2d.py": "743bf8c2f30f8866927a33bc7828f274a57832da49237f6afba5694f9cf3ae55",
+    "stopping_v2.py": "b0cc1db08b814a889f8311719204249aff75d64c84d355f4273a1da9950d805e",
+    "bev_probe.py": "3ad5c9602096955774121967ad737b2b75ce9575682496898d718eecaff04613"
+  }
+}

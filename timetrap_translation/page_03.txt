@@ -1,0 +1,93 @@
+Examples of Timing Issues in Software. Although many
+autonomous systems already employ mechanisms to check and
+handle abnormal timing, this approach does not always ensure
+accurate timing.
+ 1:  while (true) { 2:      // Browser the queue where IMU data are sorted by timestamps. 3:      imu = ImuTracker.DataQueue.front(); 4:      if (imu->Timstamp < PreviousImage->TimeStamp) {                         5:          ImuTracker.DataQueue.pop_front(); // Drop the out-dated IMU data. 6:       } else if (imu->Timstamp < CurrentImage->TimeStamp) {                  7:           res.push_back(*imu); // Keep the data between two frames. 8:           ImuTracker.DataQueue.pop_front(); 9:       } else {10:           break;}} // Reach the end                                        
+(a) Timestamp checking of IMU data between two image frames
+ /* Thread A (Landmark Tracker) */     1:  elapsedTime = now() - lastUpdateTime;  2:  if (elapsedTime > 0.5) { 3: points = CreatNewMapPoints(); 4: MapTracker.InsertMapPoints(points); 5:      MapTracker.NeedBA = true;      // Should update map now                           6:  } End of if                                                                
+ /* Thread B (Map Tracker) */     1:  while (true) {  2:      if (this->NeedBA) {                                                      3:          BAOptimization(); // Update the map 4:    } }; End of while                                                               
+(b) Timing policy speciﬁed in userspace application.
+Fig. 2: Simpliﬁed snippets in ORB-SLAM2.
+A straightforward solution to prevent temporal displacement
+is to check the data age and act according to its freshness.
+However, this often requires sophisticated condition checks
+due to the complex nature of timing behavior. Many program-
+ming languages lack timing semantics, leading to incomplete
+expression of the programmer’s intent. Figure 2(a) shows code
+from ORB-SLAM2 [35] that fetches IMU data between two
+images, checking that the timestamps fall between those of
+the images to avoid temporal misalignment. Given that the
+IMU’s sampling rate, ' 8, is typically greater than the camera’s,
+' 2, there should ideally be ' 8/' 2 IMU samples between two
+image frames. However, the code fails to detect missing IMU
+samples. Even if the retrieved IMU data has valid timestamps,
+data loss can still lead to erroneous results.
+As depicted in Figure 2(b), ORB-SLAM2’s Landmark
+Tracker code checks if the time since the last map update
+exceeds 0.5 seconds. If so, it sets a ﬂag to trigger a map update.
+Ideally, given sufﬁcient resources, the BAOptimization()
+function, which runs in its own thread, is immediately invoked.
+However, high system overhead may prevent this function
+from timely execution because the CPU scheduler is unaware
+of the intrinsic timing requirements of the application (such
+as those illustrated in Figure 2(b)).
+B. Temporal Displacement in Real-world Applications
+To explore temporal displacement and characterize its pat-
+terns in real-world software implementations, we examined
+timing-related issues and pull requests in the GitHub projects
+of popular (by the number of forks and stars) CPS appli-
+cations. We covered a wide variety of modules including
+Projects Autoware[38] MoveIt[39] Cartographer[40] Apollo[41] ORB-SLAM2/3[42], [43]Navigation[44] ROS2 rcl[45]
+LoC 101k 143k 60k 571k 69k 120k 149k
+Category Full Control* Loca. Full Loca. Control* Mw.
+Total # 1243 2740 1953 15251 1064 3352 2066
+Timing # 17 27 43 55 12 22 65
+Type I 3 4 10 12 8 2 5
+Type II 5 11 16 23 - 6 2
+Type III 2 9 10 12 6 1 37
+Full=Full stack, including perception, localization, planning and control;
+* Control here includes mission planning, motion planning, and controller;
+Loc. = Localization; Sw. = Software; Mw. = Middleware.
+TABLE I: Analysis of Timing-Related Issues Across V arious
+GitHub Projects
+perception, planning, control, etc. The 8 projects studied are
+Autoware.Auto [38], MoveIt [39], Google Cartographer [40],
+Baidu Apollo [41], ORB-SLAM2/3 [42], [43], ROS-Planning
+Navigation [44], and ROS2 rcl middleware [45]. We manually
+inspected the discussions of each issue and pull request, ex-
+cluding any falsely reported issues. The threats to the validity
+of our study include the representativeness of the application
+we have chosen and our examination methodology.
+Prevalence of Timing Issues. The statistics are reported in
+Table I. Each project is seen to suffer from dozens of timing-
+related issues in development. The timing issues constitute
+approximately 0.5% to 2% of the overall bugs. It is worth
+noting that the number of issues does not directly indicate a
+project’s quality, but is heavily inﬂuenced by its popularity
+and the developers’ activity in the target GitHub repository.
+By analyzing these 241 timing issues and reproducing some
+of them, we detail our ﬁndings in the following discussion.
+Current Practice for Timing Constraints. Timing con-
+straints are programmed diversely in practice. We classify
+them into two categories: control-ﬂow-centric and data-ﬂow-
+centric. Control-ﬂow-centric timing constraints are deﬁned
+from the perspective of the program’s execution, such as
+through scheduling models (e.g., deadlines and periods) and
+locking protocols, which are among the most conventional
+methods. In the data-ﬂow-centric paradigm, timing informa-
+tion is coupled with data and then utilized to determine
+software behaviors. A common example involves messages in
+ROS, which are tagged with timestamps. Developers leverage
+these timestamps to check the freshness or temporal alignment
+of data, thus adjusting software behavior accordingly. In
+userspace applications (except for ROS2 rcl [45]), the data-
+ﬂow-centric paradigm is preferred, with 69.3% of issues being
+related to it, because (1) it does not require modiﬁcations
+to the underlying scheduling infrastructure, and (2) it better
+captures the dependency between tasks, helping developers to
+reason about the correct timing constraints within the context
+of complex task chains.
+Root Causes. We identify three timing issue root causes:
+• Type I . Timing constraints are missing or implicitly as-
+sumed without proper enforcement, where any variations
+on task execution timings can potentially introduce temporal

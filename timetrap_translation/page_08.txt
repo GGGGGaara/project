@@ -1,0 +1,87 @@
+The robotic arm crash into the table.
+Normal grab.
+(a) Experimental environments. (b) Jitters on different timers.
+Attack Point
+(c) Control digression.
+Callback QueueUser-level Timer 
+Thread B Thread A
+Data race on motion traj.
+Expires
+ErroneousResults
+(d) Cause analysis.
+Fig. 5: Case study on a robotic arm.
+TimeTrap is assigned priority 20. Utilizing the attack synthesis
+approach, TimeTrap identiﬁes that the robotic arm exhibits
+anomalous behavior if there is a disparity in the release time
+of a victim task. To intentionally cause jitters in the victim, the
+aggressor workloads are tuned to contend for cache resources
+just before the scheduled release times of victim tasks.
+Attack Result. The robotic arm is programmed to perform
+the following sequence: Initially, it identiﬁes the can and
+approaches it. It then grips the can and transports it to the
+designated location. Under standard circumstances, the robotic
+arm can reliably grasp the can and accurately position it at the
+destination. However, when inﬂuenced by TimeTrap, the arm
+deviates from its pre-determined motion path and collides with
+the table, causing the can to fall (as shown in Figure 5(a)).
+Throughout this action, the intermediate control variables —
+including planned position and effort (torque) — spike to
+irregular levels. These trends are depicted in Figure 5(c).
+For clearer visualization, we have intentionally offset the plot
+representing the normal state slightly on the horizontal axis.
+Root Cause Analysis — User-level Crafted Timer .Upon further
+investigation of the source code, the abnormal intermediate
+values are caused by a data race. The mission consists of
+multiple stages, with the robot following a subset of way-
+points in each stage. Each stage activates a callback (thread)
+that generates a motion path. This path is calculated by an
+optimization solver that takes a subset of waypoints as input.
+However, if two tasks simultaneously generate motion trajec-
+tories, the solver processes inputs from two different subsets of
+waypoints, leading to incorrect results. In the implementation,
+each thread is triggered by a timer set at intervals of several
+seconds. Given that the computation itself only takes tens of
+milliseconds, data races normally do not happen. However, a
+key vulnerability lies in the userspace implementation of the
+ROS timer used by MoveIt, which makes it susceptible to
+disruption.
+Figure 5(d) depicts the ROS timer mechanism: on delivery
+of a timeout signal, ROS places an entry into a queue for
+delivery to the next available thread. Figure 5(b) plots the
+amount of jitter that we produced with the attack. The kernel-
+level timer ( hrtimer) is robust against TimeTrap due to its
+fast path in the kernel. However, due to the POSIX timer’s
+userspace semantics, its release can be delayed up to 800 ms
+due to interference in the active task. The ROS timer is even
+worse, experiencing jitters extending beyond 2 seconds under
+attack. This manipulation by TimeTrap can cause delays that
+result in the simultaneous triggering of two subtasks (Threads
+A and B in the ﬁgure), causing errors. To conclude, though
+userspace timers are ﬂexible and easy to implement, TimeTrap
+highlights their drawbacks in enforcing timing constraints.
+Cost Map
+Planned trajectory from perspective of Turtlebot3.Turtlebot3 pose
+Real trajectory in physical world.
+Temporal Displacement
+Sensed map
+Darker grid —> ObstacleLighter grid —> Free space
+Attack launch point
+(a) The two zoomed rectangles contain the generated costmap and the
+path. The path under temporal displacement of 0 .76s is in red while the
+path in the real physical world is in blue.
+// check that the observation buffers for the costmap are current, // we don't want to drive blind 1:    if(!controller_costmap_ros_->isCurrent()){    2:        ROS_WARN("[%s]:Sensor data is out of date, we're not going to allow commanding of the base for safety", ros::this_node::getName().c_str()); 3:        publishZeroVelocity();                                                          4:        return false; 5:    }
+(b) A code snippet of fail-safe mechanism.
+Fig. 6: Case study on Turtlebot3.
+Case Study II on Turtlebot3. This case study focuses on the
+Turtlebot 3 Burger, an indoor robot designed for home service,
+as seen in Figure 9. Equipped with an LDS-01 LiDAR and
+IMU, it uses Adaptive Monte-Carlo Localization (AMCL) and
+path planning in ROS navigation software [44] as the software
+stack. During tests in an ofﬁce, the Turtlebot sends continuous
+location and task updates to a Ground Control Station (GCS)
+set on another PC. The GCS periodically sends trajectory data,
+guiding the Turtlebot’s movement.
+Attack Method. Similar to the earlier case study, the software
+stack integrates with Linux’s real-time RR scheduler. An
+adversarial task, which holds a lower priority than all victim
+tasks, is also added. After the attack synthesis process, the

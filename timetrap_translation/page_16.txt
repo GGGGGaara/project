@@ -1,0 +1,57 @@
+Attack launch point Attack launch point
+ 345:  geometry_msgs::msg::TransformStamped initial_guess = m_pose_initializer.guess( 346:      m_tf_buffer, observation_time, map_frame, observation_frame); 347:  RegistrationSummary summary{}; 348:  const auto pose_out = 349:           m_localizer_ptr->register_measurement(*msg_ptr, initial_guess, *m_map_ptr, &summary);
+/* In function guess()*/63:  try {64:        // attempt to get transform at a given point.65:        return tf_graph.lookupTransform(target_frame, source_frame, time_point);70:      } catch (const tf2::ExtrapolationException &) {71:        return this->impl().extrapolate(tf_graph, time_point, target_frame, source_frame);72:      }
+(a)
+(b) (c) (d)
+Crash
+Two sequences with large temporal displacement
+Lost localization due to T.D
+Attack launch point
+Starting point
+Fig. 11: Case study of Autoware.Auto. (a) Code snippets where temporal displacements happened. (b) Overall map and traveled
+path. (c) Zoomed traveled path and sequences with high temporal displacements that are in purple. (d) The values of two critical
+variables, initial_guess and pose_out, and their relations with temporal displacements.
+(a) Parking Lot
+ (b) Borregas Avenue
+ (c) GoMentum Station
+ (d) San Francisco
+ (e) Shalun
+Fig. 12: Digital twins for testing Autoware.Auto in hardware-in-the-loop simulation environments. All those environments are
+simulated via modeling the real-world.
+etc. We deploy the software stack of OP3 in Nvidia Jetson
+Nano. The simulation of OP3 is running on another PC in
+Gazebo. We generate a series of different tasks in advance
+and send them to OP3 one by one. OP3 receives the task and
+executes the action demanded. If it is already in the process
+of executing a task, any request will be ignored. During the
+testing, TimeTrap was randomly launched at different tasks.
+Attack Result. In most cases, our attack cannot affect the
+stability of OP3. However, for some speciﬁc actions, such
+as walking, TimeTrap can effectively corrupt it, making the
+robot fall. Figure 13(a) shows the movement of joints in OP3.
+We observe that the movements of joints are highly similar
+and periodic with a speciﬁc time interval. However, some
+joints start to produce abnormal movements once TimeTrap is
+launched. This minor error breaches the coordination between
+joints, causing the robot to fall down. Once the CPU budget is
+beyond 5%, adversary can cause an attack outcome as shown
+in Figure 13.
+Cause Analysis. At the control module of each joint in OP3,
+there are two concatenated controllers. The ﬁrst one is the
+action controller that computes the target position a joint
+should reach in each control loop. The second one is the
+effort controller that receives the target position from the
+action controller and then computes the effort the servo should
+perform to reach the target position. Besides the input from
+the action controller, the effort controllers also take the sensor
+input of the Inertial Measurement Units (IMUs) in each joint
+to estimate the current position. Since they take inputs from
+two different sources: higher-level controllers and inertial
+sensors, the temporal displacement may happen within the
+effort controllers. From Figure 13(d), we can observe that
+the temporal displacement was relatively stable (around 0
+ms) when it is not under attack. In this case, different joints
+coordinate well and move steadily. However, once the attack
+is launched, the temporal displacement could increase to 30ms
+to a point that the command calculated by the effort controller
+starts to oscillate (The interval marked by the dotted line in

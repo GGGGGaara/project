@@ -1,0 +1,48 @@
+{
+  "runtime_seconds": 2.1917952000221703,
+  "scenario_count": 72,
+  "runs": 360,
+  "dt_seconds": 0.1,
+  "policies": {
+    "nominal_cv": {
+      "collisions": 29,
+      "below_2m": 33,
+      "mean_jerk_rms": 0.9132415768065404,
+      "worst_gap": -39.444537405119235,
+      "mean_speed_nonbraking": 25.11596967060773,
+      "scenarios_with_infeasibility": 0
+    },
+    "timeout_0.5": {
+      "collisions": 5,
+      "below_2m": 9,
+      "mean_jerk_rms": 3.131697650267369,
+      "worst_gap": -14.160744900174109,
+      "mean_speed_nonbraking": 17.599457501649525,
+      "scenarios_with_infeasibility": 0
+    },
+    "immediate_brake": {
+      "collisions": 0,
+      "below_2m": 0,
+      "mean_jerk_rms": 4.121904380212125,
+      "worst_gap": 5.361586071757259,
+      "mean_speed_nonbraking": 15.468425483103609,
+      "scenarios_with_infeasibility": 0
+    },
+    "robust_hard": {
+      "collisions": 0,
+      "below_2m": 0,
+      "mean_jerk_rms": 2.3021430777207126,
+      "worst_gap": 2.0000180032953523,
+      "mean_speed_nonbraking": 25.11628720988927,
+      "scenarios_with_infeasibility": 0
+    },
+    "robust_comfort": {
+      "collisions": 0,
+      "below_2m": 0,
+      "mean_jerk_rms": 1.565498573401018,
+      "worst_gap": 2.000000047248534,
+      "mean_speed_nonbraking": 24.95918179169425,
+      "scenarios_with_infeasibility": 0
+    }
+  }
+}

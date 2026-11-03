@@ -1,0 +1,45 @@
+Attack launch point
+(a) Motion movement of ankle controller.(b) Control command from pitch controller.
+(c) Joint position of right ankle.(c) Temporal displacement/gid17
+Faulty joint
+Fig. 13: Case study on right ankle pitch controller of OP3.
+The period under attacking is fenced using dotted lines.
+Figure 13(d)). As a result, the position of the right ankle
+joint turns out to be abnormal, which breaks the coordination
+between different joints such that the robot fell down.
+Case Study VI on Jackal UGV . Jackal UGV [65] is an
+unmanned guided vehicle that can operate in both indoor
+and outdoor environments. We set up the simulation world
+in Gazebo and run the software stack on Intel i3-8100.
+Simulated hardware includes the four-wheel vehicle itself and
+a SICK LMS111 laser. The software stack is composed of
+a localization module (google Cartographer [40], [86]) and
+a control module is implemented based on the pure pursuit
+algorithm [87]. We pre-deﬁned several long mission paths in
+an ofﬁce environment (shown in Figure 14). The Jackal UGV
+navigates to track the reference path.
+Attack launch point
+Starting point
+Jackal UGV crashes to the table
+Fig. 14: Case study on Jackal UGV .
+Attack Result and Cause Analysis. From Figure 14, we can
+observe that Jackal UGV failed to track the path and hits
+the table once TimeTrap is launched. In this case study,
+the crash was caused by erroneous location results. In Jack
+UGV’s localization module, Cartographer, there is a sporadic
+task running in the background, responsible for optimizing
+accumulated drifts during the navigation. The optimization
+is supposed to release in every ten laser scans processed
+by the system. Since the optimization aims to mitigate the
+accumulated drifts, its ﬁnish will lead to a shift of localization
+value. The direct consequence is the vehicle’s position will
+shift for a short distance. Such shift is negligible and within
+the tolerance of the controller if Cartographer can keep the
+task running within the implicitly (no deadline speciﬁed for
+this task) expected frequency. However, TimeTrap breaks the
+implicit deadline by constantly delaying the optimization task.
+Consequently, the task cannot ﬁnish in time and its workload
+keeps accumulating which increases the execution time in turn.
+After that, the vehicle’s position shifts more signiﬁcantly such
+that the controller can no longer keep tracking the reference
+path, leading to the crash on the table.

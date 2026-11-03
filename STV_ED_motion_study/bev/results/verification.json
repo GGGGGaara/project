@@ -1,0 +1,63 @@
+{
+  "case_checks": [
+    {
+      "case": "ideal_acceleration",
+      "peak_raw_jerk": [
+        3.3079566543893795,
+        7.84,
+        0.0006768173382442483
+      ],
+      "peak_scope": "raw peak includes zero-speed clamp and is not a validated ride-comfort metric"
+    },
+    {
+      "case": "bev_normal",
+      "peak_raw_jerk": [
+        3.5012975440377487,
+        7.62,
+        0.0
+      ],
+      "peak_scope": "raw peak includes zero-speed clamp and is not a validated ride-comfort metric"
+    },
+    {
+      "case": "bev_near_full",
+      "peak_raw_jerk": [
+        15.34397694663313,
+        6.62,
+        0.001803125200921971
+      ],
+      "peak_scope": "raw peak includes zero-speed clamp and is not a validated ride-comfort metric"
+    },
+    {
+      "case": "bev_cold",
+      "peak_raw_jerk": [
+        16.59218742408314,
+        6.62,
+        0.0
+      ],
+      "peak_scope": "raw peak includes zero-speed clamp and is not a validated ride-comfort metric"
+    },
+    {
+      "case": "bev_cold_slow_friction",
+      "peak_raw_jerk": [
+        30.920454965768208,
+        6.5,
+        0.0013131414172637378
+      ],
+      "peak_scope": "raw peak includes zero-speed clamp and is not a validated ride-comfort metric"
+    }
+  ],
+  "dt_002_vs_001": [
+    {
+      "case": "bev_normal",
+      "max_gate_endpoint_difference_s": 0.03000000000000469,
+      "first_stop_position_difference_m": 0.001956295590138879
+    },
+    {
+      "case": "bev_cold",
+      "max_gate_endpoint_difference_s": 0.009999999999999787,
+      "first_stop_position_difference_m": 0.0010818240622167963
+    }
+  ],
+  "status": "passed",
+  "scope": "case and model consistency checks, not continuous safety or vehicle calibration"
+}

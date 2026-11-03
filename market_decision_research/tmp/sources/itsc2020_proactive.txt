@@ -1,0 +1,626 @@
+=== PAGE 1 ===
+Proactive Longitudinal Velocity Control In Pedestrians-Vehicle
+Interaction Scenarios
+Maria Kabtoul 1,2, Philippe Martinet 2 and Anne Spalanzani 1
+Abstract— Navigation in pedestrian populated environments
+is a highly challenging task, and a milestone on the way to
+fully autonomous urban driving systems. Pedestrian populated
+environments are highly dynamic, uncertain and difﬁcult to
+predict. The strict safety measures in such environments result
+in overly reactive navigation systems, which do not match the
+conduct of experienced drivers. An autonomous vehicle driving
+alongside pedestrians should convey a natural and a socially-
+aware behaviour. Therefore, the vehicle should not merely
+react to the behaviour of the surrounding agents, but should
+rather cooperate and proactively interact with its surrounding.
+Excluding this aspect from the navigation scheme results in
+over-reactive behaviours, an unnatural driving pattern and a
+suboptimal navigation solution. This paper presents a proactive
+longitudinal velocity control method, appropriate for navi-
+gation in close interaction with pedestrians. The work uses
+a cooperation-based pedestrians-vehicle behavioural model to
+ﬁnd the optimal longitudinal velocity control. The method is
+implemented in lateral crossing scenarios with a dense crowd
+of pedestrians. The results are then compared with a reactive
+navigation system. The method is evaluated in terms of the
+vehicle’s travel time and the safety of the pedestrians in the
+scene.
+I. INTRODUCTION
+Despite the ongoing advancements in the ﬁeld of au-
+tonomous transportation, a full autonomy (level 5) is still
+not achieved in any current driving system [1]. Studies show
+that the major challenges on the way to full autonomy lie
+in pedestrian populated environments, where new ethical,
+social and legal considerations arise [2], [3]. This served as
+a motivation for researches and stakeholders in the ﬁeld to
+study pedestrians-vehicle interaction and develop socially-
+aware navigation systems. Primary works on socially-aware
+navigation were focused on pedestrian sized robotic applica-
+tions. New navigation polices were introduced by using an
+interaction model [4]–[6]. Autonomous vehicles navigation
+systems beneﬁted from these solutions later on. However,
+more recent studies argue that a different adaptation is
+required for pedestrians-vehicle interaction [7]–[9]. Each of
+these studies developed an interaction model adapted to their
+suggested interaction scenarios. Two of these models are
+based on social and psychological traits [7], [8] and one
+extends the social force model (SFM) by adding new forces
+speciﬁc to the vehicle’s inﬂuence [9]. These models can be
+used to develop socially-aware navigation systems suitable
+for autonomous vehicles. However, the main limitation in
+the state of the art in socially-aware navigation is the lack
+of proactivity. Proactive behaviours are natural behaviours
+1Univ. Grenoble Alpes, Inria, 38000 Grenoble, France
+2Univ. Cote d’Azur, Inria, Sophia Antipolis, France
+applied by drivers in everyday scenarios. Expert drivers
+interact, cooperate and inﬂuence other road users to navigate
+in an optimal manner. Applying this kind of proactivity in
+autonomous driving systems is key to a natural and socially
+acceptable behaviour. Moreover, the advantages of a proac-
+tive navigation is particularly prominent in dense pedestrians-
+vehicle interaction scenarios. A reactive controller cannot
+consider the cooperation of the pedestrians in the scene and
+their reactions to the vehicle. This leads to over penalizing
+the vehicle’s navigation options. Subsequently, the reactive
+controller would have a poor performance in such scenarios
+[10], leading to suboptimal navigation solutions or even the
+freezing of the vehicle in some cases. Although the term
+”Proactivity” is not used explicitly in the literature very
+often, the concept is considered in several applications. These
+applications include tasks which require inﬂuencing the work
+space. To cite a few Example, this can be a leader/follower
+task such as the work in [4], or minimizing the social effect
+of the navigation policy in [11]. In this work, the proactivity
+is considered as an invitation to the pedestrians to cooperate
+with the vehicle and change their planned paths.
+To investigate the pros and cons of a proactive navigation
+system, this study targets a speciﬁc pedestrians-vehicle in-
+teraction scenario in shared spaces. A shared space does not
+apply any restrictions or priority rules on the vehicle’s navi-
+gation policy. The navigation system of the vehicle consists
+of a global A∗ planner and a local proactive longitudinal
+velocity controller. The study analysis the performance of
+the controller in a lateral crossing scenario. The proactive
+solution suggested in this work is compared to a reactive
+navigation method. The performance is evaluated based on
+the vehicle’s travel time and the safety of the pedestrians in
+the scene. It is important to point out that comparing solely
+based on the longitudinal control limits the performance of
+both the proactive and reactive controllers. However, the
+choice of the lateral crossing scenario with a dense crowd
+is made to compensate for this limitation, as the changes in
+the longitudinal velocity is more important that the lateral
+changes in such scenarios.
+The structure of this paper is as follows: Section II
+explains the models of both the pedestrian, the vehicle and
+the interaction model between the two. Section III deals with
+the calculations of the collision probability, while section IV
+presents the proactive navigation framework. Finally, section
+V discusses the main results of this work.
+
+=== PAGE 2 ===
+II. P EDESTRIANS AND VEHICLE MODELING
+A proactive navigation scheme is speciﬁc to pedestrians-
+vehicle interaction scenarios. Therefore, it is essential to
+clearly understand the model of a pedestrian, that of the
+vehicle and eventually the model of interaction between the
+two. The models explained in this section are used when
+referring to a pedestrian or a vehicle throughout this study.
+Navigating among pedestrians imposes low velocities and
+acceleration limits on the vehicle. In this case, the vehicle
+is modelled using the kinematic bicycle model with a zero
+slip assumption [12]. The position of the center of mass
+of the vehicle and its orientation at time t is XV (t) =
+[xv(t),yv(t)]T and θv(t) respectively. The steering angle is
+δ(t) and the longitudinal velocity control is u(t). L is the
+length of the vehicle. Finally, the differential model of the
+vehicle is:
+˙XV (t) = [u(t) cosθv(t),u (t) sinθv(t)]T
+˙θv(t) = u(t)
+L tanδ(t) (1)
+On the other hand, a pedestrian is modelled as a point
+in the 2D plane. The position of a pedestrian j at time
+t is Xj(t) = [ xj(t),yj(t)]T and its velocity is Vj(t) =
+[vxj (t),vyj (t)]T . Two types of interactions should be con-
+sidered to model a pedestrian: the interactions with other
+pedestrians in the scene and the interactions with the vehicle.
+The cooperation-based trajectory planning model presented
+in [7] suggested a suitable interaction model. In a ﬁrst step,
+the model assigns a cooperation factor ( CFj(t)) to each
+pedestrian j at time t. This factor is a quantitative measure
+of the pedestrian’s tendency to cooperate with the vehicle.
+This measure is based on the state of the space, the goal
+of the pedestrian and the behaviour of the vehicle. The
+latter is introduced using the measure of the probability of
+collision between the pedestrian and the vehicle. Once this
+factor is determined, another cooperation-based trajectory
+planning model is ran to plan the pedestrian’s path. The
+global framework of the model is illustrated in Fig. 1
+Fig. 1. The cooperation-based pedestrian’s trajectory planning model
+However, one drawback of this model, pointed out in [7],
+is that the model is impersonal. Meaning that two pedestrians
+existing in the same situation with the same goal destination
+will act similarly. Which is an incorrect assumption in real
+life situations. Multiple other factors can affect the behaviour
+of a pedestrian. These factors can include the age, physical
+and psychological state of the pedestrian for example [13].
+Excluding these factors would lead to errors or biases in
+the trajectory prediction. To account for these factors, a new
+parameter is added to the cooperation model. We call it the
+inner cooperation factor (ICF ). This parameter is unique to
+each agent and constant throughout an interaction. The ICF
+replaces the additive parameter B in the cooperation model
+as follows: The cooperation model of an agent j as shown in
+[7] is: CFj(t) = AI +B, where I∈ [0, 1]4×1 is the model
+inputs and A∈ R1×4, B = 0.5 are the model parameters.
+Then, the modiﬁed cooperation model is:
+CFj(t) = AI +ICF with:ICF ∈ [0, 1] (2)
+During an interaction scenario, the ICF of each detected
+pedestrian is updated over consecutive time intervals (Fig.
+2). First, an initial value is assumed ( ICF = B). Then,
+the trajectory of the agent is predicted for a ﬁxed prediction
+horizon Th (using the previous model, as shown in Fig. 1).
+This is then compared with the actual observed trajectory.
+ICF is updated using a simple gradient descent method to
+minimize the trajectory prediction error. The computation
+of the gradient of the error is straightforward since both
+the modiﬁed cooperation model and the trajectory planning
+model are linear.
+Fig. 2. Updating the inner cooperation factor
+III. T HE PROBABILITY OF COLLISION
+The probability of collision (POC) between the vehicle and
+a pedestrian is the main parameters expressing the effect of
+the vehicle’s behaviour on the cooperation of the pedestrian
+in the interaction model [7]. Therefore, the proactive control
+can be derived using the gradient of the POC to convey a
+desired vehicle’s inﬂuence. Most of the methods used to
+compute the POC between two entities are numerical and
+evaluating the gradient is not straightforward [14]. This is
+a drawback in our case. Therefore, our selected method
+depends on using an analytical form with a differentiable
+function. The method is based on using a probability distri-
+bution to describe the trajectory of each agent. This is used to
+derive a probability density function (PDF) of the Euclidean
+distance between the two agents. Finally, the POC is equal
+to the probability of the distance falling below a threshold
+minimum distance.
+Given a pedestrian j in interaction with a vehicle. As-
+suming that each of the position parameters for both the
+pedestrian and the vehicle follow a natural distribution with
+a variance σ2(t), then:
+Ex(t) = (xj(t)−xv(t))∼N (µxj (t)−µxv (t), 2σ(t)) (3)
+where the symbol µ[X] denotes the mean value of the
+parameter [X].
+Then, the weighted distance between the pedestrian and the
+
+=== PAGE 3 ===
+vehicle follows a two degrees of freedom non-central X
+distribution [15]:
+Z(t) =
+√
+E2x(t)+E2y(t)
+2σx(t) ∼X (2,λ (t))
+with: λ(t) = D(t)
+2σx(t)
+(4)
+where D(t) is the Euclidean distance between the mean
+values of the positions of the pedestrian and the vehicle at
+time t.
+The probability of collision at a time instant t0 is computed
+for a ﬁxed prediction horizon Th. First, the trajectories
+of both agents are predicted over the ﬁxed time interval
+[t0,Th +t0]. Then, the distribution of the weighted distance
+between the two agents (Z) is estimated over this time inter-
+val. Finally, the probability of collision is computed using
+the probability density function of the weighted distance
+(fZ(x; 2,λ )) and a limit minimum distance dlim as follows:
+P[j,v](t0) = 1
+Th
+∫ t0+Th
+t=t0
+∫ dlim
+x=0
+fZ(x; 2,λ (t))dxdt (5)
+IV. P ROACTIVE LONGITUDINAL VELOCITY CONTROL
+Ensuring the safety of the pedestrians in the scene remains
+the main priority of the navigation system. Invoking more
+cooperative pedestrian behaviours for is desired providing
+that it does not compromise the safety at any time. The
+suggested safety index (SI) is a quantitative measure based
+on a minimal distance between the vehicle’s body and
+the pedestrian. Using the concepts of the personal and the
+cooperation zones discussed in [7], the safety index for a
+pedestrian j at time t is evaluated as follows:
+SIj(t) = Dj(t)−RS
+RC−RS
+(6)
+where:DJ is the minimum distance between the pedestrianj
+and the body of the vehicle, RS is the radius of the personal
+zone and RC is the radius of the cooperation zone (Fig.
+3.B). SI takes negative values when the vehicle enters the
+personal zone of the pedestrian indicating a failed navigation.
+Entering the cooperation zone results in SIj < 1 expressing
+a possible discomfort of the pedestrian. A better navigation
+policy results in larger SI values.
+Moreover, to reduce the complexity of the navigation task,
+a zone of vehicle’s inﬂuence is deﬁned. In the navigation
+policy, only pedestrians detected within this zone are taken
+into consideration. The inﬂuence zone proposed in this work
+is a 180o zone with the same orientation as the vehicle. The
+radius of the zone is proportional to the linear velocity of
+the vehicle. This ensures a larger inﬂuence margin in higher
+velocities. The parameters of the inﬂuence zone (center
+XI = [xI,yI ]T and radius RI) are found as follows:
+XI (t) = XV (t)− L
+2V (t), RI (t) = rmin(1 +u(t)) (7)
+with: rmin≥ 0, V (t) = [u(t) cosθV (t),u (t) sinθV (t)]T .
+Fig. 3.A shows multiple examples of the inﬂuence zone
+with different velocities of the vehicle.
+In the following, the problem of proactive navigation is
+presented in a pedestrians-vehicle interaction scenario. The
+problem is formulated as an optimal control problem to ﬁnd
+the longitudinal velocity control of the vehicle. The solution
+is then found based on the pedestrian-vehicle cooperation
+model.
+Fig. 3. A: The zone of inﬂuence of the vehicle with different vehicle
+velocities, where a ∈ R+, B: The pedestrian zones used to evaluate the
+security index
+A. Problem Formulation
+Given an interaction scenario between a vehicle and N
+pedestrians. Let XP (t) = [ X1(t),...,X N (t)], VP (t) =
+[V1(t),...,V N (t)] be the perceived positions and velocities
+of the N pedestrians at time t respectively. Given that only
+the ﬁrst M ≤ N pedestrians are detected in the inﬂuence
+zone of the vehicle. Provided with a steering angle from
+a higher level global planner, ﬁnd the longitudinal velocity
+control u(t) of the vehicle, such that:
+u(t) = min
+u(t)∈[−umax,+umax]
+Jreg (u(t),VP (t),XP (t),XV (t))
+(8)
+Jreg = 1
+Th
+∫ t0+Th
+t=t0
+J (u(t),VP (t),XP (t),XV (t))+T (u(t))
+(9)
+where umax is the speed limit of the vehicle and J is a
+cost function that aims to maximize the cooperation of the
+inﬂuenced agents while ensuring their safety:
+J = 1
+M
+M∑
+j=1
+α1 (1−CFj(t))−α2SIj(t) (10)
+with (α1,α 2)∈ R2
++, and T (u(t)) is a Tikhonov regulariza-
+tion function [16] added to penalize inﬁnite solutions and
+prefer solutions with smaller L2 norms:
+T (u(t)) = α3||u(t)||2
+2 ; α3∈ R+ (11)
+B. Solving the Optimal Control Problem
+The solution for the optimization problem in Eq. 8 derived
+using the Hamilton–Jacobi–Bellman (HJB) equation has the
+form:
+u(t) = 1
+2Mα 3
+M∑
+j=1
+α1∂uCFJ (t) +α2∂uSIj (t) (12)
+the symbol ∂yx is equivalent to ∂x
+∂y ;∀x,y .
+The problem is then reduced to ﬁnding the gradient of the
+cooperation factor and the safety index with respect to the
+vehicle’s control.
+The gradient of the safety index of agent j depends only
+on the gradient of the distance to the vehicle Dj(t) (Eq. 6).
+
+=== PAGE 4 ===
+To derive the gradient of the distance, let’s rewrite both the
+pedestrian’s and the vehicle’s differential models. Using the
+same parameter assumptions used in section II for both the
+pedestrian and the vehicle, let’s write: XV
+u = ∂uXV and
+Xj
+u = ∂uXj. Then, the gradient of the Euclidean distance
+can be written as:
+∂uDj(t) = ∂XPDj(t)Xj
+u +∂XVDj(t)XV
+u (13)
+The term XV
+u is obtained by a numerical solution of the
+vehicle’s model. The only term left unknown is ˙Xj
+u =
+∂uVj(t) which can be determined using the cooperation-
+based pedestrian trajectory planning model [7], and the fol-
+lowing two gradients can be derived by simple calculations:
+∂uVj(t) = F1
+(
+∂uVj(t− 1),CFj(t),∂uP[j,v](t)
+)
+(14)
+∂uCFj(t) = F2
+(
+∂uVj(t− 1),∂uP[j,v](t)
+)
+(15)
+where: F1 : R3→ R2, F2 : R2→ R are linear functions.
+Deriving the probability of collision using the method
+in section III allows to compute its gradient using the
+probability density function of the distance fZ(dlim; 2,λ ):
+∂uP[j,v](t) = 1
+dlim
+∂uDj(t)fZ(dlim; 2,λ ) (16)
+V. S IMULATIONS AND RESULTS
+The test simulations include interactions between the vehi-
+cle and a group of pedestrians in a lateral crossing scenario.
+The pedestrians in the simulations plan their trajectories
+using the cooperation-based trajectory planning model with
+the modiﬁed cooperation factor, as illustrated in Fig. 1. In
+every simulation, the pedestrians are initialized with random
+inner cooperation factors ( ICF ∈ [0, 1]) and random goal
+points within a deﬁned workspace.
+Fig. 4 shows the overall structure of the vehicle’s proactive
+navigation system.
+Fig. 4. The Proactive Navigation Policy
+A. A reactive method and the possible freezing problem
+The same previous structure is used to run the simulations
+with a reactive linear velocity controller. The reactive control
+is computed using the same method as the proactive one,
+with a modiﬁed cost function. This modiﬁed cost function
+includes only a reactive term based on the safety index:
+Jreactive(t) = 1
+M
+M∑
+j=1
+−α
+′
+2SIj(t) (17)
+where α
+′
+2 ∈ R+, M is the total number of pedestrians
+detected in the inﬂuence zone and SIj is the same safety
+index deﬁned in Eq. 6.
+To compare the two methods, the same simulation is
+ran twice. With the same initial positions and goals for
+both the vehicle and the pedestrians. As well as, the same
+inner cooperation factors ( ICF s) for the pedestrians. The
+only difference is the local velocity controller (proactive or
+reactive).
+An example simulation is shown in Fig. 5. The simulation
+includes a lateral crossing scenario between a vehicle and a
+ﬂow of N = 66 pedestrians. The maximum velocity allowed
+in the space is 4m.s−1 for the vehicle and 3m.s−1 for
+the pedestrians. The ICF s for the pedestrians are assigned
+randomly between [0, 1]. The ﬁgure shows the resulting
+trajectories in the XY plane with the two control modes.
+In each mode, four different screenshots of the simulation
+are shown for a better visualization of its progress. The time
+interval present in each screenshot is noted on the right of
+the ﬁgure. The ﬁgure clearly shows that in the proactive
+mode the vehicle successfully crosses the pedestrians ﬂow
+by anticipating their cooperation. While in the reactive mode,
+the vehicle stops to ensure the safety margins. Once the
+vehicle stops, the pedestrians continue their crossing and
+the reactive mode will not be able to ﬁnd a valid solution.
+This results in the freezing of the vehicle until the ﬂow of
+pedestrians ends.
+Fig. 5. Pedestrian-vehicle lateral crossing simulation (two modes)
+B. The Vehicle’s Travel Time
+The travel time of an agent (vehicle or pedestrian) is the
+time required to travel from the initial position to the goal
+
+=== PAGE 5 ===
+destination. To compare the travel time between the proactive
+mode and the reactive mode in relative terms, we deﬁne two
+parameters. These two parameters serve as reference travel
+times. The ﬁrst parameter is the reference pedestrian crossing
+time (TTpeds): the time required for all the pedestrians in
+the simulation to complete their crossing without a vehicle
+interference. This time is measured by running a reference
+simulation which contains the same pedestrian conﬁguration,
+but without the vehicle. The second parameter is the vehicle’s
+reference travel time ( TTref ): the time required for the
+vehicle to reach its ﬁnal destination without any pedestrian
+interference. In the same manner, this time is measured by
+running a simulation which does not contain any pedestrians
+but has the same vehicle initialization and goal.
+LetTT (s) be the travel time of the vehicle in a simulation
+s regardless of the navigation mode. Then, we can deﬁne two
+relative travel times for the vehicle in this simulation s:
+• The vehicle’s travel time relative to its reference travel
+time:
+TT [veh/ref ](s) = TTref (s)−TT (s)
+TTref
+× 100% (18)
+• The vehicle’s travel time relative to the pedestrians’
+refernce crossing time:
+TT [veh/peds](s) = TTpeds(s)−TT (s)
+TTpeds
+× 100% (19)
+Using these two relative terms instead of the original vehicle
+travel time in seconds (TT (s)), allows us to compare the per-
+formance of the proactive and reactive modes independently
+of the pedestrians’ conﬁguration in a set of test simulations.
+A total of 200 simulations are run (100 pair) with a random
+initialization. Each pair consists of the same simulation with
+a different navigation mode (reactive / proactive). The two
+previous relative travel times are computed for every simula-
+tion. Fig. 6.A shows the histogram of the vehicle’s travel time
+relative to its reference travel time, where the two modes are
+shown in different colors. TT [veh/ref ] takes negative values
+in both modes. Which shows that even the proactive mode
+slows down the vehicle or even immobilise it sometimes
+to cross the pedestrian ﬂow. However, this delay is much
+smaller in the proactive case. The proactive mode yields
+a navigation 10− 50% slower than the reference crossing.
+While the reactive mode can results in very high delays (can
+be over 250% slower). The histogram of the vehicle’s travel
+time relative to the pedestrians reference crossing time is
+shown in Fig. 6.B. TT [veh/peds] takes positive values for the
+proactive mode and negative values for the reactive mode.
+This means that the proactive mode ﬁnds a solution while
+the pedestrians are still crossing. Therefore reaching the goal
+destination before all the pedestrians have crossed. While in
+the reactive mode the vehicle is frozen for some time due to
+the detection of nearby pedestrians. The important point to
+notice here is the range of values existent in the histogram of
+TT [veh/peds]. In the reactive mode, the histogram is extended
+over a very small range (all values are around −20%). This
+shows that there is a high correlation between the pedestrian
+crossing time and the vehicle’s travel time in the reactive
+mode. On the other hand, TT [veh/peds] in the proactive
+mode takes a large range of values ( [15%, 60%]). This shows
+that the proactive mode does not depend on the crossing
+time of the pedestrian ﬂow. It also shows that the travel
+time gain in the proactive mode differs depending on the
+particular interaction situation. Because the proactive action
+is only taken when the safety of the pedestrians is ensured.
+In other words, in the proactive mode a solution is always
+found regardless of the crossing time of the pedestrian ﬂow.
+However, a large gain in the travel time cannot always be
+ensured. A more detailed analysis of our simulation results
+show that the gain in the travel time is larger with larger
+crowds of pedestrians.
+Fig. 6. Histogram of the vehicle’s relative travel time.
+C. Pedestrians’ safety test
+To evaluate the navigation method from a safety per-
+spective, a global performance index (PI) is deﬁned in a
+simulation of period T with N pedestrians as:
+PI = min
+j∈[1,...,N ]
+min
+t∈[0,T ]
+SIj(t) (20)
+where SIj(t) is the safety index deﬁned in Eq. 6 for a
+pedestrian j at time t.
+In other words, the performance of the vehicle is judged
+by the minimum safety margin it has with a pedestrian over
+the simulation time (i.e. worst case margin).
+Fig. 7 shows the histogram of the performance index.
+PI is evaluated over the same previous 100 simulations
+with the proactive mode. The histogram shows that most
+PI values are in [0, 1]. This means that in the proactive
+mode the vehicle enters the cooperation zone of at least one
+pedestrian at a certain time. However, the histogram does
+not contain any negative values. This mean that the proactive
+mode maintained the imposed safety margins and the vehicle
+did not enter the security zone of any pedestrian. Therefore,
+the navigation was successful in terms of safety.
+Fig. 7. The histogram of the global security index P I
+However, the current safety measure uses only the position
+of the pedestrian with the assumption of equal safety margins
+
+=== PAGE 6 ===
+around the pedestrian. This is a strict measure in comparison
+with real behaviours of pedestrians. A safety measure that
+considers the velocity of the pedestrian along with a different
+security zone (ellipses instead of a circle for example [17])
+is required for a more realistic estimation.
+D. Results with more/less cooperative crowds
+To investigate the effect of the cooperativeness of the
+crowd, the ICF parameter is manipulated. By initializing
+the pedestrians’ ICF s values in [0.5, 1], a more cooperative
+crowd is simulated. Whereas, a less cooperative crowd is
+simulated by initializing it in [0, 0.5]. In the previous test,
+the ICF s for the pedestrians are chosen randomly in [0, 1]
+to simulate a normal mixed crowd.
+200 more simulations are ran in the proactive mode of
+pedestrians-vehicle lateral crossing scenario. Combined with
+the previous tests, this results in a total of 300 proactive
+mode simulations: 100 with a normal crowd, 100 with a
+cooperative crowd and 100 with an uncooperative crowd.
+The vehicle’s travel time relative to its reference travel time
+TT [veh/ref ] is computed for every simulation. Fig. 8 shows
+the normal distribution ﬁt to the histogram of TT [veh/ref ]
+for each type of the simulated crowd. The ﬁgure shows that
+the proactive mode does depend on the cooperativeness of
+the simulated crowd. A better performance is obtained with
+more cooperative crowds. Whereas, longer time delays can
+occur with highly uncooperative crowds.
+Fig. 8. Normal distribution of the vehicle’s relative travel time T T[veh/ref ]
+VI. C ONCLUSION
+This paper presents a navigation solution suitable to
+pedestrians-vehicle interaction scenarios. This proactive so-
+lution helps the autonomous driving system to convey a more
+natural behaviour and avoid suboptimal navigation solutions.
+The work uses a cooperation-based behavioural model for the
+pedestrians-vehicle interaction [7]. The proactive framework
+is then built based on the cooperation measure. The longi-
+tudinal velocity is controlled locally to increase the cooper-
+ativeness of the pedestrians in interaction with the vehicle.
+This is done while ensuring (and prioritizing) the safety of
+all the pedestrians in the scene. The results of the proactive
+navigation is compared to a reactive navigation mode. The
+results shows a signiﬁcant travel time gain with the proactive
+mode regardless of the density of the pedestrians crowd. This
+gain is obtained while ensuring the safety measures. The
+performance of the method was analysed with different types
+of pedestrian crowds in term of their cooperativeness. This
+work serves as a starting point to build a complete proactive
+navigation framework. The scope of this study only covered
+the longitudinal velocity control in lateral crossing scenarios.
+This is a limitation that we will address in future works to
+target both the longitudinal and lateral controls. In addition,
+more complex scenario will be considered to simulate more
+realistic everyday scenarios.
+ACKNOWLEDGMENT
+This research is part of the HIANIC project, funded by the
+French National Research Agency (ANR-17-CE22-0010).
+REFERENCES
+[1] E. Ackerman, “Toyota’s gill pratt on self-driving cars and the reality
+of full autonomy,” Spectrum, International Institute of Electrical
+Engineers (www.ieee.org), Jun. 2017.
+[2] T. Bellet et al., “From semi to fully autonomous vehicles: New emerg-
+ing risks and ethico-legal challenges for human-machine interactions,”
+Transportation Research Part F: Trafﬁc Psychology and Behaviour,
+Elsevier, vol. 63, pp. 153–164, Apr. 2019.
+[3] L. Adouane, “Toward fully autonomous vehicle navigation: From
+behavioral to hybrid multi-controller architectures,” in The 11th Inter-
+national Workshop on Robot Motion and Control (RoMoCo), Wasowo,
+Poland, Jul. 2017, pp. 85–98.
+[4] A. Clodic et al. , “Rackham: An interactive robot-guide,” in The
+15th IEEE International Symposium on Robot and Human Interactive
+Communication, Sep. 2006, pp. 502–509.
+[5] G. Ferrer, A. Garrell, and A. Sanfeliu, “Robot companion: A social-
+force based approach with human awareness-navigation in crowded
+environments,” in IEEE/RSJ International Conference on Intelligent
+Robots and Systems, Tokyo , Nov. 2013, pp. 1688–1694.
+[6] Y .-Q. Jiang, B.-K. Chen, B.-H. Wang, and W.-F. Wong, “Extended
+social force model with a dynamic navigation ﬁeld for bidirectional
+pedestrian ﬂow,” Frontiers of Physics, vol. 12, pp. 1–9, May 2017.
+[7] M. Kabtoul, A. Spalanzani, and P. Martinet, “Towards proactive
+navigation: A pedestrian-vehicle cooperation based behavioral model,”
+International Conference on Robotics and Automation, Paris, France ,
+May 2020.
+[8] T. Randhavane, A. Bera, E. Kubin, A. Wang, K. Gray, and
+D. Manocha, “Pedestrian dominance modeling for socially-aware robot
+navigation,” CoRR, vol. abs/1810.06613, 2018.
+[9] D. Yang, U. Ozguner, and K. Redmill, “Social force based microscopic
+modeling of vehicle-crowd interaction,” in IEEE Intelligent Vehicles
+Symposium, Jun. 2018, pp. 1537–1542.
+[10] A. Vemula, K. Muelling, and J. Oh, “Modeling cooperative navigation
+in dense human crowds,” in 2017 IEEE International Conference on
+Robotics and Automation, Singapore , May 2017, pp. 1685–1692.
+[11] G. Ferrer and A. Sanfeliu, “Proactive kinodynamic planning using the
+extended social force model and human motion prediction in urban
+environments,” in IEEE/RSJ International Conference on Intelligent
+Robots and Systems , Sep. 2014, pp. 1730–1735.
+[12] P. Polack, F. Altch ´e, B. Novel, and A. de La Fortelle, “The kinematic
+bicycle model: A consistent model for planning feasible trajectories
+for autonomous vehicles?” in IEEE Intelligent Vehicles Symposium ,
+Jun. 2017, pp. 812–818.
+[13] F. Durupınar, U. G ¨ud¨ukbay, A. Aman, and N. I. Badler, “Psychological
+parameters for crowd simulation: From audiences to mobs,” IEEE
+Transactions on Visualization and Computer Graphics , vol. 22, no. 9,
+pp. 2145–2159, Sep. 2016.
+[14] L. Chen, X.-Z. Bai, Y .-G. Liang, and K. Li, Calculation of Collision
+Probability. Springer, 12 2017, pp. 135–183.
+[15] F. K. Chan, “Miss distance–generalized variance non-central chi
+distribution,” in AAS/AIAA Space Flight Mechanics Meeting , 2011,
+pp. 11–175.
+[16] A. N. Tikhonov, “On the stability of inverse problems,” Doklady
+Akademii Nauk SSSR , vol. 39 (5), p. 195–198, 1943.
+[17] J. Rios-Martinez, A. Spalanzani, and C. Laugier, “From proxemics
+theory to socially-aware navigation: A survey,” International Journal
+of Social Robotics , vol. 7, pp. 137–153, Apr. 2014.

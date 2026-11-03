@@ -1,0 +1,4 @@
+# Current vehicle-motion study only. Historical scheduler also requires pandas.
+# Package list, not a cross-platform or fully transitive lockfile.
+numpy
+matplotlib

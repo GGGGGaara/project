@@ -1,0 +1,24 @@
+{
+  "cases": 48,
+  "completed": 36,
+  "within_010m": 36,
+  "max_abs_stop_error_m": 0.007291275545101783,
+  "max_raw_jerk_m_s3": 1.265273439443465,
+  "max_hold_drift_m": 0.0005690274516467753,
+  "reference_not_found_n": 12,
+  "failed_cases": [
+    "v4_soc0.55_temp25_tau0.12",
+    "v4_soc0.55_temp25_tau0.18",
+    "v4_soc0.55_temp25_tau0.35",
+    "v4_soc0.55_temp-5_tau0.12",
+    "v4_soc0.55_temp-5_tau0.18",
+    "v4_soc0.55_temp-5_tau0.35",
+    "v4_soc1_temp25_tau0.12",
+    "v4_soc1_temp25_tau0.18",
+    "v4_soc1_temp25_tau0.35",
+    "v4_soc1_temp-5_tau0.12",
+    "v4_soc1_temp-5_tau0.18",
+    "v4_soc1_temp-5_tau0.35"
+  ],
+  "scope": "Synthetic longitudinal tracking baseline; no collision experiment, real-car calibration, slope or innovation claim."
+}

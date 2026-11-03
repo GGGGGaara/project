@@ -1,0 +1,10 @@
+sigma_s,comparison,risk_difference_pp,bootstrap_low_pp,bootstrap_high_pp
+0.4,joint_robust minus joint_nominal,-14.399999999999999,-16.6,-12.3
+0.4,joint_robust minus robust_no_refuge,-9.6,-11.5,-7.8
+0.4,joint_robust minus local_prediction,-18.2,-20.599999999999998,-15.8
+1.0,joint_robust minus joint_nominal,-16.5,-19.0,-14.099999999999998
+1.0,joint_robust minus robust_no_refuge,-7.199999999999999,-9.0,-5.6000000000000005
+1.0,joint_robust minus local_prediction,-18.7,-21.4,-16.197500000000037
+1.6,joint_robust minus joint_nominal,-13.5,-16.3,-10.9
+1.6,joint_robust minus robust_no_refuge,-6.7,-8.4,-5.2
+1.6,joint_robust minus local_prediction,-15.299999999999999,-18.0,-12.6

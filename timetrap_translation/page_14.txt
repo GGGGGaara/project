@@ -1,0 +1,148 @@
+[44] “Ros navigation github.” https://github.com/ros-planning/navigation. Ac-
+cessed: 2022-01-01.
+[45] “Ros2 rcl rclcpp rclpy libraries.” https://github.com/orgs/ros2/
+repositories. Accessed: 2022-11-19.
+[46] S. Lu, S. Park, E. Seo, and Y . Zhou, “Learning from mistakes: a
+comprehensive study on real world concurrency bug characteristics,”
+in Proceedings of the 13th international conference on Architectural
+support for programming languages and operating systems , pp. 329–
+339, 2008.
+[47] G. Li, S. Lu, M. Musuvathi, S. Nath, and R. Padhye, “Efﬁcient scal-
+able thread-safety-violation detection: ﬁnding thousands of concurrency
+bugs during testing,” in Proceedings of the 27th ACM Symposium on
+Operating Systems Principles , pp. 162–180, 2019.
+[48] Y . Sui and J. Xue, “Svf: interprocedural static value-ﬂow analysis in
+llvm,” in Proceedings of the 25th international conference on compiler
+construction, pp. 265–266, 2016.
+[49] G. Bernat, A. Burns, and A. Liamosi, “Weakly hard real-time systems,”
+IEEE transactions on Computers , vol. 50, no. 4, pp. 308–321, 2001.
+[50] N. Vreman, R. Pates, and M. Maggio, “Weaklyhard. jl: Scalable analysis
+of weakly-hard constraints,” in 2022 IEEE 28th Real-Time and Em-
+bedded Technology and Applications Symposium (RTAS) , pp. 228–240,
+IEEE, 2022.
+[51] T. Sherwood, E. Perelman, G. Hamerly, and B. Calder, “Automatically
+characterizing large scale program behavior,” in Proceedings of the 10th
+International Conference on Architectural Support for Programming
+Languages and Operating Systems , ASPLOS X, (New Y ork, NY , USA),
+p. 45–57, Association for Computing Machinery, 2002.
+[52] J. Mars, L. Tang, R. Hundt, K. Skadron, and M. L. Soffa, “Bubble-
+up: Increasing utilization in modern warehouse scale computers via
+sensible co-locations,” in Proceedings of the 44th annual IEEE/ACM
+International Symposium on Microarchitecture , pp. 248–259, 2011.
+[53] “Autonomous valet parking demo 2020.” https://www.autoware.org/post/
+autonomous-valet-parking-2020. Accessed: 2022-12-12.
+[54] C. Lattner and V . Adve, “Llvm: A compilation framework for lifelong
+program analysis & transformation,” in International symposium on code
+generation and optimization, 2004. CGO 2004. , pp. 75–86, IEEE, 2004.
+[55] S. S. Banerjee, S. Jha, Z. Kalbarczyk, and R. K. Iyer, “Bayesperf:
+minimizing performance monitoring errors using bayesian statistics,” in
+Proceedings of the 26th ACM International Conference on Architectural
+Support for Programming Languages and Operating Systems , pp. 832–
+844, 2021.
+[56] “Ros-industrial applications of moveit.” https://moveit.ros.org/robots/.
+Accessed: 2022-10-23.
+[57] “Picknik robotics wins space force, nasa contracts.” https://www.
+therobotreport.com/picknik-robotics-wins-space-force-nasa-contracts/.
+Accessed: 2022-10-23.
+[58] X. Shi, L. Cao, D. Wang, L. Liu, G. Y ou, S. Liu, and C. Wang, “Hero:
+Accelerating autonomous robotic tasks with fpga,” in 2018 IEEE/RSJ
+International Conference on Intelligent Robots and Systems (IROS) ,
+pp. 7766–7772, IEEE, 2018.
+[59] C. Wang, J. Bingham, and M. Tomizuka, “Trajectory splitting: A
+distributed formulation for collision avoiding trajectory optimization,”
+in 2021 IEEE/RSJ International Conference on Intelligent Robots and
+Systems (IROS) , pp. 8113–8120, IEEE, 2021.
+[60] S. Kohn, A. Blank, D. Puljiz, L. Zenkel, O. Bieber, B. Hein, and
+J. Franke, “Towards a real-time environment reconstruction for vr-
+based teleoperation through model segmentation,” in 2018 IEEE/RSJ
+International Conference on Intelligent Robots and Systems (IROS) ,
+pp. 1–9, IEEE, 2018.
+[61] M.-Y . Wang, A. A. Kogkas, A. Darzi, and G. P . Mylonas, “Free-view,
+3d gaze-guided, assistive robotic system for activities of daily living,”
+in 2018 IEEE/RSJ International Conference on Intelligent Robots and
+Systems (IROS) , pp. 2355–2361, IEEE, 2018.
+[62] “Ardupilot project.” https://ardupilot.org/. Accessed: 2022-10-02.
+[63] L. Meier, D. Honegger, and M. Pollefeys, “Px4: A node-based mul-
+tithreaded open source robotics framework for deeply embedded plat-
+forms,” in 2015 IEEE international conference on robotics and automa-
+tion (ICRA) , pp. 6235–6240, IEEE, 2015.
+[64] “Robotis op3.” https://emanual.robotis.com/docs/en/platform/op3/
+introduction/. Accessed: 2021-08-15.
+[65] “Jackal ugv.” https://clearpathrobotics.com/
+jackal-small-unmanned-ground-vehicle/. Accessed: 2021-07-30.
+[66] S. Kato, S. Tokunaga, Y . Maruyama, S. Maeda, M. Hirabayashi, Y . Kit-
+sukawa, A. Monrroy, T. Ando, Y . Fujii, and T. Azumi, “Autoware on
+board: Enabling autonomous vehicles with embedded systems,” in 2018
+ACM/IEEE 9th International Conference on Cyber-Physical Systems
+(ICCPS), pp. 287–296, IEEE, 2018.
+[67] M. Alcon, H. Tabani, L. Kosmidis, E. Mezzetti, J. Abella, and F. J.
+Cazorla, “Timing of autonomous driving software: Problem analysis and
+prospects for future solutions,” in 2020 IEEE Real-Time and Embedded
+Technology and Applications Symposium (RTAS) , pp. 267–280, IEEE,
+2020.
+[68] P . R. Nikiema, A. Kritikakou, M. Traiola, and O. Sentieys, “Impact of
+transient faults on timing behavior and mitigation with near-zero wcet
+overhead,” in 35th Euromicro Conference on Real-Time Systems (ECRTS
+2023), Schloss Dagstuhl-Leibniz-Zentrum f ¨ur Informatik, 2023.
+[69] I. Gog, S. Kalra, P . Schafhalter, J. E. Gonzalez, and I. Stoica, “D3: a
+dynamic deadline-driven approach for building autonomous vehicles,”
+in Proceedings of the Seventeenth European Conference on Computer
+Systems, pp. 453–471, 2022.
+[70] Y . Wang, A. Li, J. Wang, S. Baruah, and N. Zhang, “Opportunistic
+data ﬂow integrity for real-time cyber-physical systems using worst case
+execution time reservation,” in USENIX Security Symposium , 2024.
+[71] M. Sudvarg, A. Li, D. Wang, S. Baruah, J. Buhler, C. Gill, N. Zhang, and
+P . Ekberg, “Elastic scheduling for harmonic task systems,” in 2024 Real-
+Time and Embedded Technology and Applications Symposium (RTAS) ,
+IEEE, 2024.
+[72] J. Wang, A. Li, H. Li, C. Lu, and N. Zhang, “Rt-tee: Real-time system
+availability for cyber-physical systems using arm trustzone,” in 2022
+IEEE Symposium on Security and Privacy (SP) , pp. 352–369, IEEE,
+2022.
+[73] M. Sudvarg and C. Gill, “A concurrency framework for priority-aware
+intercomponent requests in camkes on sel4,” in 2022 IEEE 28th Inter-
+national Conference on Embedded and Real-Time Computing Systems
+and Applications (RTCSA) , pp. 1–10, IEEE, 2022.
+[74] D. Grunwald and S. Ghiasi, “Microarchitectural denial of service:
+Insuring microarchitectural fairness,” in MICRO, IEEE, 2002.
+[75] J. Hasan, A. Jalote, T. Vijaykumar, and C. E. Brodley, “Heat stroke:
+power-density-based denial of service in smt,” in 11th International
+Symposium on High-Performance Computer Architecture , pp. 166–177,
+IEEE, 2005.
+[76] F. Zhou, M. Goel, P . Desnoyers, and R. Sundaram, “Scheduler vul-
+nerabilities and coordinated attacks in cloud computing,” Journal of
+Computer Security , vol. 21, no. 4, pp. 533–559, 2013.
+[77] B. Wittenmark, J. Nilsson, and M. Torngren, “Timing problems in
+real-time control systems,” in Proceedings of 1995 American Control
+Conference-ACC’95, vol. 3, pp. 2000–2004, IEEE, 1995.
+[78] J. Nilsson, B. Bernhardsson, and B. Wittenmark, “Stochastic analysis
+and control of real-time systems with random time delays,” Automatica,
+vol. 34, no. 1, pp. 57–64, 1998.
+[79] A. Cervin, “Stability and worst-case performance analysis of sampled-
+data control systems with input and output jitter,” in ACC, IEEE, 2012.
+[80] Z. Zhang, S. Gong, A. D. Dimitrovski, and H. Li, “Time synchronization
+attack in smart grid: Impact and analysis,” IEEE Transactions on Smart
+Grid, vol. 4, no. 1, pp. 87–98, 2013.
+[81] R. Mahfouzi, A. Aminifar, S. Samii, M. Payer, P . Eles, and Z. Peng,
+“Butterﬂy attack: Adversarial manipulation of temporal properties of
+cyber-physical systems,” in 2019 IEEE Real-Time Systems Symposium
+(RTSS), pp. 93–106, IEEE, 2019.
+[82] J. Wang, Y . Wang, A. Li, Y . Xiao, R. Zhang, W. Lou, Y . T. Hou, and
+N. Zhang, “ {ARI}: Attestation of real-time mission execution integrity,”
+in 32nd USENIX Security Symposium (USENIX Security 23) , pp. 2761–
+2778, 2023.
+[83] M. Bechtel and H. Y un, “Analysis and mitigation of shared resource
+contention on heterogeneous multicore: An industrial case study,” arXiv
+preprint arXiv:2304.13110 , 2023.
+[84] G. Rong et al. , “Lgsvl simulator: A high ﬁdelity simulator for au-
+tonomous driving,” in 2020 IEEE 23rd International Conference on
+Intelligent Transportation Systems (ITSC) , pp. 1–6, IEEE, 2020.
+[85] P . Biber and W. Straßer, “The normal distributions transform: A new
+approach to laser scan matching,” in Proceedings 2003 IEEE/RSJ Inter-
+national Conference on Intelligent Robots and Systems (IROS 2003)(Cat.
+No. 03CH37453) , vol. 3, pp. 2743–2748, IEEE, 2003.
+[86] W. Hess et al., “Real-time loop closure in 2d lidar slam,” in ICRA, IEEE,
+2016.
+[87] R. C. Coulter, “Implementation of the pure pursuit path tracking algo-
+rithm,” tech. rep., Carnegie-Mellon UNIV Pittsburgh PA Robotics INST,
+1992.

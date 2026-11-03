@@ -1,0 +1,39 @@
+{
+  "replay_tests_passed": 2,
+  "dt_refinement": [
+    {
+      "policy": "nominal",
+      "center_time_s": 14.0,
+      "collision_dt002": true,
+      "collision_dt001": true,
+      "clearance_difference_m": 0.0,
+      "finish_time_difference_s": 0.009999999997678088
+    },
+    {
+      "policy": "slow_only",
+      "center_time_s": 28.0,
+      "collision_dt002": true,
+      "collision_dt001": true,
+      "clearance_difference_m": 0.0,
+      "finish_time_difference_s": 0.01000000000657053
+    },
+    {
+      "policy": "candidate",
+      "center_time_s": 17.0,
+      "collision_dt002": false,
+      "collision_dt001": false,
+      "clearance_difference_m": 0.0004706641348686258,
+      "finish_time_difference_s": 0.009999999997670983
+    },
+    {
+      "policy": "candidate",
+      "center_time_s": 14.0,
+      "collision_dt002": false,
+      "collision_dt001": false,
+      "clearance_difference_m": 0.04046346222210773,
+      "finish_time_difference_s": 0.07000000000262219
+    }
+  ],
+  "body_contact_samples_missed_by_rear_axle_point_test": 615,
+  "scope": "Specific deterministic replay/geometry tests, not a continuous-time collision guarantee or generalization test."
+}

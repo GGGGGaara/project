@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-03",
+  "purpose": "Documentation-time environment snapshot; individual experiment metadata takes precedence",
+  "python": "3.14.7",
+  "executable": "D:\\python\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "numpy": "2.5.3",
+  "matplotlib": "3.11.2",
+  "package_list": "requirements.txt",
+  "full_transitive_lock": false,
+  "simulations_rerun_during_organization": false
+}

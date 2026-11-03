@@ -1,0 +1,53 @@
+[BLOCK 1 PARAGRAPH] 乡镇复杂道路自动驾驶通行决策：文献核查与实验进展
+[BLOCK 2 PARAGRAPH] 研究方向核查 · 技术创新边界 · 已运行的合成场景结果 · 下一阶段计划（2026年11月）
+[BLOCK 3 PARAGRAPH] 一、最重要的结论
+[BLOCK 4 PARAGRAPH] 你的研究问题有工程价值，但“预测动态空间＋安全停车约束”并不是一个能够独立成立的原创点。真正值得继续检验的是：在临时占道、行人和非机动车混行的道路中，进入决策能否同时保证未来冲突区可通过，以及进入后仍存在可用的安全停靠／等待／退出选项；当这些选项会随时间被占用时，如何利用预测误差上界避免不合理进入。
+[BLOCK 5 PARAGRAPH] 目前完成的是“决策时窗”初步研究：代码和随机场景可复现，数值结果确实来自执行，而不是填入的示例数据。但是，它尚未实现转向、制动、动态避障或车辆闭环控制，也没有与已发表强基线进行等价比较，所以仍不能视为可直接投出的 EI 会议论文。
+[BLOCK 6 PARAGRAPH] 二、必须认真对照的已有成果
+[BLOCK 7 TABLE]
+文献编号 | 已有研究贡献 | 我们的研究必须避免的重复
+[2] Magdici 2016 | 保留预测占用约束下的紧急停止轨迹 | 不能宣称“引入备用刹车”首次提出
+[10] Zhang 2024 | 窄路会车空隙、等待区、轨迹选择 | 不能宣称“寻找避让位置”是全新算法
+[9] Firoozi 2025 | 遮挡动态障碍物、终端停车约束 | 不能只把“安全停止终端约束”包装为创新
+[11] Fujinami 2026 | 窄路风险预测、速度及路径规划 | 不能只提出“风险感知安全速度”
+[12] Chen 2026 | 不确定性驱动的时空可达走廊 | 不能笼统声称“考虑未来时空可达性”
+[4] Hubmann 2019 | 面向遮挡和不确定行为的 POMDP 决策 | 不能忽略已有不确定性交互决策
+[BLOCK 8 PARAGRAPH] 
+[BLOCK 9 PARAGRAPH] 三、建议最终围绕的研究问题
+[BLOCK 10 PARAGRAPH] 入口处短暂可通过不等于整段道路可持续通过。当前暂定研究问题：在两个或更多时变瓶颈之间，车辆是否应进入？如果下一瓶颈无法按预测时间通过，动态占用的中途避让区是否仍然允许车辆完整停车和等待？如何在不确定性条件下组织进入时间与避让位置的选择？
+[BLOCK 11 PARAGRAPH] 建议在进一步核查文献之后，把未来的主创新集中到“安全可达／等待状态的动态可用性如何影响进入决策”，而不是同时自研感知、强化学习、MPC、路径规划和控制。工程实现可采用上层进入决策＋已有动态可行轨迹规划器＋现成跟踪控制器的分层结构。
+[BLOCK 12 PARAGRAPH] 四、第一轮实际完成的实验
+[BLOCK 13 PARAGRAPH] 已构建一个以时间窗为核心的 1D 决策抽象：两个交通冲突区 G1、G2，中间一个可临时被占用的避让区 B1。假设每段长度 18 m、车速恒为 3 m/s、段通行时间 6 s；交通参与者占用区间按说明中的合成分布随机生成；模型只给出了预测事件的时间偏移误差，并不知道真实车辆运动控制。
+[BLOCK 14 PARAGRAPH] 每种预测误差标准差分别测试 1,000 个随机场景（总计 3,000 个）。每个场景在五种方法中复用同一组真实占用区间和预测结果。结果衡量的是“预定通行或等待窗口与实际占用时间窗是否冲突”，不是物理碰撞率。
+[BLOCK 15 TABLE]
+预测误差 σ | 仅联合预测（δ=0） | 加入裕量但不查避让区 | 联合约束（δ=1.25）
+0.4 s | 14.4% | 9.6% | 0.0%
+1.0 s | 22.6% | 13.3% | 6.1%
+1.6 s | 30.3% | 23.5% | 16.8%
+[BLOCK 16 PARAGRAPH] 
+[BLOCK 17 PARAGRAPH] 
+[BLOCK 18 PARAGRAPH] 图1  合成时窗实验中的通行冲突暴露率（并非实际碰撞率）
+[BLOCK 19 PARAGRAPH] 在 σ=1.0 s 条件下，联合约束方法比无误差裕量的联合预测低 16.5 个百分点；采用按场景配对的 5,000 次 bootstrap，95% 区间为降低 14.1—19.0 个百分点。但平均计划完成时间从 13.51 s 增至 15.27 s，说明需要认真分析“减少冒险进入”与“增加等待时间”之间的权衡。
+[BLOCK 20 PARAGRAPH] 五、投稿前不能省略的工作
+[BLOCK 21 PARAGRAPH] 完成可追溯的系统文献对照：精读 [2]、[9]、[10]、[11]、[12] 的方法细节，写清楚每个约束与既有工作的不同。
+[BLOCK 22 PARAGRAPH] 建立二维车体几何和运动学/动力学模型，明确车辆长度、宽度、最小转弯半径、制动距离与道路实际宽度。
+[BLOCK 23 PARAGRAPH] 仿真中加入行人横穿、非机动车占道、行人突然返回、货车遮挡、停靠位二次被占用等情形，并检验重新规划。
+[BLOCK 24 PARAGRAPH] 至少开展三种等价条件下的基线对比与消融实验；能复现一项与研究问题直接相关的已发表方法更好。
+[BLOCK 25 PARAGRAPH] 统计真正的碰撞、近碰撞、停车位置合法/几何可行性、平均通过时间、决策耗时和实验置信区间。
+[BLOCK 26 PARAGRAPH] 开展风险裕量敏感性测试，并用真实或公开混行交通轨迹数据校准交通参与者行为分布。
+[BLOCK 27 PARAGRAPH] 六、优先阅读的13篇可核实参考论文
+[BLOCK 28 PARAGRAPH] [1] A Survey of Motion Planning and Control Techniques for Self-Driving Urban Vehicles (2016)Paden, B., Cap, M., Yong, S. Z., Yershov, D., and Frazzoli, E.  |  IEEE Transactions on Intelligent Vehicles, 1(1), 33–55https://doi.org/10.1109/TIV.2016.2578706阅读重点：理解自动驾驶分层决策、规划与控制的基本脉络。
+[BLOCK 29 PARAGRAPH] [2] Fail-safe motion planning of autonomous vehicles (2016)Magdici, S., and Althoff, M.  |  2016 IEEE International Conference on Intelligent Transportation Systems, 452–458https://doi.org/10.1109/ITSC.2016.7795594阅读重点：最重要的先行工作：安全停车备用轨迹已经存在。
+[BLOCK 30 PARAGRAPH] [3] CommonRoad: Composable benchmarks for motion planning on roads (2017)Althoff, M., Koschi, M., and Manzinger, S.  |  2017 IEEE Intelligent Vehicles Symposium, 719–726https://doi.org/10.1109/IVS.2017.7995802阅读重点：标准化可复现运动规划基准，后续仿真平台候选。
+[BLOCK 31 PARAGRAPH] [4] A POMDP Maneuver Planner for Occlusions in Urban Scenarios (2019)Hubmann, C., Quetschlich, N., Schulz, J., Bernhard, J., Althoff, D., and Stiller, C.  |  2019 IEEE Intelligent Vehicles Symposium, 2172–2179https://doi.org/10.1109/IVS.2019.8814179阅读重点：遮挡条件下部分可观测决策及未来交通状态预测。
+[BLOCK 32 PARAGRAPH] [5] Risk Assessment and Planning with Bidirectional Reachability for Autonomous Driving (2020)Yu, M.-Y., Vasudevan, R., and Johnson-Roberson, M.  |  2020 IEEE International Conference on Robotics and Automationhttps://doi.org/10.1109/ICRA40945.2020.9197491阅读重点：遮挡风险和前、后向可达性分析。
+[BLOCK 33 PARAGRAPH] [6] Self-Adaptive Motion Prediction-Based Proactive Motion Planning for Autonomous Driving in Urban Environments (2021)Jeong, Y.  |  IEEE Access, 9, 105612–105626https://doi.org/10.1109/ACCESS.2021.3100590阅读重点：包含狭窄路段的动态预测和前瞻式规划。
+[BLOCK 34 PARAGRAPH] [7] Improved Occlusion Scenario Coverage with a POMDP-based Behavior Planner for Autonomous Urban Driving (2021)Zhang, C., Steinhauser, F., Hinz, G., and Knoll, A.  |  2021 IEEE International Intelligent Transportation Systems Conference, 593–600https://doi.org/10.1109/ITSC48978.2021.9564424阅读重点：虚拟行人和复杂遮挡下的僵局问题。
+[BLOCK 35 PARAGRAPH] [8] An occlusion- and interaction-aware safe control strategy for autonomous vehicles (2023)Gangadhar, S., Wang, Z., Poku, K., Yamada, N., Honda, K., Nakahira, Y., Okuda, H., and Suzuki, T.  |  IFAC-PapersOnLine, 56(2), 7926–7933https://doi.org/10.1016/j.ifacol.2023.10.315阅读重点：概率化风险评估、遮挡与交互控制。
+[BLOCK 36 PARAGRAPH] [9] OA-MPC: Occlusion-Aware MPC for Guaranteed Safe Robot Navigation With Unseen Dynamic Obstacles (2025)Firoozi, R., Mir, A., Camps, G. S., and Schwager, M.  |  IEEE Transactions on Control Systems Technology, 33(3), 940–951https://doi.org/10.1109/TCST.2024.3520462阅读重点：终端停车约束已被使用，切勿重复包装。
+[BLOCK 37 PARAGRAPH] [10] Scene Modeling of Autonomous Vehicles Avoiding Stationary and Moving Vehicles on Narrow Roads (2024)Zhang, Q., Guang, J., Cao, Z., and Liu, J.  |  arXiv preprint arXiv:2412.13305https://arxiv.org/abs/2412.13305阅读重点：窄路会车等待区和轨迹选择，与选题最接近；系预印本。
+[BLOCK 38 PARAGRAPH] [11] Risk-predictive trajectory and speed planning method for safe autonomous driving on urban narrow roads (2026)Fujinami, Y., and Raksincharoensak, P.  |  Mechanical Engineering Journal, 13(2), 25-00380https://doi.org/10.1299/mej.25-00380阅读重点：窄路受遮挡场景下的风险预测速度与路径规划。
+[BLOCK 39 PARAGRAPH] [12] SURE-plan: A spatio-temporal uncertainty-aware reachable set embedding framework for safe and efficient motion planning of autonomous vehicles (2026)Chen, K., Zhao, C., Ji, Y., and Du, Y.  |  Transportation Research Part C, 190, 105800https://doi.org/10.1016/j.trc.2026.105800阅读重点：2026 年不确定性可达走廊，检验创新重叠。
+[BLOCK 40 PARAGRAPH] [13] CARLA: An Open Urban Driving Simulator (2017)Dosovitskiy, A., Ros, G., Codevilla, F., Lopez, A., and Koltun, V.  |  Proceedings of the 1st Conference on Robot Learning, PMLR 78, 1–16https://proceedings.mlr.press/v78/dosovitskiy17a.html阅读重点：CARLA 官方平台论文；当前实验并未使用该平台。
+[PART word/header1.xml] 乡镇窄路通行决策  |  文献依据与研究路线
+[PART word/footer1.xml] 2026年11月  •  研究核查与实验计划

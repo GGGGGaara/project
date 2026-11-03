@@ -1,0 +1,596 @@
+[PDF PAGE 1]
+                    SafeIntervalPathPlanningWithKinodynamicConstraints
+
+                                         ZainAlabedeenAli,1 KonstatinYakovlev 2, 3, 1
+                                     1 Moscow Institute of Physics and Technology, Moscow, Russia
+        2 Federal Research Center for Computer Science and Control of Russian Academy of Sciences, Moscow, Russia
+                                                             3 AIRI, Moscow, Russia
+                                                    ali.za@phystech.edu, yakovlev@isa.ru
+
+
+
+                              Abstract
+
+   Safe Interval Path Planning (SIPP) is a powerful algorithm
+   for solving single-agent pathﬁnding problem when the agent
+   isconﬁnedtoagraphandcertainvertices/edgesofthisgraph
+   are blocked at certain time intervals due to dynamic obsta-
+   cles that populate the environment. Original SIPP algorithm
+   relies on the assumption that the agent is able to stop instan-
+   taneously. However, this assumption often does not hold in
+   practice, e.g. a mobile robot moving with a cruising speed is
+   not able to stop immediately but rather requires gradual de-
+   celeration to a full stop that takes time. In other words, the
+   robotissubjecttokinodynamicconstraints.Unfortunately,as
+   we show in this work, in such a case original SIPP is incom-
+   plete. To this end, we introduce a novel variant of SIPP that
+   is provably complete and optimal for planning with acceler-
+   ation/deceleration. In the experimental evaluation we show
+   that the key property of the original SIPP still holds for the
+   modiﬁed version – it performs much less expansions com-
+   pared to A* and, as a result, is notably faster.
+
+                          Introduction
+Planning a path in the presence of both static and moving                       Figure 1: An example of the challenging path planning in-
+obstacles is a challenging problem with topical applications                    stance with dynamic obstacles.
+in robotics, video-games and other domains. When the en-
+vironment is fully observable and the trajectories of the dy-
+namicobstaclesareknown(e.g.,arepredictedbytherobot’s                            and, similarly, accelerating from the full stop takes time.
+perception system or by a global observer), it is reasonable                    In other words – the agent is subject to kinodynamic con-
+to account for them while planning. A prominent method                          straints. This makes SIPP inapplicable as shown on Fig. 1.
+that is tailored for such setting is Safe Interval Path Plan-                   In this example the environment is discretized to the3×10
+ning(SIPP)(PhillipsandLikhachev2011).Thisisasearch-                             grid,wherethedistancebetweenthecentersofthegridcells
+basedalgorithmthatoperatesonagraph,whichverticescor-                            is 1m, and the agent has to go from the leftmost cellB0
+respond to the conﬁgurations of the agent (e.g., position,                      to the rightmost oneB9. Moreover two dynamic obstacles
+heading, velocity etc.) and edges correspond to the transi-                     are present in the environment that block cellsB5 andB7
+tions between them. Due to the dynamic obstacles, certain                       during the intervals shown in black in the bottom part of
+vertices/edgesofthisgraphareblockedatcertaintimeinter-                          the ﬁgure. Assume, the agent’s cruising speed is1ms−1.
+vals.SIPPaccountsforthatandconstructsplansinwhichan                             Withthisspeedittakes1stomovebetweenthecells.More-
+agentcanwaitattheverticestoavoidcollisions.Anexplicit                           over, the maximum acceleration/deceleration of the agent
+assumption of SIPP is that the agent can start/stop mov-                        is 0.5ms−2, which means that accelerating to the cruising
+ing instantaneously. Under this assumption the algorithm is                     speed from the full stop takes 2s and 1m. Therefore, when
+provably complete and optimal (w.r.t. the given spatial and                     starting to move from the full stop the agent will arrive at
+temporal discretization).                                                       the neighboring cell not in 1s but rather in 2s. If the al-
+   In our work we adopt a (more realistic from the practi-                      gorithm ignores that, like the original SIPP, which assumes
+calperspective)assumptionthatdeceleratingtothefullstop                          instantaneousacceleration,thentheconstructedplan,shown
+This is a pre-print of the paper accepted to AAAI 2023.                         inred,willactuallyleadtothecollision(ifitisappliedwith
+
+[PDF PAGE 2]
+real kinodynamic constraints) as shown by the dashed red                      Still, acceleration actions and effects were not considered
+line. A straightforward modiﬁcation of SIPP that takes ac-                    in  this  work.  Similarly,  in  (Yakovlev,  Andreychuk,  and
+celerating/decelerating actions into account is to apply only                 Vorobyev 2019) any-angle variant of SIPP was described
+dynamically valid transitions, i.e., not allow to wait in the                 that supported non-uniform velocities. Interestingly, the au-
+states where the velocity is not zero. However, this variant                  thors evaluate their planner on real robots. To plan safe tra-
+willreportfailuretoﬁndthesolutionwhileproducingapar-                          jectoriesforthemtheysuggestedinﬂatingthesizesthemov-
+tial plan shown in blue. In this plan the agent successfully                  ing obstacles, which alternatively can be seen as extending
+stopsbeforetheﬁrstobstacleandwaitsfor2sbutthenisun-                           the blocked time intervals of certain graph vertices/edges.
+abletopassthesecondobstacleasitisbeinglateatarriving                          This ad-hoc technique was shown to perform reasonably
+atB7. The collision-free plan, however, exists. It is shown                   well in practice, but in general it raises the question on how
+in green. The reason why SIPP fails to ﬁnd it is that, intu-                  tochoosetheoffset.Forexample,ifoneenlargestheblocked
+itively, SIPP postpones the wait actions and cannot reason                    intervals in the setting described in the Introduction (recall
+about the consequences of waiting in different states of the                  Fig. 1) by 1s SIPP will not ﬁnd a solution. In (Ali and
+search tree. This does not violate the theoretical guarantees                 Yakovlev 2021) accelerating actions were straightforwadly
+when waiting is available at any state. On the other hand,                    integrated into SIPP, which, again, makes the algorithm in-
+when waiting is not always readily available, i.e., the agent                 complete(asweshowinthiswork).In(Cohenetal.2019)a
+needs time to stop, the algorithm becomes evidently incom-                    variantofSIPPwassuggestedfortheproblemsettingwhich
+plete. We will elaborate more on this and provide technical                   assumes arbitrary motion patterns, however this was not the
+details in the following sections of the paper.                               main focus of the paper. Consequently, no techniques were
+  Tothebestofourknowledge,noworksonSIPPexistthat                              proposedtotakespecialcareoftheacceleratingmotionsand
+directlyaddressthisissue.Asaresult,allknownSIPP-based                         the empirical evaluation considered only the motions that
+algorithms are incomplete in the setting when kinodynamic                     start and end with zero velocity. Overall, to the best of our
+constraints of the agent have to be taken into account when                   knowledge no SIPP variant existed prior to this work that
+planning. Our work ﬁlls this gap and presents an algorithm                    is provably complete and optimal when the assumption of
+thatisprovablycompleteandoptimalundersuchconstraints                          theoriginalSIPPthat“therobotcanstart/stopinstaneously”
+–SafeIntervalPathPlanningwithIntervalProjection(SIPP-                         does not hold.
+IP). To empirically evaluate it, we conducted a wide range
+of experiments in which we compared SIPP-IP to several                                            ProblemStatement
+baselinesthatincludeother(non-complete)variantsofSIPP
+onemaythinkofandA*.Empiricalresultsclearlyshowthat                            We assume a discretized timelineT  = 0,1,.... The agent
+SIPP-IP outperforms them all as it is able to solve instances                 is associated with a graphG = (V,E), with the start and
+that are unsolvable by other planners and its runtime is two                  goal vertices:start,goal∈V. A vertex of the graph corre-
+order magnitude lower that the one of A*.                                     sponds to the state of the agent, alternatively known as the
+                        RelatedWork                                           conﬁguration, in which the agent can reside without collid-
+Search-based planning with predictably moving obstacles                       ing with the static obstacles. Each conﬁguration explicitly
+can be straightforwardly implemented as A* (Hart, Nils-                       encompasses the velocity,vel, of the agent. E.g., it may be
+son, and Raphael 1968) with discretized time. Taking time                     comprisedoftheagent’scoordinatesandorientationaswell
+dimension  into  account,  however,  leads  to  a  signiﬁcant                 as of its velocity:v  =  (x,y,θ,vel). Conﬁgurations with
+growthofthesearchspace,especiallywhentheﬁne-grained                           thesameposition/orientationbutdifferentvelocities,indeed,
+time discretization is needed. To this end, in (Phillips and                  correspond to different vertices ofV. Conﬁgurations with
+Likhachev 2011) SIPP was introduced, based on the idea                        vel = 0 are of special interest as the agent may stay put
+of compressing sequences of time steps into the time in-                      (wait) only in them.
+tervals and searching over these intervals. SIPP is prov-                        An edgee = (v,u) ∈E represents a motion primitive
+ably complete and optimal under several assumptions in-                       (Pivtoraiko and Kelly 2011) – a small kinodynamically fea-
+cludingthattheagentcanstart/stopmovinginstantaneously.                        sible fragment of the agent’s motion that transfers the agent
+Later numerous variants of SIPP emerged, enhancing the                        fromv to(distinct)u.Weassumethatforanyv∈V aﬁnite
+original algorithm, e.g., any-angle SIPP (Yakovlev and An-                    set of such motions is available and each motion takes inte-
+dreychuk 2021), anytime SIPP (Narayanan, Phillips, and                        gernumberoftimesteps.Practically-wisethisassumptionis
+Likhachev 2012), different variants of bounded-supotimal                      mild,asanyreal-valueddurationmaybeapproximatedwith
+SIPP (Yakovlev, Andreychuk, and Stern 2020). Moreover                         a certain precision and represented as an integer. The dura-
+SIPP  and  its  modiﬁcations  are  widely  used  as  building                 tionofthemotiondeﬁnestheweightoftheedge,w(e)∈N.
+blocks of some of the state-of-the-art multi-agent pathﬁnd-                      Based on the source/target velocity, each motion (edge)
+ingsolvers(Cohenetal.2019;Lietal.2022).Allthesevari-                          can be classiﬁed as either accelerating, decelerating or uni-
+ants do not consider kinodynamic constraints.                                 form. In the latter case the agent’s velocity at the target
+  Next we mention only the works that to some extent                          conﬁguration is the same as in the source one, while in
+dealwithtakingagent’skinematicand/orkinodynamiccon-                           the ﬁrst two cases it changes (increases, decreases respec-
+straints into account. In (Ma et al. 2019) SIPPwRT was                        tively). The presence of accelerating/decelerating motions
+introduced that allowed planning with different velocities.                   makes our problem distinguishable from the works, which
+
+[PDF PAGE 3]
+assumed instantaneous acceleration.1                                          nmove = (u,t+w(e))isaddedtothesuccessors.Indeed,if
+  Besides the agent and the static obstacles, a ﬁxed num-                     the application of a motione at timet results in a collision,
+ber of moving obstacles populate the environment. We as-                      the resulting node is discarded. Second, ifv allows waiting
+sume that their trajectories are known and converted (by an                   then the node corresponding to the wait action of the mini-
+auxiliary procedure) to the collision and safe intervals as-                  mal possible duration of one time stepnwait = (v,t+1) is
+sociated with the graph vertices and edges, i.e., for each                    also added to successors. Again, if the safe intervals ofv do
+vertex, a ﬁnite sequence of non-overlapping time intervals                    not cover the time stept+1, this node is discarded.
+SI(v) is given, which is the sequence of the safe intervals                      Otherpartsofthesearchalgorithmareexactlythesameas
+at which the agent can be conﬁgured atv without colliding                     in A*. It is noteworthy that theg-values of the nodes equal
+with any moving obstacle. Similarly, safe intervals are de-                   the time components of their identiﬁers. I.e., theg-value of
+ﬁned for each edge,SI(e). If the agent executes a movee                       the noden = (v,t) equalst, as this is the minimal known
+at any time step outsideSI(e), a collision with a moving                      estimateofthecost(w.r.ttothecurrentiterationofthealgo-
+obstacle occurs.                                                              rithm) formstart tov.
+  A(timed)pathfortheagent,oratrajectory,isasequence                           SIPP   In many scenarios A* with time steps generates nu-
+π = (e1,t1),(e2,t2),...(eL,tL), whereti ∈T is the time                        merous nodes of the form (v,t),(v,t + 1),(v,t + 2) etc.,
+moment the motion deﬁned by the edgeei is started. The                        which are created via the use of the atomic wait actions.
+costofthetrajectoryisthetimestepwhentheagentreaches                           This leads to the growth of the search tree and slows down
+the ﬁnal vertex,cost(π) =eL +w(eL). A trajectory is fea-                      the search.To thisend, SIPP relieson theidea of compress-
+sible if the target vertex ofei matches the source vertex of                  ing the sequential wait actions to reduce the number of the
+ei+1 andti+1 ≥ti +w(ei) (witht0  = 0). Moreover if                            considered search nodes.
+ti+1>ti +w(ei), then the velocity at the source ofei+1                           The  search  nodes  of  SIPP  are  identiﬁed  asn   =
+must be zero.                                                                 (v,[lbj,ubj]), where [lbj,ubj] is thej-th safe interval of
+  Afeasibletrajectorycanalsobeseenasaplancomposed                             v. For each node SIPP stores the earliest arrival time:t ∈
+ofthemoveandwaitactions,wherethemoveactionsarede-                             [lbj,ubj]. Whenever a lower-cost path ton is found,t(n)
+ﬁnedbythegraphedgesandwaitactionsmightoccuratthe                              is updated and this value serves as theg-value of the node
+vertices where the agent’s velocity is zero. The duration of                  similarly to A* with time steps.
+the wait action occurring after thei-th move action is com-
+puted asδ =ti+1−(ti +w(ei)). Asw(ei) is integer,δ is                             Whenexpandinganode,SIPPdoesnotgenerateanysep-
+integer as well.                                                              arate successor corresponding to the wait action. Instead, it
+  A collision between the trajectoryπ and the dynamic ob-                     generates only the successors that correspond to the “wait
+stacles occurs iff either of the conditions occur: i) the agent               and move” actions that land into the neighboring conﬁgura-
+starts executing some motion primitivee at the time step                      tions within their safe intervals. This means that to generate
+whichisoutsideofSI(e);ii)accordingtoπ theagentwaits                           asuccessor,SIPPwaitstheminimalamountoftimepossible
+at a vertexv outside ofSI(v).                                                 so that when the move to the new conﬁguration is used, we
+  The problem now is to ﬁnd a feasible collision-free tra-                    arriveinthenewsafeintervalasearlyaspossible.Forexam-
+jectoryπ that transfers the agent fromstart togoal on a                       ple,ifSIPPperformsamovefromanoden = (v,[5,10])to
+givenG(withtheannotatedsafeintervalsofvertices/edges).                        a noden′ = (v′,[15,18]) and the duration of that move is5
+In this work we are interested in solving this problem opti-                  andt(n) = 7 thent(n′) is 15, meaning that the agent after
+mally, i.e., in reaching the goal as early as possible.                       reachingn att = 7 waits there for 3 time steps and starts
+                                                                              moving att = 10 and arrives ton′ att = 15. This move
+                             Method                                           cannot be performed earlier thant = 10 as in this case it
+As our method relies on SIPP, which in turn relies on A*                      will end outside the safe interval ofn′.
+with time steps, we ﬁrst discuss the background and then                         SIPPismuchfasterthanA*andisprovablycompleteand
+delveintothedetailsofthesuggestedapproach.Weassume                            optimalunderthefollowingassumptions:inertialeffectsare
+that a reader is familiar with vanilla A* for static graphs.                  neglected, the agent can start/stop moving instantaneously
+                                                                              and, consequently, the wait actions are available at all con-
+Background                                                                    ﬁgurations.
+
+A* with time steps   The straightforward way to solve the                     Whatifthewaitactionsarenotalwaysavailable   Intrin-
+considered problem is to use A* for searching the state                       sic SIPP assumption that the agent can wait at any conﬁgu-
+space whose nodes are the tuplesn = (v,t), wherev is                          rationoftendoesnotholdinpracticeasmanymobileagents
+thegraphvertexandtisthetimestepbywhichitisreached.                            cannot start/stop instantaneously. To reﬂect this the acceler-
+Whenexpandinganode,thesuccessorsaregeneratedasfol-                            ating/decelerating motions should be introduced, as well as
+lows. First, for eache = (v,u), ife is feasible, the node                     the velocity variable should be added to the agent’s conﬁg-
+                                                                              uration (as done in our problem statement). In this setting,
+   1Please note that our problem formulation, as well as the sug-             SIPP is incomplete.
+gestedmethod,isagnostictohowthestatevariables,e.g.,velocity,                  Statement 1.  SIPP is incomplete when the agent is subject
+change while the agent is executing a motion primitive. We are in-
+terested in the values of the state variables only at the endpoints of        to kinodynamic constraints and wait actions are not avail-
+a motion primitive.                                                           able at any conﬁguration.
+
+[PDF PAGE 4]
+                                                                                    Figure 3: Projection of the time interval in SIPP-IP.
+
+
+Figure 2: An example where the standard SIPP fails to ﬁnd                     SIPP-IP:SafeIntervalPathPlanningWith(Wait)
+a solution, while SIPP-IP succeeds. The search tree of SIPP                   IntervalProjection
+is shown in green. The search tree of SIPP-IP – in purple.                    Idea   The main reason why standard SIPP fails to solve
+                                                                              planning instances like the one presented above is because
+Proof. We prove this statement by presenting an example                       theinformationaboutpossiblewaitactionsisnotpropagated
+for which SIPP is not able to ﬁnd a solution whilst it exists.                frompredecessorstosuccessors.Intheconsideredexample,
+Consider a problem depicted in Fig. 2. The agent needs to                     whenachievingthesearchnode((B,vel = 1),[0,∞))SIPP
+reach cellD from cellA. The motion primitives are deﬁned                      “forgets” that the agent can wait in the predecessor and per-
+as follows:                                                                   form the move action at any time step until the end of the
+                                                                              predecessor’s safe interval. This is not a problem when the
+                                                                              agentcanwaitatanyconﬁguration,butleadstoincomplete-
+ •(acceleratingmotion)Theagentstartsmovingfromacell                           ness in the case we are considering.
+   withvel = 0 and ends withvel = 1 in the neighboring                           To this end, we substitute the safe interval as the search
+   cell. The cost (duration) is2 time steps.                                  node’sidentiﬁerwithanothertimeintervalwhichwereferto
+ •(uniform motion) The agent starts moving from a cell                        asthewaitinginterval.Foranysearchnode,thisintervalbe-
+   withvel = 1 and ends withvel = 1 in the neighbor-                          longs to the safe interval of the graph vertex. Indeed, nodes
+   ing cell. The cost (duration) is1 time step.                               withthesamevertexbutdifferentwaitingintervalsshouldbe
+ •(deceleratingmotion)Theagentstartsmovingfromacell                           distinguished.Waitingintervalofasearchnodeincorporates
+   withvel = 1 and ends withvel = 0 in the neighboring                        the information about all possible wait-and-move actions
+   cell. The cost (duration) is2 time steps.                                  that can be performed in its predecessor. When a node is
+                                                                              expanded, the waiting interval is projected forward to all of
+                                                                              its successors, thus the information about the possible wait-
+  Indeed, the agent can wait whenvel = 0. The duration                        and-move actions is propagated from the root of the search
+of the wait action is1 time step. For the sake of brevity, we                 tree(startnode)alongallofitsbranches.Wecallthemodiﬁ-
+ignore the agent’s orientation and motions that change it.                    cationofSIPPthatimplementsthisprinciple–SafeInterval
+  SIPP  starts  with  expanding  the  initial  search  node                   Path Planning With (Wait) Interval Projection, SIPP-IP. In
+((A,vel = 0),[0,5]) in which only one motion primitive,                       the rest of the paper we will refer to the waiting interval of
+i.e., the acceleration motion, is applicable. This results in                 a SIPP-IP node as time interval (or, simply, interval). When
+generating the successor node ((B,vel = 1),[0,∞)) with                        talking about the safe intervals of the graph vertices we will
+the arrival timet = 2, shown in green in Fig. 2. The agent                    never omit “safe” to avoid confusion.
+cannot wait in this conﬁguration (as its velocity is not0).                   Projecting intervals   The role of the projection operation
+Thus, it can only continue moving arriving toC either at                      is to propagate the information on all of the available wait-
+t = 3 using the uniform motion action or att = 4 using the                    and-move actions from the predecessor to successor. For-
+decelerated motion. Both moves are invalid as they reachC                     mally, the input for the projection procedure is a SIPP-IP
+notwithinitssafeintervalwhichstartsat5.Thusnosucces-                          search node,n = (v,[tl,tu]), where [tl,tu] resides inside
+sorsaregeneratedandnosearchnodesthatcanbeexpanded                             one of the safe intervals ofv, and a graph edgee = (v,v′)
+are left in the SIPP’s search tree. The algorithm terminates                  along which the interval should be propagated. The output
+failing to report a solution. The latter, however exists: the                 is the set of time intervalsTI ={ti = [t′,t′′]}, s.t.:
+agent needs to wait for 2 time steps atA and then continue
+moving towardsD. In this way it will arrive toC att = 5                         •eachresultantintervalbelongstooneofthesafeintervals
+satisfying the safe interval constraint.                                          of the target vertex:∀tik∈TI∃si∈SI(v′) :tik⊆si
+                                                                                •resultant intervals do not overlap:tik∩til =∅,∀k̸=l
+  Next, we present a modiﬁcation of SIPP that is complete                       •for any transition, speciﬁed bye, that starts at any time
+and optimal under the considered assumptions.                                     step of the source interval, the time step corresponding
+
+[PDF PAGE 5]
+   to the end of this transition belongs to one of the resul-                   Algorithm1: SIPP-IP
+   tantintervalsifthetransitionisvalid(nocollisionsoccur                          Function
+   when performing it):∀t∈ [tl,tu] s.t.(e,t) is a collision-                       findPath(vstart,tstart,vgoal,G(V,E),SI):
+   free transition∃ˆt∈TI s.t.ˆt =t+w(e)                                        1       OPEN←φ, CLOSED←φ
+  A general example of how projecting interval operation                       2   ti = [tstart,tstart]
+works is depicted in Fig. 3. The source graph vertex is de-                    3       ifvstart.vel = 0then
+notedbytheblueoval,thetargetvertex(wheretheoutgoing                            4     ti.tu←upper bound ofSI(vstart,ti)
+edgelands)isshowningreen.Blackcylinderscorrespondto                            5   nstart← (vstart,ti)
+the blocked intervals of the vertices. The time interval to be                 6   f(nstart)←tstart+h(vstart)
+projected is marked in yellow. The resultant time intervals                    7       Addnstart to OPEN
+are shown in cyan, green and orange. Observe, that due to                      8       whileOPEN̸=φdo
+theexistenceoftheintermediateunsafeintervalinthetarget                         9     n←state from OPEN with minimalf-value
+vertex the projected time interval is, ﬁrst, split into the two               10             removen from OPEN, insertn to CLOSED
+ones (pink transitions landing in unsafe intervals are ruled                  11            ifn.v =vgoal then
+out). Second, the transitions that land in the safe intervals                  12                  returnπ←ReconstructPath(n,nstart)
+of the destination vertex but that lead to a collision in the
+course of the transition (gray arrows) are also pruned. Thus,                 13             succ←getSuccessors(n,G(V,E),SI)
+the lower time interval is trimmed, while the upper is split                  14            foreachn′ in succdo
+into the two ones.                                                             15                  ifn′ in CLOSED or in OPEN then
+  A straightforward technical implementation of the pro-                       16                       continue
+jecting operation may involve sequential application ofe to                    17       f(n′)←n′.tl+h(n′.v)
+the time steps forming the input interval with further ﬁlter-                  18                   Addn′ to OPEN
+ingouttheinvalidtransitionsandgroupingtheresultanttime
+steps into the intervals. This resembles A* with time steps,                  19       returnφ
+however the resultant atomic search states of A* are com-                         FunctiongetSuccessors(n,G(V,E),SI):
+pressed into the interval states of SIPP-IP, thus the search                  20       SUCC =φ
+tree of SIPP-IP is more compact.Indeed, more computa-                         21       for eache = (n.v,v′) in available motionsdo
+tionally efﬁcient implementations of the projection opera-                    22     intrvls = projectIntervals(n,e,SI)
+tion may be suggested, depending on how the collision de-                     23            ifv′.vel = 0then
+tectionmechanism isspeciﬁed. Oneof suchefﬁcient imple-                         24                  for eachti inintrvlsdo
+mentations tailored to the grid-based representation of the                    25         ti.tu← upper bound ofSI(v′,ti)
+problempresentedoriginallyin(Cohenetal.2019)andused
+in our experiments (when each edge is associated with the                     26            forti inintrvlsdo
+sequence of cells the agent sweeps while execution the mo-                     27                   insert(v′,ti) to SUCC
+tion) is described in Appendix. 2                                             28       return SUCC
+  To demonstrate how projecting helps in solving instances
+that were un-solvable for standard SIPP recall the example
+depicted in Fig. 2. When expanding the start node SIPP-
+IP will project the time interval ofA, which is [0,5] (co-                     tains only the ﬁrst time step,tstart, provided as input. If the
+incides with the safe interval for start node), to the succes-                 start vertex allows waiting, i.e., the velocity of the initial
+sor. This will result in [2,7] interval. When expanding the                    agent’s conﬁguration is zero, the upper bound of the node’s
+node ((B,vel = 1),[2,7]) we can now apply both uniform                         interval is extended to the upper bound of the safe interval
+motion action and decelerating action by trying to commit                      (of the start vertex), in whichtstart resides.
+them at any time moment that belongs to the time inter-                           Then SIPP-IP follows the general outline of SIPP/A*. At
+val of (B,vel = 1) (via the projection operation, again).                      each iteration it, ﬁrst, selects the best node fromOPEN,
+In such a way, the uniform motion action fromB  toC                            i.e., the one with the minimalf-value. Thef-value of a
+will be committed att = 4, following the SIPP’s princi-                        SIPP-IP noden = (v,[tl,tu]) is deﬁned asf(n) =g(n)+
+ple of reaching the successor as early as possible, i.e., at                   h(n) =tl+h(v).SimilarlytoSIPP,theg-valueofthenode
+t = 5. The projection of the waiting interval will give us                     is the earliest possible time step the agent can arrive ann,
+[5,8]. Finally, when expanding ((C,vel  =  1),[5,8]) the                       thatistl.Theh-valueisindependentofthetimeintervaland
+node ((D,vel = 0),[7,∞)) will be generated. When this                          isdeﬁnedforgraphvertices.Itestimatesthetraveltimefrom
+node will be chosen for expansion the search will success-                     the current vertex to the goal one (e.g. it equals the straight-
+fully terminate reporting ﬁnding the solution.                                 line distance between the vertices divided by the maximum
+SIPP-IPdescription   SIPP-IPstartswithformingthestart                          speed of the agent). As in SIPP, we assume the heuristic to
+nodefromthegivengraphvertex.Initially,startintervalcon-                        be admissible and consistent for SIPP-IP.
+                                                                                  After selecting a node its successors are generated. For
+   2The colored excerpt, as well as Appendix, is not likely to ap-             each outgoing edge we apply the projecting operation as
+pear in the conference version of the manuscript.                              described above. As a result for each edge we obtain a set
+
+[PDF PAGE 6]
+of projected time intervals. If the target conﬁguration al-                  Lemma 1.  The  A*-TS  state  with  the  minimumf-value
+lows waiting (the velocity is zero) than we extend the up-                   in  a  SIPP-IP  state nSIPP−IP(v,[tl,tu])  is  the  state
+per bounds of the projected intervals to the upper bounds                    nA∗−TS(v,tl).
+of the corresponding safe intervals of the target vertex. As                 Proof. Recall thatf-value of a A*-TS state is equal to
+a result each of the generated successors implicitly encom-                  n.t+h(n.v). Asv of all A*-TS states in one SIPP-IP state
+passes, at the time interval, the information both about all                 are identical, therefore theh-values of them are equal. As a
+possible transitions from the predecessor and all possible                   result,thestatewiththeminimaltimei.e.,tl isthestatewith
+wait actions in the current node.                                            the minimalf-value.
+  FinallyeachgeneratedsuccessorisinsertedtoOPEN in
+case it is not already present in the search tree. The algo-                 Theorem2. SIPP-IP is optimal.
+rithm stops when a node corresponding to the goal vertex
+is extracted fromOPEN. At this stage the path can be re-                     Proof. AsSIPP-IPiscompletealgorithmandthecost(time)
+constructed. To do so, we go backwards from the goal node                    is included as identiﬁer in the state, it is guaranteed that
+and at each iteration do the following. Letn be the current                  the optimal state will be expanded. Therefore, it is sufﬁ-
+node (initially set to the goal node,ngoal),t – the time vari-               cient to prove that the ﬁrst expanded state with the goal
+able (initially equal tongoal.tl),nparent – parent ofn, and                  vertex is the optimal one i.e., contains the A*-TS state
+e the transition between them. If the agent can wait atn,                    with  optimal  (minimal)  time.  Let  again  view  the  SIPP-
+then we add the tuple (e,n.tl−cost(e)) toπ and change                        IP  states  as  a  sequence  of  extracted  A*-TS  states.  Let
+n =nparent andt =n.tl−cost(e).Iftheagentcannotwait                           the  ﬁrst  expanded  SIPP-IP  state  with  goal  vertex  to  be
+atn we add (e,t−cost(e)) toπ and changen =nparent                            nSIPP−IP(vgoal,[tl,tu]) which contains the A*-TS state
+andt =t−cost(e).Thisisrepeateduntilwereachthestart                           nA∗−TS(vgoal,tl). Let us suppose thatnA∗−TS is not the
+node.Iftheﬁnalvaluetdoesnotmatchtstart,thentheagent                          optimal A*-TS state but there exists another staten′A∗−TS
+has to wait at start (fort−tstart time steps).                               with the minimalf-value in OPENf(n′) which is less
+  The pseudo-code of SIPP-IP is presented in Algorithm 1.                    thanf(n). According to Lemma 1,n′A∗−TS is located at
+TheoreticalPropertiesofSIPP-IP                                               the bottom of a SIPP-IP staten′SIPP−IP  in OPEN i.e.,
+                                                                             n′A∗−TS.t =n′SIPP−IP.tl. As in SIPP-IP the states are or-
+According to the deﬁnition of SIPP-IP state, we can view                     deredbythevaluesf(nSIPP−IP) =n.tl+h(n.v)whichis
+eachSIPP-IPstateassequenceofA*-with-Time-Steps(A*-                           equaltothef-valueofthebottomA*-TSstatef(nA∗−TS),
+TS) states. That isnSIPP−IP(v,[tl,tu]) ={sA∗−TS(v,t) :                       the staten′SIPP−IP should have been expanded before the
+t∈ [tl,tu]}. We will use this relation along the next proofs.                statenSIPP−IP becausef(n′A∗−TS)<f(nA∗−TS) which
+Theorem1. SIPP-IP is complete.                                               result in contradiction. Therefore, there is no A*-TS state
+                                                                             withf-value less thanf(nA∗−TS) and hencenSIPP−IP is
+                                                                             the optimal state.
+Proof. In the presented function getSuccessors we try to
+use all available edges on the input vertex. Then for each
+edgeusingthefunctionprojectIntervalswegettheintervals                                           EmpiricalEvaluation
+which contain all possible valid timesteps at which we can                   We used ﬁve different maps of varying sizes and topolo-
+get at the target node of the edge starting from a timestep in               gies from the MovingAI benchmark (Sturtevant 2012) for
+the time-interval of the input state (by deﬁnition ofproject-                the  experiments: empty  (sized  64x64), room  (64x64),
+Intervals). This is equivalent to generate all A*-TS states                  warehouse (84x170), random (128x128) and Sydney
+from the A*-TS states included in the input state using an                   (256x256). Each map was populated with an increasing
+edge. By using all the edges, we generate all A*-TS which                    number of moving obstacles (MOs), and for each number
+can be generated by the ”move” action. Directly after that,                  of MOs 200 different instances were generated that differ
+we check if the wait action is available at the target ver-                  intrajectoriesofMOs.Thesetrajectoriesweregeneratedby
+tex, then we extend the resulting time-intervals to the upper                randomlyassigningstartandgoallocationsforeachMOand
+bound of the safe interval at the target vertex, where the in-               letting it go from start to goal using random speeds. More-
+terval is located. This is equivalent to the application of the              over, MO may wait at any cell for random number of time
+waitactionsonallA*-TSstatesatthetargetvertex.Asare-                          steps.Foreachmapwegeneratedinstanceswiththefollow-
+sult,ingetSuccessors,allvalidA*-TSsuccessorsaregener-                        ing densities of MOs: 1/25, 1/20, 1/15, 1/10, 1/5, 1/4, 1/3,
+ated (and capsulated by SIPP-IP states). So, SIPP-IP can be                  where the density is the ratio of the number of MOs to the
+viewedasamodiﬁedversionofA*-TSwhichateveryitera-                             number of the free cells. The start and goal locations of the
+tion it expands several states at the same time and generates                agent were ﬁxed to the top-left and bottom-right corners of
+all the successors of these states and insert them into OPEN                 the map, respectively. Please note, that numerous instances
+(by deﬁnition, all generated A*-TS states are reformed into                  inourdataset(especiallywithhighdensitiesofMO)arenot
+SIPP-IPstateswithoutanyloss).AsaresultSIPP-IPwillal-                         generally solvable.
+waysgenerateandexpandallA*-TSstates,andasA*-TSis                                The agent was modeled as disk whose diameter equals
+complete, SIPP-IP is also complete.                                          the length of the grid cell. The conﬁguration is deﬁned as
+                                                                             (x,y,θ,vel) wherex,y are the coordinates of the cell,θ ∈
+
+[PDF PAGE 7]
+                                                         Figure 4: Success Rates of the evaluated algorithms.
+
+
+
+
+
+
+
+
+             Figure 5: Runtimes of SIPP-IP, SIPP1 and SIPP2 compared                       Table 1: Percentage of SIPP1/SIPP2 solutions that have
+             to A*. Absolute values (inms) are shown above the bars.                       higher costs compared to SIPP-IP.
+
+
+             {0◦,90◦,180◦,270◦} is the orientation andvel ∈ {0,2} is
+             the velocity of the agent.                                                    i7-10700F CPU @ 2.90GHz× 16 and 32Gb of RAM. We
+                The following kinodynamic motion primitives were de-                       imposed a limit of 100,000,000 of generated nodes for all
+             ﬁned: accelerating, decelerating, uniform. Accelerating (de-                  algorithms. For each instance we tracked whether the algo-
+             celerating) primitive: move with the ﬁxed acceleration of                     rithm produced asolution and recorded the algorithm’s run-
+             0.5cell/s2  (−0.5cell/s2) from a conﬁguration with zero                       time and the solution cost.
+             (maximum of 2cell/s) velocity until reaching maximum
+             (zero) velocity in the direction of the initial orientation. The                 Fig. 4 presents the Success Rate (SR) plots, where SR is
+             agent traverses 4 cells this way without changing its orien-                  the ratio of the successfully solved instances to all of our
+             tation.Uniformmotionprimitive:gowiththemaximumve-                             test instances. Indeed, all SIPP-IP competitors have lower
+             locity one cell forward i.e., the initial and ﬁnal velocities                 SR compared to SIPP-IP (except the empty map, where A*
+             equal 2cell/s and the orientation will be the same but the                    and SIPP-IP have the same SR). For SIPP1 and SIPP2 this
+             cell will change by one according to the orientation. Ad-                     is explained by their incompleteness. In theory SR of A*
+             ditionally, we considered in-place rotations and waiting ac-                  shouldalwaysmatchtheoneofSIPP-IP,howeverinpractice
+             tions.Ifthevelocityiszero,theagentcanrotate90°in2sor                          the search space of A* is large and it exceeded the imposed
+             wait for one time step. The time step is chosen to be0.1s.                    limit of100,000,000generated nodes in numerous runs.
+                Collision checking is conservative. We prohibit the agent                     For each map we also analyzed the cost of the instances
+             and any MO from touching the same cell at the same time.                      thatweresuccessfullysolvedbySIPP-IP,SIPP1andSIPP2.
+             Therefore,theblockedintervalsofanycellwerereservedfor                         The results are presented in Table 1. Each cell in the ta-
+             theMOwhenittouchesthiscellevenpartially.Theagentis                            ble tells in how many instances (in percent) the cost of the
+             allowed to use a motion primitive only if it will not result in               SIPP1/SIPP2 solution exceeded the cost of the optimal so-
+             touching a cell in a blocked interval. Moreover, if the time-                 lutionfoundbySIPP-IPbyaﬁxedfactor.Evidently,inmost
+             limits of touching some cell for an agent are not integers,                   ofinstancesthecostsofcompetitorsarelargerthanofSIPP-
+             theyareextendedtotheclosestintegersinthesafermanner.                          IP’s costs and for certain maps (e.g., room) the percentage
+                We compared SIPP-IP to A* with time steps and two                          of the instances where their cost notably exceeds (by more
+             straightforward (not complete) extensions of SIPP: SIPP1                      than 50%) SIPP-IP’s cost is signiﬁcant (up to 42%).
+             and SIPP2. SIPP1 is a modiﬁcation of SIPP that generates                         Finally, the algorithms’ runtime analysis is presented in
+             only kinodynamically-feasible successors for the conﬁgu-                      Fig. 5. Indeed all versions of SIPP, including the complete
+             rations where velocity is not zero. SIPP2 further allows to                   one – SIPP-IP, are signiﬁcantly faster than A*, and reduce
+             re-expand the search nodes (which corresponds to allowing                     the computation time by two orders of magnitude. More-
+             to reach conﬁgurations with non-zero velocities in different                  overSIPP-IPisfasterthanSIPP2.Still,itisoutperformedby
+             time steps in the same safe interval). When implementing                      SIPP1.Thisisexpected,asSIPP1exploitsastraightforward
+             SIPP1/SIPP2 we used the techniques from SIPPwRT (Ma                           expansion strategy missing numerous successors SIPP-IP
+             et al. 2019), thus the latter can be considered to be included                would generate. Absolute (averaged) values of the runtime
+             in comparison. The C++ source code of all planners is pub-                    of SIPP-IP (less than 0.1s on all maps, except the largest
+             licly available. 3                                                            one) suggest that the proposed planner can be utilized in
+                TheexperimentswereconductedonaPCwithIntelCore                              realroboticsystems,wheretakingintoaccountkinodynamic
+
+                 3https://github.com/PathPlanning/SIPP-IP                                  constraints may be of vital importance.
+
+
+
+
+
+
+
+        room    empty    warehouse    random     Sydney    Factor
+SIPP1    93%     82%        69%         89%       97%        >
+SIPP2    90%     79%        66%         85%       92%
+SIPP1    77%     46%        16%         55%       30%      >5%
+SIPP2    60%     39%        11%         44%       20%
+SIPP1    42%      7%         1%         7%         4%      >50%
+SIPP2    22%      3%         0%         1%         3%
+
+[PDF PAGE 8]
+                          Conclusion                                         Sturtevant,  N.  R.  2012.      Benchmarks  for  Grid-Based
+In this work we presented a provably complete and opti-                      Pathﬁnding. IEEE Transactions on Computational Intelli-
+mal variant of the prominent Safe Interval Path Planning                     gence and AI in Games, 4(2): 144–148.
+algorithm capable to handle kinodynamic constraints. We                      Yakovlev, K.; and Andreychuk, A. 2021.   Towards Time-
+showed that straightforward ways to extend SIPP fail in the                  Optimal Any-Angle Path Planning With Dynamic Obsta-
+considered setup, thus a more involved algorithm is needed.                  cles.  In Proceedings of the 31st International Conference
+The later was presented and analyzed theoretically and em-                   onAutomatedPlanningandScheduling(ICAPS2021),405–
+pirically. The directions for future research include embed-                 414.
+ding the suggested algorithm within the multi-agent path                     Yakovlev, K.; Andreychuk, A.; and Stern, R. 2020.  Revis-
+planning solver and conducting experiments on real robots.                   iting Bounded-Suboptimal Safe Interval Path Planning.  In
+                                                                             Proceedings of the 30th International Conference on Auto-
+                     Acknowledgments                                         mated Planning and Scheduling (ICAPS 2020), 300–304.
+This work was partially supported by a grant for research                    Yakovlev, K.; Andreychuk, A.; and Vorobyev, V. 2019. Pri-
+centers in the ﬁeld of artiﬁcial intelligence, provided by the               oritizedmulti-agentpathﬁndingfordifferentialdriverobots.
+Analytical Center for the Government of the Russian Fed-                     InProceedingsofthe2019EuropeanConferenceonMobile
+eration in accordance with the subsidy agreement (agree-                     Robots (ECMR 2019), 1–6.
+mentidentiﬁer00000D730321P5Q0002)andtheagreement
+with the Moscow Institute of Physics and Technology dated
+November 1, 2021 No. 70-2021-00138.
+
+                          References
+Ali, Z. A.; and Yakovlev, K. 2021.   Prioritized SIPP for
+Multi-agent Path Finding with Kinematic Constraints.   In
+Ronzhin,A.;Rigoll,G.;andMeshcheryakov,R.,eds.,Inter-
+active Collaborative Robotics, 1–13. Cham: Springer Inter-
+national Publishing. ISBN 978-3-030-87725-5.
+Cohen,L.;Uras,T.;Kumar,T.S.;andKoenig,S.2019. Op-
+timal and Bounded-Suboptimal Multi-Agent Motion Plan-
+ning.   In Proceedings of the 12th Annual Symposium on
+Combinatorial Search (SOCS 2019), 44–51.
+Hart, P. E.; Nilsson, N. J.; and Raphael, B. 1968.   A for-
+mal basis for the heuristic determination of minimum cost
+paths. IEEEtransactionsonSystemsScienceandCybernet-
+ics, 4(2): 100–107.
+Li, J.; Chen, Z.; Harabor, D.; Stuckey, P. J.; and Koenig, S.
+2022.  MAPF-LNS2: Fast Repairing for Multi-Agent Path
+Finding via Large Neighborhood Search. In Proceedings of
+the AAAI Conference on Artiﬁcial Intelligence.
+Ma, H.; H¨onig, W.; Kumar, T. K. S.; Ayanian, N.; and
+Koenig, S. 2019.   Lifelong Path Planning with Kinematic
+Constraints for Multi-Agent Pickup and Delivery.  In Pro-
+ceedings of the 33rd AAAI Conference on Artiﬁcial Intelli-
+gence (AAAI 2019), 7651–7658.
+Narayanan, V.; Phillips, M.; and Likhachev, M. 2012. Any-
+time safe interval path planning for dynamic environments.
+InProceedingsofThe2012IEEE/RSJInternationalConfer-
+ence on Intelligent Robots and Systems (IROS 2012), 4708–
+4715.
+Phillips, M.; and Likhachev, M. 2011.  SIPP: Safe interval
+path planning for dynamic environments. In Proceedings of
+The 2011 IEEE International Conference on Robotics and
+Automation (ICRA 2011), 5628–5635.
+Pivtoraiko, M.; and Kelly, A. 2011.    Kinodynamic mo-
+tion planning with state lattice motion primitives.  In 2011
+IEEE/RSJ International Conference on Intelligent Robots
+and Systems, 2172–2179. IEEE.
+
+[PDF PAGE 9]
+Appendices
+
+Gridrepresentationoftheenvironment.    Gridsarecom-
+monly used to represent the environment in a wide range of
+applications (robotics, video games, etc.). In our evaluation
+of SIPP-IP we also used grids. More speciﬁcally the envi-
+ronment is represented by a set of grid cellsC, where each
+cellcanbeeithertraversableorblockedduetothestaticob-
+stacles.EachvertexvoftheinputgraphG = (V,E)(i.e.the
+graph that speciﬁes the agent’s possible conﬁgurations and
+the transition between them) is now additionally associated
+withasetofcellsthattheagenttoucheswhenitisconﬁgured
+atv.Eachedgee(v,v′)∈E connectingvertexvwithvertex
+v′ isassociatedwithalist(sequence)ofcells(ce0,ce1,...)that
+are swept by the agent while execution the motione. More-
+over, for each cellcei  the time interval [lbei,ubei] is given,
+during which this cell is swept by the agent while executing
+the motion primitive (relative to the starting time of the mo-
+tion). The cost of the edgecost(e) is also given and deﬁned                     Figure 6: Left: A motion primitive that sweeps through 3
+by the duration of the motion primitive.                                        grid cells. Right: Sequential projection of the time interval
+   The safe/un-safe intervals that arise from the moving ob-                    trough the cells forming the motion primitive.
+stacles are now tied to the grid cells. That is, for each cellc
+a ﬁnite sequence of (non-overlapping) time intervalsSIc is
+given, which is the sequence of the safe intervals at which                     these time steps.
+noobstaclesweepsthroughthecell.Foruniﬁcationpurposes                               However, we can compute the resultant time intervals in
+weassignSIc to∅forthecellsoccupiedbythestaticobsta-                             a more efﬁcient way. Taking advantage from the sequential
+cles. Inversion of the safe intervals deﬁnes the collision in-                  representation of the primitive, we can project the the ini-
+tervals for a cell. Thus, the safe interval of the graph vertex                 tial time interval sequentially through the cells forming the
+v∈V canbedeﬁnedastheintersectionofthesafeintervals                              primitive until the ﬁnal cell is reached. Within this process
+of the cells that the agent occupies while inv.                                 only the manipulations with the endpoints of the time inter-
+   Next we present the details of how the ProjectIntervals                      valsneedtobedone(notallthetimestepsthatformthetime
+procedure could be efﬁciently implemented for grids.                            interval). At each step of this sequential cell-to-cell projec-
+Projecting the time intervals in grids.   Observe the ex-                       tion we are interested in getting the intervals that 1) contain
+ample depicted in Fig. 6. Assume we have a SIPP-IP state                        alltimestepsatwhichtheagentwillﬁrsttouchingthedesti-
+n = (v,[2,17]). Moreover assume that, when conﬁgured                            nation cell 2) contain only such time steps that are valid for
+atv, the agent touches only a single cell.4 Consider a mo-                      continuation of the movement via the given primitive. By
+tion primitivee(v,vend) = (ce0,ce1,ce2): [lbe0  = 0,ube0  =                     the latter we mean that moving by the primitive from any
+3],[lbe1 = 2,ube1 = 4],[lbe2 = 3,ube2 = 5] which means that                     time step inside these intervals will not lead to a collision
+going by primitivee, the agent sweeps through the cellce0                       with any un-safe interval of the cell under consideration. To
+from time step 0 till time step 3. It will also ﬁrst touch cell                 verifythatthesecondconditionholdsforthestartcellofthe
+ce1 attimestep2andcontinuesweepingthroughthiscellfor                            primitive we technically project the initial time interval on
+2 time steps and ﬁrst touch cellce2 at time step 3 and con-                     this cell as well (before projecting to the next cells).
+tinue sweepingce2 for2 time steps as well. Please note, that                       Overall, after the sequence of the cell-to-cell projections
+the agent might be sweeping trough the several grid cells at                    is performed we end with computing the time intervals of
+the same time step, which ﬁts the implicit assumption that                      the ﬁnal cell of the move (ce2 in our example) at which the
+the agent has body/shape. The cost of this motion primitive                     agent ﬁrst touches it. Finally, to get the time steps at which
+is 5, meaning that the agent will arrive at the ﬁnal conﬁgu-                    theagentﬁnishesthemove,weshouldshiftthesetimesteps
+ration,vend after 5 time steps from the start of the move.                      to the end of the primitive.
+   The task is to ﬁnd the time intervals that contain all the                      In the considered example (recall Fig. 6) we start with
+time steps at which the agent can get tovend via executing                      projecting the interval [2,17] on cellce0. It results in the in-
+e. Obviously, the naive way is to simulate the move of the                      terval [2,16]. Please note that the latter does not coincide
+agent from each time step in the source interval [2,17] and                     with the initial interval. The reason is that the time step 17
+compute which time steps will survive when going through                        isnotavalidtimesteptostarttheprimitivefrom.Ifthemo-
+(ce0,ce1,ce2).Thenonecanreconstructthetimeintervalsfrom                         tion is started att = 17 then att = 20 the agent will still
+                                                                                be touchingce0 (as the sweeping interval ofce0 lasts for 3
+   4The projection procedure we are about to describe is agnos-                 timestepsaccordingtoe).However,thisisnotvalidw.r.t.to
+tic, however, to how many cells the agents touches at an arbitrary              given safe intervals ofce0.
+conﬁguration.                                                                      Next, projecting on the next cellce1 results in two inter-
+
+[PDF PAGE 10]
+ Algorithm2: Projecting Intervals                                             vertex ifcell is the ﬁrst cell in the primitive (using helper
+   Function                                                                   variablet). Then we start projecting the currently achieved
+    projectIntervals(n,e = (n.v,v′),SI):                                      intervalsstoredintime        intsoncell.Thisprocedurecanbe
+ 1   time     ints←{[n.tl,n.tu]}                                              donebyﬁndingtheearliesttimesteptearliest andlatesttime
+ 2   t← 0                                                                     steptlatest at each safe interval incell from each interval in
+ 3       for eachcell ine.cells consecutivelydo                               time   ints. These time steps can be computed easily know-
+ 4     new        ints←φ                                                      ingtheendpointsoftheinputtimeintervaltiandsafeinter-
+ 5            ∆←lbecell−t                                                     valsi at which we project, as implemented in Lines 9, 10.
+ 6     t←lbecell                                                              Thenif theresultingtimesteps formavalidinterval (condi-
+ 7            foreachti intime     intsdo                                     tion at Line 11), we add it tonew         ints. At the end of each
+ 8                  for eachsi inSafeIntervals(cell)do                        iteration we assign the new projected intervalsnew            ints to
+ 9         tearliest←max(ti.tl+∆,lb(si))                                      thetime     ints to project them again on the next cells. After
+10         tlatest←min(ti.tu+∆,                                               the end of all iterations, we get the time interval of all time
+                      ub(si)−(ubecell−lbecell))                               steps which we can get at the moment of ﬁrst touching the
+11                       iftearliest≤tlatest then                             lastcelline.Thelastthingistoshifttheresultedtimeinter-
+12                               insert                                       vals to the end of the primitive (i.e. shift them by the value
+                           [tearliest,tlatest]→new       ints                 cost(e)−lbelast     cell) as can be shown in Lines 18, 19. After
+                                                                              that, we form successor states from the end vertex ofe,v′
+13     time        ints←new        ints                                       with each of the resulting time intervals and return them.
+
+
+14   succ←φ
+15       for eachti intime     intsdo
+16     last       cell←the last cell ine
+17            ∆←cost(e)−lbelast       cell
+18     ti.tl←ti.tl+∆
+19     ti.tu←ti.tu+∆
+20             insert(v′,ti)→succ
+
+21       returnsucc
+
+
+
+vals[5,12]intheﬁrstsafeintervaland[16,18]inthesecond
+safe interval. This means that the agent can ﬁrst touchce1
+in the time stepst ∈ [5,12]∪ [16,18]. Time steps 13 and
+14 are not allowed because the agent will also sweep for 2
+timestepsthroughcellce1 afteritﬁrsttouchesitaccordingto
+the primitivee, so arriving at time step 13 or 14 will make
+the agent collide with the blocked interval, as time step 15
+is blocked atce1. Next, projecting the interval [5,12] results
+in interval [6,8] in the ﬁrst safe interval ince2 and interval
+[12,13] in the second safe interval. Similarly, projecting the
+interval[16,18]onthenextcellresultsininterval[17,18]in
+thesecondsafeintervalofce2.Nowwehaveallthetimesteps
+atthemomentoftouchingcellce2 whicharesafely(alongall
+thecells)accessiblefromtheinputstate.Thefunctionisas-
+sumedtoreturnthetimestepsattheendofprimitive(notat
+themomentoftouchingthelastcell),sowhatweneedtodo
+ﬁnally is to only shift the resulting time steps by the dura-
+tion(cost(e)−lbce2) = 2, so the resulting intervals become
+[8,10],[14,15] and[19,20].
+
+Pseudocode   The algorithm starts by initializing the re-
+sulted time-intervalstime       ints by the input time interval at
+Line 1. Then we iterate over all the cells of the given prim-
+itive sequentially (starting from the initial cell). At each it-
+eration we ﬁrst initialize a new empty set of time intervals
+new   ints to ﬁll by the resulting projected intervals at the
+current cellcell. Then we calculate the time ∆ needed to
+reachcellfromthepreviouscellorfromthecelloftheinput

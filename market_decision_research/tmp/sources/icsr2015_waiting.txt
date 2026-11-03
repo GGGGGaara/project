@@ -1,0 +1,487 @@
+=== PAGE 1 ===
+”Go ahead, please”: Recognition and Resolution
+of
+Conﬂict Situations in Narrow Passages for
+Polite Mobile Robot Navigation
+Thanh Q. Trinh, Christof Schroeter, Jens Kessler, and Horst-Michael Gross
+Neuroinformatics and Cognitive Robotics Lab, Ilmenau University of Technology,
+Ilmenau, Germany
+quang-thanh.trinh@tu-ilmenau.de
+Abstract. For a mobile assistive robot operating in a human-populated
+environment, a polite navigation is an important requirement for the
+social acceptance. When operating in a conﬁned environment, narrow
+passages can lead to deadlock situations with persons. In our approach
+we distinguish two types of deadlock situations at narrow passages, in
+which the robot lets the conﬂicting person pass, and either waits in a non-
+disturbing waiting position, or forms a queue with that person. Forth-
+coming deadlock situations are captured by a set of qualitative features.
+As part of these features, we detect narrow passages with a raycasting
+approach and predict the movement of persons. In contrast to numeri-
+cal features, the qualitative description forms a more compact human-
+understandable space allowing to employ a rule-based decision tree to
+classify the considered situation types. To determine a non-disturbing
+waiting position, a multi-criteria optimization approach is used together
+with the Particle Swarm Optimization as solver. In ﬁeld tests, we eval-
+uated our approach for deadlock recognition in a hospital environment
+with narrow corridors.
+Keywords: Human-aware navigation, socially assistive robotics, situa-
+tion understanding, polite navigation
+1 Introduction and Motivation
+In the ongoing research project ROREAS (Robotic Rehabilitation Assistant for
+Stroke Patients) [10], we aim at developing a robotic rehabilitation assistant for
+walking and orientation exercising in self-training during clinical stroke follow-up
+care. The robotic rehab assistant is to accompany inpatients during their walking
+and orientation exercises, practicing both mobility and spatial orientation skills.
+The test site is a complex U-shaped rehabilitation center and accommodates
+more than 400 patients. The operational environment is highly dynamic. Patients
+and staﬀ working in the patients’ rooms are moving in the corridors and in the
+public areas, many of them using walking aids. Moreover, beds, supply and
+cleaning carts, or wheel-chairs are occupying the hallways, resulting in more or
+less restricted space conditions at some times.
+The self-training is mostly performed on the corridors. Due to the structure of
+the building or objects standing in the hallways, some parts have limited lateral
+space, forming a narrow passage which permits movement only in one direction at
+Proc. Int. Conf. on Social Robotics (ICSR), Paris, France, pp. 643-653, Springer 2015
+
+=== PAGE 2 ===
+(a) Our robot in a typical narrow pas-
+sa
+ge
+(b) Forthcoming person
+(c) Same Direction
+Fi
+g. 1: Our robot in a typical narrow passage at our test site, the m&i rehabilitation
+center in Bad Liebenstein, and schematic depiction of the considered conﬂicting situ-
+ations caused by narrow passages.
+a time (Fig. 1(a)). Moving in such a restricted space imposes deadlocks in narrow
+passages. Since a polite and attentive navigation is an important requirement
+for an assistive robot, these situations must be predicted to trigger a proactive
+reaction of the robot. In this work, we distinguish two types of deadlocks: ( i )
+deadlocks caused by a forthcoming person and ( ii ) deadlocks occurring when
+the robot and a person are entering the narrow passage in the same direction.
+In Fig. 1(b)(c) schematic examples of these situations with a narrow passage
+typical to the operation area are depicted. Both cases have diﬀerent resolution
+strategies, but basically result in a ”give way” behavior. To be more speciﬁc, in
+case of type ( i ) deadlocks, the robot is driving to a waiting position to give way
+to the forthcoming person, whereas type ( ii ) deadlocks are resolved by forming
+a queue and following the person through the narrow passage.
+When a deadlock situation with a forthcoming person is predicted, the robot
+needs to wait until the narrow passage has been cleared. In the wait state, the
+robot should position itself in a non-obstructive manner aside. This has a twofold
+eﬀect: First, in an already restricted environment, the position to be chosen
+should not hinder the movement of the person and ease the deadlock elimination.
+Second, the movement to a waiting position signals the approaching person the
+intention of the robot to give way. Additionally, the narrow passage must be
+observable from the robot’s waiting position, since it must be able to recognize
+when the narrow passage is free to be entered. In our approach, we formulate
+the problem of ﬁnding a suited waiting position as a multi-criteria optimization
+problem and use a Particle Swarm Optimization (PSO) [16] as solver.
+The main contributions of this paper are: (a) a new approach for detecting
+narrow passages by means of qualitative features capturing the spatial relation-
+ships of conﬂicting situations, (b) an eﬃcient method for predicting space con-
+ﬂicts in narrow passages, (c) a fast approach for ﬁnding non-obstructive waiting
+positions based on multi-criteria optimization, in order to support the conﬂict
+resolution.
+2 Related Work
+The recognition and handling of deadlock situations in narrow passages has been
+explicitly taken into account in [3]. In this approach however, deadlock situations
+Proc. Int. Conf. on Social Robotics (ICSR), Paris, France, pp. 643-653, Springer 2015
+
+=== PAGE 3 ===
+are only recognized and handled in a reactive manner, when the path is blo cked
+by a person standing in a narrow passage. For a rehab center with patients
+having reduced mobility and using walking aids, a more predictive recognition
+is necessary to proactively avoid deadlocks.
+In our approach, a set of qualitative spatial features is used to recognize dead-
+locks. Such a qualitative description is also used in [12] to evaluate the move-
+ments of a robot and a person. Particularly, the Qualitative Trajectory Calculus
+is utilized. In [14] and [24], Inverse Reinforcement Learning is employed to learn
+a navigation behavior in crowds based on features capturing the environment.
+However, narrow passages are not explicitly described.
+To assess the situation from a set of situation describing features, the re-
+lationships between them must be described. The techniques for ﬁnding these
+relationships belong to the ﬁeld of Data Fusion (DF). In the robotic ﬁeld, only
+few papers on DF for situation assessment have been published so far. A general
+framework for situation assessment is described in [1]. Situations are learned
+with an extensible Markov Model from a set of feature sequences describing the
+environment. In contrast to the robotics research, the ﬁeld of Advanced Driver
+Assistance Systems provides a wider range of publications dealing with situation
+understanding. The common applications are the recognition of a driver’s driv-
+ing maneuvers, driving behaviors at intersections, and the recognition of unusual
+driving behaviors. For situation assessment, often Hidden Markov Models [21],
+Bayesian Networks [19][9], and rule-based techniques [20] are used.
+So far, only explicit recognition techniques have been mentioned. In the
+robotics ﬁeld, there also exists a category of implicit techniques. The main sub-
+ject of these techniques are the usage of spatiotemporal planners and the incor-
+poration of long-term human motion predictions to avoid deadlocks. Although
+the deadlock problem can be solved with this approach, there is still a need for
+situation assessment, when a human-robot communication is required to inter-
+act with the person when a deadlock situation occurs. Since implicit techniques
+aim at generating collision free trajectories, deadlock situations are not explicitly
+recognized. The implicit techniques can be distinguished by the used planning
+algorithms and human motion prediction methods. The most widely used plan-
+ners are A∗ [13][2] and Rapidly-Exploring Random Trees [18][23]. Human motion
+prediction methods can be categorized into learning-based and reasoning-based
+[17] ones. Learning-based approaches learn a predictor from a given training set
+of trajectories [2], whereas reasoning-based approaches make predictions based
+on a given motion model for the person [7].
+Since our focus lies in the application of qualitative features for describing
+deadlock situations and an eﬃcient collision prediction method for narrow pas-
+sages, we only use a simple linear motion prediction and a rule-based approach
+for situation assessment. However, our ﬁeld experiments demonstrate that these
+methods result in a relatively good recognition performance for this hospital
+environment.
+3 Robot Platform ROREAS
+Our robot has a relatively small size of 45 x 55 cm footprint and a height of 1.5 m
+(Fig. 1(a)). The drive system is a diﬀerential drive with a castor on the rear and
+Proc. Int. Conf. on Social Robotics (ICSR), Paris, France, pp. 643-653, Springer 2015
+
+=== PAGE 4 ===
+allows a maximum driving speed of up to 1.4 m/s. The robot’s sensory sys-
+tem
+consists of two SICK laser range ﬁnders, three Asus RGB-D cameras, and
+a panoramic color vision system mounted on the top of the head. For person
+perception, we utilize a probabilistic multi-hypotheses and multi-cue tracking
+system based on a 7D Kalman ﬁlter [25]. It tracks the position, velocity and
+upper body orientation of multiple persons. As detection modules, we are using
+a face detector, a motion detector, and an upper-body shape detector. Addition-
+ally, generic distance-invariant laser-scan features are used to detect legs and
+persons with mobility aids (i.e. crutches, walkers and wheelchairs) [26]. With
+these detection modules we are able to track persons up to a distance of 8 m.
+To safely navigate in dynamic environments, the positions of obstacles need to
+be determined. To this end, we use a generic mapping system which is able to
+process 2D laser-scan and 3D information of the robot’s surroundings [5]. The
+navigation system consists of a Dynamic Window Approach (DW A) [8] guided
+with an E∗ planner [22]. Furthermore, multiple DW A objectives are utilized to
+respect the personal space of bystanders and to achieve a right-hand traﬃc be-
+havior. The complete robotic system was developed with MIRA [6]. For a more
+detailed overview of our robot system see [10].
+4 Deadlock Recognition
+The deadlock recognition is formulated as classiﬁcation problem. As argued be-
+fore, we distinguish two types of conﬂict situations depending on the move-
+ment intention of the person (Fig. 1(b)(c)). Both situations have diﬀerent res-
+olution strategies. In case of a deadlock with a forthcoming person, the robot
+drives to a non-disturbing waiting position aside. These situations are labeled
+as W aiting. In case of a deadlock with a person moving in the same direc-
+tion as the robot, a queue is formed with the person. These situations are la-
+beled as Queuing. Using the resolution strategies as class labels and adding the
+class P roceeding for uncritical situations, the deadlock recognition problem can
+be formulated as a classiﬁcation problem over situations. In ﬁnding a classiﬁer
+C : S → {W aiting, Queuing, P roceeding } with S as the set of all situations, we
+can recognize the considered deadlock situations. Our recognition approach can
+be described as a sequential processing chain consisting of four distinct steps:
+(1) the detection of the narrow passage, (2) the extraction of qualitative spatial
+features describing the situation around the narrow passage, (3) the prediction
+of space conﬂict, and (4) the classiﬁcation of the considered situations. In all the
+processing steps we assume a planar operational space.
+4.1 Narrow Passage Detection
+Narrow passages are detected by ﬁrst calculating normals perpendicular to the
+planned path for a ﬁnite set of points sampled from the path (Fig. 2). The nor-
+mals are determined analytically. To this end, we utilize a spline interpolation
+scheme to derive a trajectory π : R → R2 parametrized over the path’s arc
+length. For each normal, rays are cast in the navigation map until hitting an ob-
+stacle in the 2D occupancy map. The total length of the resulting rays indicate
+Proc. Int. Conf. on Social Robotics (ICSR), Paris, France, pp. 643-653, Springer 2015
+
+=== PAGE 5 ===
+Fig. 2: The narrow passage detection. The circles depict the sampl e points on the
+robot’s path for which a ray perpendicular to path is cast. π is the trajectory of the
+path parametrized over arc length. The highlighted path points π(s) and π(e) are the
+start and end point of the narrow passage with s and e as their corresponding arc
+length. Thus the arc length interval of the narrow passage is N = [s, e]. The quadratic
+points are the boundary points of the narrow passage’s polygon. The polygon itself is
+marked red.
+how much free lateral space is available at a given path point. With these dis-
+tances, a narrow passage can be described as a continuous path section given by
+an arc length interval N ⊂ R, where the section’s maximum distance is smaller
+than a given threshold. Another useful form for reasoning about the spatial re-
+lationship around the narrow passage is its bounding polygon. To construct the
+polygon, the sampled path points in the narrow passage, which were used to
+calculate the normals, are translated along their cast rays to get the points on
+the polygon’s boundary.
+4.2 Qualitative Spatial F eatures
+The common method to describe spatial relationships is to use geometrical mea-
+sures. For humans these quantitative measures are a rather unintuitive way for
+describing spatial relationships. Instead, they use a qualitative abstraction and
+group similar measurement values to an intuitive representation [12]. For ex-
+ample, a person is more likely to describe another person as standing behind
+him/her, than to give the exact orientation angle. We use this insight to re-
+duce our geometrical feature space to a more compact space. In this compact
+space, simple rules are employed to distinguish the considered situations. Thus,
+we overcome the need for a learning approach to collect a dataset, which must
+contain many instances of the geometrical features. We use the following features
+to describe deadlock situations:
+Movement Direction In Fig. 3(a) an illustration of this feature is depicted.
+This feature describes the movement direction of a person relatively to the move-
+ment direction of the robot at either the start or the end of the narrow passage.
+We distinguish three diﬀerent directions Opposite, Same and P assing. Addi-
+tionally, a fourth value Standing is introduced for a person with no movement.
+Orientation This feature represents the position of a person relatively to the
+robot. The feature can take the values in F ront, Rear and Side. To determine
+this feature value, the angle between the robot’s movement direction and the
+connection line of the person to the robot is used. See also Fig. 3(b) for an
+illustration.
+Proc. Int. Conf. on Social Robotics (ICSR), Paris, France, pp. 643-653, Springer 2015
+
+=== PAGE 6 ===
+(a) Movement Direction
+ (b) Orientation
+ (c) Narrow passage positions
+Fi
+g. 3: Qualitative spatial features extracted from the position of the narrow passage,
+the persons and the robot.
+Narrow Passage Position Given a narrow passage, this feature describes the
+positions of the robot or a person relatively to the passage. We deﬁne three
+sub-areas representing the P re-, P ost- and In-area of the narrow passage (Fig.
+3(c)). The reference orientation is given by the movement direction of the robot.
+To determine this feature value for a person, we assume a person to be disc-
+shaped. The intersection area of the person with the narrow passage’s polygon
+and the relative orientation to the narrow passage is utilized to reason about the
+sub-area.
+4.3 Space Conﬂict Prediction
+A narrow passage can be understood as a rail predeﬁning a movement ﬂow.
+Persons entering the narrow passage can only move along the given direction.
+Moreover, a point in the narrow passage can only be occupied by one person
+or the robot at the same time. Thus, without losing information, we describe
+the movement of the person and the robot through the narrow passage as a
+trajectory τ : R → R parametrized over time and having function values in
+the passage’s arc length interval on the planned path. Using a linear model,
+the movement of the person through the narrow passage can be predicted. By
+assuming a linear motion model the trajectory of the robot and the person can
+be described as linear functions. Thus, predicting space conﬂicts can be reduced
+to ﬁnding the intersection point of two linear functions.
+4.4 Situation Classiﬁcation
+For each perceived person we extract the qualitative spatial features and pre-
+dict possible space conﬂicts. Thereafter, a decision tree (DT) is used to classify
+the situation for each person separately. In Fig. 4(a) a coarse view on the DT
+is depicted. The root of the DT represents common preconditions for the con-
+ﬂicting situations. Only when these conditions are fulﬁlled, further evaluations
+are considered. The preconditions consist of the check for the presence of a nar-
+row passage and a space conﬂict with a person. Furthermore, an activation area
+around the narrow passage is constructed, permitting further evaluations only
+when the robot and conﬂicting person stay inside this area. Upon the fulﬁllment,
+the evaluation is redirected to the subtrees according to the movement direction
+of the person. The subtrees for standing persons and persons moving in opposite
+direction are dedicated for the separation of the Waiting class from the Proceed-
+ing class, whereas the subtree for person moving in the same direction separates
+Proc. Int. Conf. on Social Robotics (ICSR), Paris, France, pp. 643-653, Springer 2015
+
+=== PAGE 7 ===
+Preconditions
+Pro-
+ceed
+ing Movement Direction
+Standing Same Opposite Pro-
+ceed
+ing
+Passing
+10
+(a
+) High-level view
+Person to NP
+Waiting Robot to NP
+Waiting Pro-
+ceed
+ing
+InPre
+PostIn
+(b
+) Opposite movement
+Robot to NP
+Queuing Person to NP
+Pro-
+ceed
+ing Person to Robot
+Pro-
+ceed
+ing Queuing
+FrontRear
+InPre
+InPre
+(c
+) Same movement
+Fig. 4: (a) The high-level view of the decision tree. The orange nodes represent the
+classiﬁcation results; the blue nodes are the decision nodes; and the red nodes contain
+a subtree. (b) The subtrees for persons moving in the opposite direction and (c) same
+direction to the robot. The decision nodes use the relative position of the robot or
+persons to the narrow passage (NP) and the relative position of the person to the
+robot to chose the appropriate class.
+Queuing from Proceeding. The main idea of the subtrees is to use the qualitative
+spatial features describing the relative positions of the person and robot (Sec.
+4.2) for arguing about the class membership. In Fig. 4(b)(c), the subtrees for
+persons moving in the opposite and the same direction as the robot are depicted.
+5 Finding Non-Obstructive Waiting Positions
+5.1 Multi-criteria Optimization
+The problem of ﬁnding a proper waiting position is formulated as a multi-criteria
+minimization problem. The search space consists of points (x , φ) with x ∈ R2
+a position in a planar world and φ ∈ [0..2π) an orientation deﬁning the robot’s
+viewing direction. The information about the obstruction and the passage’s ob-
+servability of a pose is encoded in the optimization function
+f (x, φ) = α · cdist(x) + β · cobserve(x, φ) +
+γ · cwall(x) + η · csocial(x) (1)
+through linear combination of the criteria ( i ) driving distance to a position cdist,
+(ii ) observability of the narrow passage cobserve, ( iii ) distance to walls cwall and
+(iv ) social distance to persons csocial. Since our criteria are non-linear or non-
+diﬀerentable, we use the Particle Swarm Optimization to ﬁnd the minimum.
+5.2 Optimization Criteria
+Driven Distance Given the representation of the environment as a grid map,
+this criterion penalizes positions which are far away from the robot, thus min-
+imizing the time to drive to the selected position. This is important, since the
+person might get irritated about the robot’s intention to wait, if the waiting
+position is chosen too far. The driven distance to a position is determined with
+Dijkstra’s algorithm [4]. Note, that for unreachable positions, Dijkstra’s algo-
+rithm results in an inﬁnite distance.
+Proc. Int. Conf. on Social Robotics (ICSR), Paris, France, pp. 643-653, Springer 2015
+
+=== PAGE 8 ===
+Observability Th is criterion indicates if the narrow passage is observable at a
+given pose. The robot’s ﬁeld of view is modeled as a cone directed along φ. The
+cone is further reﬁned to incorporate the position of obstacles. The reﬁnement
+is conducted by casting rays from x inside the cone until hitting an obstacle or
+the cone’s boundary is reached. The ending points of those rays are used to form
+a polygon. The intersection area of this cone and the narrow passage’s polygon
+is used to determine the observability value.
+Distance to W alls Imagine a robot moving in a hallway and the robot waits in
+the middle of the hallway. This is a rather unintuitive signal and depending on
+the width, the person might have to squeeze around the robot. A more intuitive
+way is to let the robot wait near the walls. This is more explicit and provides the
+person more free space to pass the robot. To determine the distance to walls a
+distance transform algorithm [15] is performed on the environment’s map. The
+resulting image allows lookup of the distance to the next wall for each potential
+waiting position.
+Social Distance Every person has a social distance s/he keeps to others when
+s/he has no intention of interaction [11]. Assuming that a person is represented
+as a disc-shape and has the position xh, the social distance of a person is modeled
+as a Gaussian centered at xh. Then for a position x, the social distance criterion
+is the summed function values of all the perceived persons’ Gaussian evaluated
+at x.
+6 Experimental Results of Field Tests and Outlook
+In extensive ﬁeld tests we evaluated our approach for deadlock recognition in
+the ”m&i Fachklinik” rehabilitation center in Bad Liebenstein with our robot
+platform. The tests were conducted over two days. During the tests, we let the
+robot autonomously drive between diﬀerent goals and ﬂoors of the building. For
+evaluation, an external observer accompanied the robot and manually counted
+the decisions taken by our approach, but always from far distance to prevent
+any distraction. In total, a distance of 4,700 m was traveled. During the ﬁrst
+4,000 m, only bystanders were crossing the robot’s way. These bystanders were
+staﬀ members, patients, or guests, which randomly occurred on the hallway and
+had no knowledge about the robot’s deadlock recognition. In this test run, we
+observed that most bystanders were considerate towards the robot and let it ﬁrst
+pass. Only some bystanders took the initiative resulting in the robot to give way.
+Hence during the remaining 700 m, we additionally informed two test subjects
+with normal mobility about the deadlock recognition, but without insight to the
+technical details, and instructed them to actively obstruct the robot by crossing
+its way. Thus, we obtained more variability in the deadlock situations and a
+better assessment of the overall robustness. How they crossed the robot’s way
+were up to the test subjects. Each bystander or test subject which crossed the
+robot’s way in a 2 m radius was considered as potential source of a deadlock and
+contributed to one instance in the confusion matrix shown in Table 1.
+6.1 Discussion and F uture W orks
+In total 157 persons were potential sources of deadlocks. From these 157 persons,
+35 persons caused deadlock situations at narrow passages with further division in
+Proc. Int. Conf. on Social Robotics (ICSR), Paris, France, pp. 643-653, Springer 2015
+
+=== PAGE 9 ===
+Predicted class
+Proceeding Queueing Waiting
+Ground
+T ruth
+Proceeding 96 19 7
+Queueing 0 12 3
+Waiting 1 1 18
+Table 1: The confusion matrix containing the experimental results. Each instance in a
+row correspond to one situation class actually occurred during the experiments. The
+columns correspond to the predictions made by our approach.
+15 queueing and 20 waiting situations. Out of these 35 deadlock situations only
+one was misclassiﬁed as uncritical situation (true positive rate of 97 %). From
+these 34 correctly classiﬁed deadlock situations, 30 were assigned to the correct
+deadlock type (accuracy of 88 %). However, 26 of 122 uncritical situations were
+classiﬁed as deadlocks (false positive rate of 21 %).
+The performance of the deadlock recognition strongly depends on the accu-
+racy of the situation describing features which in turn depends on the person
+tracker, the narrow passage detection, and the space conﬂict prediction. Analysis
+of the false positives revealed that 19 of 26 false positives are caused by false de-
+tections of the person tracker. In these cases, the deadlock recognition assumed
+to have a conﬂicting situation with a person, even though there was no person
+present at all. The remaining 7 false positives were caused by dynamic obstacles,
+e.g. moving persons or objects moved by persons. If a dynamic obstacle causes a
+narrow passage, the narrow passage itself also has a movement. Since the narrow
+passage detection uses the navigation map which currently is not yet able to dis-
+tinguish dynamic obstacles, this movement could not be considered in the space
+conﬂict prediction and leads to false predictions. Surprisingly, the linear motion
+model used in the space conﬂict prediction and neglecting the uncertainty in
+the qualitative spatial features only have little inﬂuence on the recognition per-
+formance. This can be explained by the structure of the test site which mainly
+consists of long and narrow corridors. In this environment, the movement and
+space is already restricted. Thus, a simple linear motion model leads to good
+predictions, and the extracted features have only little uncertainty.
+In future works, we are going to reduce the false positive rate by improving
+the person tracker and the narrow passage detection. To be applicable for com-
+plex environments, a more elaborate motion prediction and the consideration of
+the uncertainty in the recognition process is needed. Furthermore, the human
+perception about the robot’s behavior need to be evaluated more speciﬁcally to
+get better insights to the courtesy of the robot. These evaluations should also be
+conducted over a longer time period, when the bystanders get used to the robot
+and renounce to act courteously in front of deadlocks.
+References
+1. Beck, A., Risager, C., Andersen, N., Ravn, O.: Spacio-temporal situation assess-
+ment for mobile robots. In: Proc. Conf. FUSION. pp. 1–8 (2011)
+2. Bennewitz, M., et al.: Learning motion patterns of people for compliant robot
+motion. The International Journal of Robotics Research 24(1), 31–48 (2005)
+3. Dakulovic, M., et al.: Avoiding deadlocks of mobile robots in narrow passages of
+environments populated with moving obstacles. In: AIM. pp. 936–941 (2011)
+Proc. Int. Conf. on Social Robotics (ICSR), Paris, France, pp. 643-653, Springer 2015
+
+=== PAGE 10 ===
+4. Dijkstra, E.W.: A note on two problems in connexion with graphs. Nu merische
+Mathematik 1(1), 269–271 (1959)
+5. Einhorn, E., Gross, H.M.: Generic 2d/3d slam with ndt maps for lifelong applica-
+tion. In: European Conference on Mobile Robots (ECMR). pp. 240–247 (2013)
+6. Einhorn, E., Langner, T., Stricker, R., Martin, C., Gross, H.M.: MIRA - middleware
+for robotic applications. In: Proc. IEEE/RSJ IROS. pp. 2591–2598 (2012)
+7. Ferrer, G., Sanfeliu, A.: Proactive kinodynamic planning using the extended so-
+cial force model and human motion prediction in urban environments. In: Proc.
+IEEE/RSJ IROS. pp. 1730–1735 (2014)
+8. Fox, D., Burgard, W., Thrun, S.: The dynamic window approach to collision avoid-
+ance. Robotics Automation Magazine, IEEE 4(1), 23–33 (1997)
+9. Gindele, T., et al.: A probabilistic model for estimating driver behaviors and vehicle
+trajectories in traﬃc environments. In: ITSC. pp. 1625–1631 (2010)
+10. Gross, H.M., Debes, K., Einhorn, E., Mueller, S., Scheidig, A., Weinrich, C., Bley,
+A., Martin, C.: Mobile robotic rehabilitation assistant for walking and orientation
+training of stroke patients: A report on work in progress. In: Proc. IEEE Conf. on
+SMC. pp. 1880–1887 (2014)
+11. Hall, E.T., et al.: Proxemics [and comments and replies]. Current anthropology pp.
+83–108 (1968)
+12. Hanheide, M., et al.: Analysis of human-robot spatial behaviour applying a quali-
+tative trajectory calculus. In: Proc. IEEE Symp. RO-MAN. pp. 689–694 (2012)
+13. Hart, P., et al.: A formal basis for the heuristic determination of minimum cost
+paths. IEEE Trans. on Systems Science and Cybernetics 4(2), 100–107 (1968)
+14. Henry, P., Vollmer, C., Ferris, B., Fox, D.: Learning to navigate through crowded
+environments. In: Proc. IEEE ICRA. pp. 981–986 (2010)
+15. J¨ ahne, B.: Digital Image Processing. Engineering Pro collection, Springer Berlin
+Heidelberg (2005)
+16. Kennedy, J., Eberhart, R.: Particle swarm optimization. In: Proc. IEEE Int. Conf.
+on Neural Networks. vol. 4, pp. 1942–1948 (1995)
+17. Kruse, T., Pandey, A.K., Alami, R., Kirsch, A.: Human-aware robot navigation: A
+survey. Robotics and Autonomous Systems 61(12), 1726–1743 (2013)
+18. LaValle, S.M., Kuﬀner, J.J.: Randomized kinodynamic planning. The International
+Journal of Robotics Research 20(5), 378–400 (2001)
+19. Liebner, M., et al.: Driver intent inference at urban intersections using the intelli-
+gent driver model. In: Proc. IEEE IV Symp. pp. 1162–1167 (2012)
+20. McCall, J., Trivedi, M.: Performance evaluation of a vision based lane tracker
+designed for driver assistance systems. In: Proc. IEEE IV Symp. pp. 153–158 (2005)
+21. Meyer-Delius, D., et al.: Probabilistic situation recognition for vehicular traﬃc
+scenarios. In: Proc. IEEE ICRA. pp. 459–464 (2009)
+22. Philippsen, R., Siegwart, R.: An interpolated dynamic navigation function. In:
+Proc. IEEE ICRA. pp. 3782–3789 (2005)
+23. Svenstrup, M., et al.: Trajectory planning for robots in dynamic human environ-
+ments. In: Proc. IEEE/RSJ IROS. pp. 4293–4298 (2010)
+24. Vasquez, D., et al.: Inverse reinforcement learning algorithms and features for robot
+navigation in crowds: An experimental comparison. In: IROS. pp. 1341–1346 (2014)
+25. Volkhardt, M., Weinrich, C., Gross, H.M.: Multi-modal people tracking on a mobile
+companion robot. In: European Conference on Mobile Robots (ECMR). pp. 288–
+293 (2013)
+26. Weinrich, C., Wengefeld, T., Schroeter, C., Gross, H.M.: People detection and
+distinction of their walking aids in 2d laser range data based on generic distance-
+invariant features. In: Proc. IEEE Symp. RO-MAN. pp. 767–773. IEEE (2014)
+Proc. Int. Conf. on Social Robotics (ICSR), Paris, France, pp. 643-653, Springer 2015

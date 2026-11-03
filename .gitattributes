@@ -1,0 +1,2 @@
+# Preserve artifact bytes across checkouts: saved SHA256 manifests use exact bytes.
+* -text

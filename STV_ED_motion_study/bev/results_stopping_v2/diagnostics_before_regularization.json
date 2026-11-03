@@ -1,0 +1,64 @@
+{
+  "unit_tests_passed": 3,
+  "dt_refinement": [
+    {
+      "initial_v": 0.0,
+      "temp": 25.0,
+      "tau": 0.18,
+      "max_stop_error_difference_m": 0.0005428253621815315,
+      "jerk_dt002": 2.2212565899559973,
+      "jerk_dt001": 3.1543474691911126,
+      "max_zero_crossing_pre_speed_m_s": 0.00031543474691911127
+    },
+    {
+      "initial_v": 0.0,
+      "temp": -5.0,
+      "tau": 0.35,
+      "max_stop_error_difference_m": 0.0013262674514677997,
+      "jerk_dt002": 3.364043129655926,
+      "jerk_dt001": 7.161783501105496,
+      "max_zero_crossing_pre_speed_m_s": 5.8740710783936425e-05
+    },
+    {
+      "initial_v": 3.0,
+      "temp": -5.0,
+      "tau": 0.35,
+      "max_stop_error_difference_m": 0.00207558052439083,
+      "jerk_dt002": 2.4935715427011225,
+      "jerk_dt001": 7.021168299812985,
+      "max_zero_crossing_pre_speed_m_s": 0.0007021168299812986
+    }
+  ],
+  "extended_preview_example": {
+    "case": "v4_preview15m",
+    "initial_v_m_s": 4.0,
+    "initial_soc": 0.55,
+    "temperature_c": -5.0,
+    "actual_friction_tau_s": 0.35,
+    "reference_available": true,
+    "reason": "",
+    "controller_friction_tau_s": 0.18,
+    "dt_s": 0.02,
+    "completed": true,
+    "first_stop_error_m": -0.007540919216804554,
+    "final_stop_error_m": -0.0024745644345216533,
+    "max_raw_jerk_m_s3": 1.9348700236127523,
+    "hold_drift_m": 0.0,
+    "duration_s": 32.0,
+    "stop_events": [
+      {
+        "t_s": 6.72,
+        "v_before_m_s": 0.000773948009445101,
+        "free_a_m_s2": -0.049388196158750924,
+        "kinetic_energy_j": 0.0005918075750681456
+      },
+      {
+        "t_s": 30.82,
+        "v_before_m_s": 4.390763391000168e-05,
+        "free_a_m_s2": -0.002901244812662097,
+        "kinetic_energy_j": 1.9047457517878325e-06
+      }
+    ]
+  },
+  "interpretation": "15m example changes available stopping distance; not a matched 10m comparison or proof of safe emergency fallback."
+}

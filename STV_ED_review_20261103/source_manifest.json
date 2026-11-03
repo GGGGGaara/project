@@ -1,0 +1,77 @@
+[
+  {
+    "path": "analysis_extra.py",
+    "bytes": 2502,
+    "sha256": "a68f90538ab30929582544f2198e29711408bfb28992ee7f4fa0082d6317c0ae"
+  },
+  {
+    "path": "pilot_simulation.py",
+    "bytes": 12029,
+    "sha256": "de9fdfb68614d61cd06083a503953bff9922dd6de225b8a136a52a6ce5d048a6"
+  },
+  {
+    "path": "README.md",
+    "bytes": 7108,
+    "sha256": "4808074fd427bb6bc68eafc511ce2688362eb48c0dc422a3344e87d9a86c4200"
+  },
+  {
+    "path": "references.bib",
+    "bytes": 4732,
+    "sha256": "74b3da2a776eb22846ca2b4844204517c612b4e027fc54f7086c07e6dd6b75c5"
+  },
+  {
+    "path": "results\\config.json",
+    "bytes": 475,
+    "sha256": "aba6583dc7d4e23a615344cc636153f6ed40dbdbf556a071a827d86c00f08d0b"
+  },
+  {
+    "path": "results\\episode_results.csv",
+    "bytes": 961240,
+    "sha256": "5bf80ad5a95a855c160712508c757a62077e4f1102886c23eb2ecba9cc9518ce"
+  },
+  {
+    "path": "results\\example_episode.json",
+    "bytes": 877,
+    "sha256": "5c04fdaac1738280a2965f033554b47dfb2f7dc2b8b8c3cb911be900db0971a9"
+  },
+  {
+    "path": "results\\padding_sensitivity.csv",
+    "bytes": 135,
+    "sha256": "bd2b975e19b1214b1d49b85e45035f3f5dba9824b146a534092908ebf2cd3bd3"
+  },
+  {
+    "path": "results\\padding_sensitivity.png",
+    "bytes": 74430,
+    "sha256": "1d7b7ec6772feb913d821135cbf11ba6d8b1be97b25ecac1eec6428b57f49e4c"
+  },
+  {
+    "path": "results\\paired_bootstrap.csv",
+    "bytes": 677,
+    "sha256": "70182688fe950c0aee34b584bb20939a1094565354658849d0deebe6ffa60c29"
+  },
+  {
+    "path": "results\\pilot_exposure.png",
+    "bytes": 64617,
+    "sha256": "84cf899f0769d953e2f99159729eee1acece9ec391d63feacd20bf035201a33d"
+  },
+  {
+    "path": "results\\summary.csv",
+    "bytes": 1965,
+    "sha256": "e1670ee2d0802cf13e8df94bb10d149ccee26c67fac7750024624699970b85f0"
+  },
+  {
+    "path": "STV_ED_chinese_literature_guide.docx",
+    "bytes": 98482,
+    "sha256": "1ac082f1c17c6ff058245f1d3bf2f6ba455e32f5d6913ccb8db2debc3a330ee2"
+  },
+  {
+    "path": "STV_ED_english_pilot_manuscript.docx",
+    "bytes": 170967,
+    "sha256": "5127bbdeea7ab82ed63623935b101362b21822aba8c2b8254e8b6382be73b98a"
+  },
+  {
+    "path": "test_pilot.py",
+    "bytes": 1038,
+    "sha256": "a4315df6cef50d5b5787f659af1cdb7776ed57ed55437f6796f19ed809f1bda4"
+  }
+]

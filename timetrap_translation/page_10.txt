@@ -1,0 +1,80 @@
+(a) Attack on disk I/O. (b) Attack on network I/O. (c) Attack on cache. (d) Attack on multiple resources.
+Fig. 8: The effectiveness of the attack (control deviation) with regard to different attack vectors, priorities, and budgets. The
+four ﬁgures share the same legend. T. D. = temporal displacement.
+Sensed Map 
+Trajectories
+Fig. 9: Direct DoS attack vs TimeTrap on a real Turtlebot3.
+the vehicle. There are 7 fail-safe conditions implemented in
+Turtlebot3 and Figure 6(b) shows one of them. Similarly, a
+direct DoS attack on the robotic arm resulted in only a minor
+control deviation of 3.78 cm, highlighted by the horizontal line
+in Figure 8. In contrast, an attack by TimeTrap could cause
+a deviation of up to 30.1 cm, as illustrated in Figure 8(d).
+This discrepancy arises because a direct DoS attack does
+not compromise the timer’s functionality, the vulnerability
+explored in the previous case study. We also examined another
+type of direct DoS attack that does not deplete all resources,
+assigning the adversarial task a high priority of 40 but a
+low CPU bandwidth of 20%. The Turtlebot3 experienced a
+slowdown due to a decreased rate of control output messages
+but maintained its path. The robotic arm, however, exhibited
+only minimal temporal displacement (0.23 s) and control
+deviation (1.23 cm).
+Impact Factors of TimeTrap. We assessed the effects of
+attack primitives on various shared resources, including cache,
+network, and disk I/O. Each attack primitive optimized a
+single shared resource. These individual attacks were then
+compared to an attack targeting a combination of resources.
+Additionally, we analyzed the inﬂuence of task priorities and
+CPU budgets. We assigned the adversarial task ﬁve levels of
+CPU bandwidths, ranging from 1% to 20%, and ﬁve levels of
+priorities: low, medium-low, medium, medium-high, and high.
+Here, “low” priority means the adversarial task’s priority is
+lower than all other tasks. “Medium-low” matches the lowest
+existing priority in the system, while the other levels ascend
+accordingly. The evaluation is on the robotic arm with a
+Raspberry Pi 3B as the computing unit. Results are reported
+in Figure 8.
+The attacks on disk I/O and cache are more powerful
+than those on network due to the system’s minimal data
+transfers via the network. Robots utilizing SD card storage are
+particularly vulnerable to disk I/O attacks (Figure 8(a)), while
+SSD-based systems are less affected. Cache attack potency is
+closely tied to CPU budgets: more CPU time allows greater
+cache eviction. In contrast, network (Figure 8(b)) and I/O
+attacks (Figure 8(a)) demand less CPU time since they’re
+managed by dedicated hardware controllers. However, such
+attacks yield limited temporal displacements. Attacks spanning
+multiple resources (as in Figure 8(d)) merge the strengths of
+individual ones. Lastly, as the CPU bandwidth increases, the
+signiﬁcance of task priority becomes more obvious.
+TABLE II: TimeTrap on Static and Dynamic Scenarios
+Scene Sensing
+Overhead (%)
+Temporal
+Disp. (s)
+Control
+Dev. (cm)
+Succ.
+Rate
+Robotic
+Arm
+TimeTrap Static 0.18 1.6 22.1 72%
+Dyna. 0.22 1.9 25.7 86%
+Direct DoS - - 5.3 1.78 0%
+Turtlebot3 TimeTrap Static 0.19 0.93 13.2 61%
+Dyna. 0.32 0.81 14.5 81%
+Direct DoS - - 3.5 6.3 24%
+Result of Direct DoS on static and dynamic scenarios are merged.
+TimeTrap on Various Physical Scenarios. We established ten
+mission tasks, with half in dynamic scenarios. Speciﬁcally, the
+robotic arm had two 3 .5 cm cubes as randomly placed target
+objects, while the Turtlebot navigated ten randomly generated
+indoor trajectories with diverse obstacles. Each task underwent
+10 evaluations. Results in Table II show that the CPU usage
+during the sensing phase (sensing overhead) is minimal, and
+the attack success rates exceed 60% in both static and dynamic
+settings. Dynamic scenarios generally yielded higher success
+rates due to their stricter timeliness requirements.
+We also tested the Direct DoS attack, where the adversarial
+task had a higher priority and consumed 80% of the CPU

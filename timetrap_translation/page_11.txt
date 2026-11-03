@@ -1,0 +1,108 @@
+budget. Its success rates were low across scenarios, as detailed
+in Table II. Despite causing substantial delays, Direct DoS
+could not notably deviate control behaviors.
+C. Generalization of TimeTrap
+Besides the three case studies, we tested eight cyber-
+physical systems: OpenManipulator X [33], Turtlebot3 [34],
+Jackal UGV [65], Ardupilot [62], PX4 Autopilot [63], ROBO-
+TIS OP3 [64], Autoware.Auto [66], and Baidu Apollo [41]
+in a hardware-in-the-loop setup. Table III details the comput-
+ing platforms, software stacks, scheduling mechanisms, and
+vulnerable modules identiﬁed. The evaluation is conducted
+in real-world scenarios or ofﬁcial simulations to ensure the
+practicality of TimeTrap.
+Scheduling Mechanism Setup – Among the platforms tested,
+PX4 [63] utilizes an RTOS (Nuttx), while the others run on
+Linux. Autoware and Apollo also integrate ROS2 and Cyber-
+RT as their primary real-time middleware schedulers. For the
+platforms that default to Linux’s Completely Fair Scheduling
+(CFS), we integrate their tasks into the Round Robin (RR) and
+Earliest Deadline First (EDF) real-time schedulers in Linux
+with the PREEMPT_RT patch. For RR, we assigned the target
+tasks a priority of 60 (with the highest being 99) and the
+adversarial task a priority of 20. We assigned the periods
+of tasks according to their input. For EDF, we aligned the
+deadlines with sensor input frequencies, ensuring no input
+drops.
+Contention in Single-core Platform is less Effective. While
+single-core platforms also have shared stateful resources be-
+tween tasks that can be maliciously polluted by adversarial
+tasks, the delay effects are limited. PX4, which uses the single-
+core platform Pixhawk (Arm Cortex-M7), did not crash by re-
+source contention. However, we have identiﬁed inefﬁciency in
+priority inheritance in PX4, which can be triggered remotely.
+This case study is presented in Section VII.
+Timing Issues Triggering Conditions. Our experimental
+results show that direct DoS attacks often do not guarantee
+a crash. (One exception is the drone where the na ¨ıve attack
+can also succeed due to unique aerial properties.) Their are two
+primary reasons. First, the na ¨ıve DoS attack, as described, re-
+quires excessive CPU budgets to cause temporal displacement.
+Second, signiﬁcant delays on critical components can trigger
+the fail-safe mechanism in autonomous systems. Conversely,
+we discovered that even minor timing in TimeTrap can po-
+tentially cause devastating control degradation if the attack
+is launched at carefully selected moments. Additionally, we
+found that most of the timing issues discussed in Section II
+cannot be intentionally triggered in a predictable manner
+through performance interference. However, they still pose a
+problem, as they can be triggered by timing variability from
+workloads [67], system or hardware faults [68]. TimeTrap’s
+temporal displacement discovery stage is capable of identify-
+ing these issues.
+Various Modules in the Control Pipeline are Vulnerable.
+The proposed attack framework enabled us to identify vul-
+nerable states in different realistic scenarios. The number of
+issues we identiﬁed are reported in Table III. We observe that
+the localization module is more prone to timing issues because
+it generally involves more threads, making it harder for pro-
+grammers to reason about correctness in concurrent execution.
+We have examined the software patterns and scheduling mech-
+anisms that make each platform susceptible to such attacks.
+Built-in scheduling mechanisms offer limited mitigation
+on multi-core platforms. One reason is that middleware,
+which typically adopts data-driven execution models such as
+ROS2 and Cyber-RT, does not incorporate resource partition-
+ing by design. Another reason is that many existing real-time
+scheduling mechanisms, such as those in RTOS Nuttx, only
+consider CPU usage during scheduling. Resource contention or
+blocking can occur across various stacks, such as the network
+or I/O stacks, with each single resource channel potentially
+leading to temporal displacements [9].
+Static Timing Policy is Not Adequate. Specifying appro-
+priate timing policies in complex autonomous systems is a
+challenge. In the platforms we investigated, policies primar-
+ily encompass static priorities and hardcoded thresholds for
+checking data freshness, which may be overly large in some
+scenarios. Given that a task’s execution timings can vary
+signiﬁcantly [69] due to multiple factors, such as input [70],
+autonomous systems interacting with dynamic environments
+necessitate adaptive, dynamic timing policies [69], [71].
+VII. LIMITA TIONS AND DISCUSSION
+Attack Outcome Depends on Physical Environment. At-
+tacks on CPS uniquely manifest in kinetic effects. The conse-
+quences of such attacks are often tied to the physical state of
+the system. For instance, a DoS attack on a stationary drone
+would lead to minimal real-world repercussions. Similarly,
+injecting false data into a power grid would be inconsequential
+if the generation is physically switched off. While TimeTrap’s
+outcomes are heavily inﬂuenced by the system’s physical state,
+our research indicates that it can consistently compromise the
+targeted CPS. The time taken for system destabilization can
+vary, however, sometimes requiring several seconds.
+Remote Execution of TimeTrap. In addition to investigating
+performance interference and attacks on voltage conﬁgura-
+tions [72], we also explore methods to inﬂuence software tim-
+ing in non-local environments, such as networked systems. We
+were able to send specially-crafted messages from a ground
+station to a drone running PX4 that cause priority inversion
+and delay task execution. In PX4, logging is handled asyn-
+chronously by a low priority ( SCHED_PRIORITY_DEFAULT
+- 40 ) thread to avoid interference with critical tasks, since
+it consumes heavy IO bandwidth. The logging rate is further
+restricted using a variable _log_interval to avoid short,
+heavy data bursts.
+However, PX4 handles user messages via the Mavlink
+protocol from the ground station in a high priority thread.
+User messages may request logging data, and the handler
+(MavlinkLogHandler()) also executes at the same high
