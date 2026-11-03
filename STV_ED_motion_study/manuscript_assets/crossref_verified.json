@@ -1,0 +1,201 @@
+{
+  "retrieved": "2026-11-03",
+  "references": [
+    {
+      "doi": "10.1109/TIV.2016.2578706",
+      "verified": true,
+      "title": [
+        "A Survey of Motion Planning and Control Techniques for Self-Driving Urban Vehicles"
+      ],
+      "authors": [
+        {
+          "given": "Brian",
+          "family": "Paden",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Michal",
+          "family": "Cap",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Sze Zheng",
+          "family": "Yong",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Dmitry",
+          "family": "Yershov",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Emilio",
+          "family": "Frazzoli",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container": [
+        "IEEE Transactions on Intelligent Vehicles"
+      ],
+      "year": {
+        "date-parts": [
+          [
+            2016,
+            3
+          ]
+        ]
+      },
+      "volume": "1",
+      "issue": "1",
+      "pages": "33-55",
+      "source": "https://api.crossref.org/works/10.1109/TIV.2016.2578706"
+    },
+    {
+      "doi": "10.1109/ICRA.2011.5980306",
+      "verified": true,
+      "title": [
+        "SIPP: Safe interval path planning for dynamic environments"
+      ],
+      "authors": [
+        {
+          "given": "Mike",
+          "family": "Phillips",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Maxim",
+          "family": "Likhachev",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container": [
+        "2011 IEEE International Conference on Robotics and Automation"
+      ],
+      "year": {
+        "date-parts": [
+          [
+            2011,
+            5
+          ]
+        ]
+      },
+      "volume": null,
+      "issue": null,
+      "pages": "5628-5635",
+      "source": "https://api.crossref.org/works/10.1109/ICRA.2011.5980306"
+    },
+    {
+      "doi": "10.1609/aaai.v37i10.26453",
+      "verified": true,
+      "title": [
+        "Safe Interval Path Planning with Kinodynamic Constraints"
+      ],
+      "authors": [
+        {
+          "given": "Zain Alabedeen",
+          "family": "Ali",
+          "sequence": "first",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        },
+        {
+          "given": "Konstantin",
+          "family": "Yakovlev",
+          "sequence": "additional",
+          "affiliation": [],
+          "role": [
+            {
+              "vocabulary": "crossref",
+              "role": "author"
+            }
+          ]
+        }
+      ],
+      "container": [
+        "Proceedings of the AAAI Conference on Artificial Intelligence"
+      ],
+      "year": {
+        "date-parts": [
+          [
+            2023,
+            6,
+            26
+          ]
+        ]
+      },
+      "volume": "37",
+      "issue": "10",
+      "pages": "12330-12337",
+      "source": "https://api.crossref.org/works/10.1609/aaai.v37i10.26453"
+    },
+    {
+      "doi": "10.1109/ITSC.2016.7795594",
+      "verified": false,
+      "error": "HTTP Error 429: Too Many Requests"
+    },
+    {
+      "doi": "10.1109/CDC.2017.8263867",
+      "verified": false,
+      "error": "HTTP Error 429: Too Many Requests"
+    },
+    {
+      "doi": "10.1299/mej.25-00380",
+      "verified": false,
+      "error": "HTTP Error 429: Too Many Requests"
+    }
+  ]
+}

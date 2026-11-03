@@ -6,6 +6,8 @@
 
 当前成果是研究准备、仿真基线和失败诊断，**尚未确认独立创新，尚未形成可投稿的完整方法验证**。
 
+2026-11-03 论文修订：已在[原 Word 路径](STV_ED_reproducible_pilot_bundle/rural_narrow_road_research/STV_ED_english_pilot_manuscript.docx)覆盖修订正文，并提供[PDF](STV_ED_motion_study/STV_ED_final.pdf)、[可检索正文](STV_ED_motion_study/manuscript.md)和[中文修订与文献核验](STV_ED_motion_study/论文修订与文献核验.md)。纳入车辆执行与观测更新，补充 SIPP/SIPP-IP/FaSTrack，保留失败与研究边界；原稿可由历史提交或原 ZIP 恢复。此前的原包“内层不变”说明只描述此前整理阶段。
+
 ## 从哪里开始
 
 1. 了解当前做到了哪里：读[成果总览](成果导航/01_研究说明/README.md)。

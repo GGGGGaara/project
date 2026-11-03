@@ -1,10 +1,12 @@
 # STV-ED preliminary research project (2026-11-02)
 
+Revision 2026-11-03: the English DOCX at this path now contains the temporal-admission and separate vehicle-execution study, with seven focused references. The bibliography corrects Silvia Magdici and adds SIPP, SIPP-IP, and FaSTrack. Historical code and results are unchanged. See [current manuscript source](../../STV_ED_motion_study/manuscript.md), [PDF](../../STV_ED_motion_study/STV_ED_final.pdf), and [revision evidence](../../STV_ED_motion_study/论文修订与文献核验.md). The descriptions below record the original pilot stage; the original DOCX is recoverable from Git history or the original ZIP.
+
 This repository contains a **reproducible synthetic decision-level pilot**, not a validated autonomous-driving decision/planning method. The objective is to test whether jointly anticipating downstream conflict-window occupation and the temporary availability of a holding/refuge region can change *entrance* choices at a narrow road bottleneck.
 
 ## Deliverables
 
-- `STV_ED_english_pilot_manuscript.docx`: complete **preliminary research manuscript** (not ready for submission); includes methods, observed experimental outcomes, failure modes, limitations, and 13 references.
+- `STV_ED_english_pilot_manuscript.docx`: revised research manuscript with temporal admission, separate vehicle execution, failure diagnostics, and seven directly relevant references; integrated planner validation remains outstanding.
 - `STV_ED_chinese_literature_guide.docx`: annotated Chinese literature guide, novelty boundary, pilot results, and outstanding requirements.
 - `pilot_simulation.py`: actually executed Python simulation code, no fabricated experimental outcomes.
 - `test_pilot.py`: minimal unit tests for feasibility logic.

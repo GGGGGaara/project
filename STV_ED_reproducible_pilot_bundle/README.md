@@ -1,4 +1,6 @@
-# 原始STV-ED交付包：保持快照
+# STV-ED交付包：原始实验与修订论文
+
+2026-11-03 论文修订已按用户要求覆盖内层英文 Word，并修正/补充 BibTeX。代码、中文历史指南和原实验结果未改动；下文关于“内层15文件不变”的说明是此前整理记录，不能用于当前论文/文献的哈希验收。原始15文件仍可从[原始ZIP](../STV_ED_reproducible_pilot_bundle.zip)或提交8e5f0d7恢复。新版[PDF](../STV_ED_motion_study/STV_ED_final.pdf)和[文献核验报告](../STV_ED_motion_study/论文修订与文献核验.md)为本轮入口。
 
 内层[rural_narrow_road_research/README.md](rural_narrow_road_research/README.md)是原说明。内层包含15个原始文件：3份Python、1份README、1份BibTeX、2份DOCX及8份结果文件。
 

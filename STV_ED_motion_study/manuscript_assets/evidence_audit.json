@@ -1,0 +1,98 @@
+{
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "base_commit": "8e5f0d7810e136ec5abaa6956c233b3342e90c21",
+  "pilot_records": 15000,
+  "execution_records": 72,
+  "common_success_n": 8,
+  "common_success_condition_keys": [
+    [
+      "constant17",
+      "delay_negative_bias",
+      -5.0,
+      0.35
+    ],
+    [
+      "constant17",
+      "delay_negative_bias",
+      25.0,
+      0.18
+    ],
+    [
+      "constant17",
+      "ideal",
+      -5.0,
+      0.35
+    ],
+    [
+      "constant17",
+      "ideal",
+      25.0,
+      0.18
+    ],
+    [
+      "speedup_early",
+      "delay_positive_bias",
+      -5.0,
+      0.35
+    ],
+    [
+      "speedup_early",
+      "delay_positive_bias",
+      25.0,
+      0.18
+    ],
+    [
+      "speedup_late",
+      "delay_positive_bias",
+      -5.0,
+      0.35
+    ],
+    [
+      "speedup_late",
+      "delay_positive_bias",
+      25.0,
+      0.18
+    ]
+  ],
+  "statistics": {
+    "frozen": {
+      "counts": {
+        "completed": 8,
+        "collision": 16
+      },
+      "own_success_mean_s": 30.71,
+      "common_success_mean_s": 30.71,
+      "horizon_penalty_mean_s": 70.23666666666666
+    },
+    "refresh_hold": {
+      "counts": {
+        "completed": 10,
+        "collision": 14
+      },
+      "own_success_mean_s": 30.83,
+      "common_success_mean_s": 30.1475,
+      "horizon_penalty_mean_s": 65.34583333333333
+    },
+    "rolling": {
+      "counts": {
+        "completed": 22,
+        "collision": 2
+      },
+      "own_success_mean_s": 33.334545454545456,
+      "common_success_mean_s": 30.1475,
+      "horizon_penalty_mean_s": 38.056666666666665
+    }
+  },
+  "score_definition": "Finish time for completed cases; 90 s for each failure. Not actual travel time.",
+  "source_hashes_verified": {
+    "crossing_uncertain.py": "37399f6b287280f943aa1487b63fb70a51e46a43d756249c961980d7455d384e",
+    "crossing_2d.py": "743bf8c2f30f8866927a33bc7828f274a57832da49237f6afba5694f9cf3ae55",
+    "stopping_v2.py": "b0cc1db08b814a889f8311719204249aff75d64c84d355f4273a1da9950d805e",
+    "bev_probe.py": "3ad5c9602096955774121967ad737b2b75ce9575682496898d718eecaff04613"
+  },
+  "data_sha256": {
+    "STV_ED_reproducible_pilot_bundle\\rural_narrow_road_research\\results\\episode_results.csv": "5bf80ad5a95a855c160712508c757a62077e4f1102886c23eb2ecba9cc9518ce",
+    "STV_ED_reproducible_pilot_bundle\\rural_narrow_road_research\\results\\summary.csv": "e1670ee2d0802cf13e8df94bb10d149ccee26c67fac7750024624699970b85f0",
+    "STV_ED_motion_study\\bev\\results_crossing_uncertain\\episodes.json": "65043e72e9e144d3a072c77bec4b81e3954cd838ad77b2a99300c02034fe3815"
+  }
+}

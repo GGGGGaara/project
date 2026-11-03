@@ -1,0 +1,16 @@
+{
+  "renderer": "Installed Microsoft Word native PDF export via UI; PyMuPDF page rasterization",
+  "pages": 8,
+  "all_pages_visually_reviewed": true,
+  "table_header_orphan_fixed": true,
+  "title_border_removed": true,
+  "images": 3,
+  "tables": 3,
+  "native_math_objects": 5,
+  "existing_tests_passed": 17,
+  "replay_records_verified": 72,
+  "step_refinement_cases": 4,
+  "historical_model_and_data_hashes_unchanged": true,
+  "docx_sha256": "2e9c6fecb130d10984956eba6c3d5831de9ab72d260d4103290c672ac4558ed2",
+  "pdf_sha256": "21ba9438778baea0b0c5cef4c7c9145ed613be6d900460943ed5956f952a80ad"
+}
